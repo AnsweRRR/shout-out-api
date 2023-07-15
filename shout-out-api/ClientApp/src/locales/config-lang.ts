@@ -1,8 +1,4 @@
-// @mui
 import { enUS } from '@mui/material/locale';
-
-// PLEASE REMOVE `LOCAL STORAGE` WHEN YOU CHANGE SETTINGS.
-// ----------------------------------------------------------------------
 
 export const allLangs = [
   {
@@ -13,4 +9,4 @@ export const allLangs = [
   }
 ];
 
-export const defaultLang = allLangs[0]; // English
+export const defaultLang = allLangs[0];

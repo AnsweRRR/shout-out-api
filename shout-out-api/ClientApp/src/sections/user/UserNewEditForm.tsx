@@ -1,28 +1,21 @@
 import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
-// utils
-import { fData } from '../../../utils/formatNumber';
-// routes
-import { PATH_APP } from '../../../routes/paths';
-// @types
-import { IUserAccountGeneral } from '../../../@types/user';
-// assets
-import { countries } from '../../../assets/data';
-import { CustomFile } from '../../../components/upload';
-import { useSnackbar } from '../../../components/snackbar';
+import { fData } from '../../utils/formatNumber';
+import { PATH_APP } from '../../routes/paths';
+import { IUserAccountGeneral, Roles } from '../../@types/user';
+import { CustomFile } from '../../components/upload';
+import { useSnackbar } from '../../components/snackbar';
 import FormProvider, {
   RHFSelect,
   RHFSwitch,
   RHFTextField,
   RHFUploadAvatar,
-} from '../../../components/hook-form';
+} from '../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -43,11 +36,9 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    userName: Yup.string().required('Username is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    company: Yup.string().required('Company is required'),
     role: Yup.string().required('Role is required'),
-    avatarUrl: Yup.mixed().required('Avatar is required'),
+    avatarUrl: Yup.mixed(),
   });
 
   const defaultValues = useMemo(
@@ -57,7 +48,6 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
       userName: currentUser?.userName || '',
       email: currentUser?.email || '',
       avatarUrl: currentUser?.avatarUrl || null,
-      company: currentUser?.company || '',
       role: currentUser?.role || '',
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,22 +130,6 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                 }
               />
             </Box>
-
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
           </Card>
         </Grid>
 
@@ -170,21 +144,19 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
+              <RHFTextField name="firstName" label="First Name" />
+              <RHFTextField name="lastName" label="Last Name" />
               <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
 
-              <RHFSelect native name="country" label="Country" placeholder="Country">
+              <RHFSelect native name="role" label="Role" placeholder="Role">
                 <option value="" />
-                {countries.map((country) => (
-                  <option key={country.code} value={country.label}>
-                    {country.label}
+                {Object.values(Roles).filter((value) => typeof value === 'string').map((role) => (
+                  <option key={role} value={role}>
+                    {role}
                   </option>
                 ))}
               </RHFSelect>
 
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

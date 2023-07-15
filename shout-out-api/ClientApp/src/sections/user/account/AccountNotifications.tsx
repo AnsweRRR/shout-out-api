@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { Card, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // @types
-import { IUserAccountNotificationSettings } from '../../../../@types/user';
+import { IUserAccountNotificationSettings } from '../../../@types/user';
 // components
-import { useSnackbar } from '../../../../components/snackbar';
-import FormProvider, { RHFSwitch } from '../../../../components/hook-form';
+import { useSnackbar } from '../../../components/snackbar';
+import FormProvider, { RHFSwitch } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 

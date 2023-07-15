@@ -11,7 +11,7 @@ import { _userList } from '../../_mock/arrays';
 import { useSettingsContext } from '../../components/settings';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 // sections
-import UserNewEditForm from '../../sections/@dashboard/user/UserNewEditForm';
+import UserNewEditForm from '../../sections/user/UserNewEditForm';
 
 // ----------------------------------------------------------------------
 

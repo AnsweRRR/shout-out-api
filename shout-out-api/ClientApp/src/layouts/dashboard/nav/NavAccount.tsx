@@ -1,12 +1,8 @@
 import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Typography } from '@mui/material';
-// auth
 import { useAuthContext } from '../../../auth/useAuthContext';
-// routes
 import { PATH_APP } from '../../../routes/paths';
-// components
 import { CustomAvatar } from '../../../components/custom-avatar';
 
 // ----------------------------------------------------------------------
@@ -24,14 +20,17 @@ const StyledRoot = styled('div')(({ theme }) => ({
 export default function NavAccount() {
   const { user } = useAuthContext();
 
+  /* eslint-disable-next-line no-unsafe-optional-chaining */
+  const DISPLAY_NAME = user?.userName ? user?.userName : `${user?.firstName} ${user?.lastName}`;
+
   return (
     <Link component={RouterLink} to={PATH_APP.user.account} underline="none" color="inherit">
       <StyledRoot>
-        <CustomAvatar src={user?.photoURL} alt={user?.displayName} name={user?.displayName} />
+        <CustomAvatar src={user?.photoURL} alt={DISPLAY_NAME} name={DISPLAY_NAME} />
 
         <Box sx={{ ml: 2, minWidth: 0 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {DISPLAY_NAME}
           </Typography>
 
           <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>

@@ -37,6 +37,9 @@ export default function AccountPopover() {
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
+  /* eslint-disable-next-line no-unsafe-optional-chaining */
+  const DISPLAY_NAME = user?.userName ? user?.userName : `${user?.firstName} ${user?.lastName}`;
+
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
     setOpenPopover(event.currentTarget);
   };
@@ -80,17 +83,17 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <CustomAvatar src={user?.photoURL} alt={user?.displayName} name={user?.displayName} />
+        <CustomAvatar src={user?.photoURL} alt={DISPLAY_NAME} name={DISPLAY_NAME} />
       </IconButtonAnimate>
 
       <MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 200, p: 0 }}>
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {DISPLAY_NAME}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user?.email}
+            {`${user?.firstName} ${user?.lastName}`}
           </Typography>
         </Box>
 

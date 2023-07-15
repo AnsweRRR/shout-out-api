@@ -13,7 +13,7 @@ import {
   AccountGeneral,
   AccountNotifications,
   AccountChangePassword,
-} from '../../sections/@dashboard/user/account';
+} from '../../sections/user/account';
 
 // ----------------------------------------------------------------------
 

@@ -166,19 +166,6 @@ function renderContent(notification: NotificationItemProps) {
       </Typography>
     </Typography>
   );
-
-  if (notification.type === 'order_placed') {
-    return {
-      avatar: <img alt={notification.title} src="/assets/icons/notification/ic_package.svg" />,
-      title,
-    };
-  }
-  if (notification.type === 'order_shipped') {
-    return {
-      avatar: <img alt={notification.title} src="/assets/icons/notification/ic_shipping.svg" />,
-      title,
-    };
-  }
   if (notification.type === 'mail') {
     return {
       avatar: <img alt={notification.title} src="/assets/icons/notification/ic_mail.svg" />,

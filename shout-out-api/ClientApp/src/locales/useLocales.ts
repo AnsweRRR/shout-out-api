@@ -1,9 +1,6 @@
 import { useTranslation } from 'react-i18next';
-// utils
 import localStorageAvailable from '../utils/localStorageAvailable';
-// components
 import { useSettingsContext } from '../components/settings';
-//
 import { allLangs, defaultLang } from './config-lang';
 
 // ----------------------------------------------------------------------

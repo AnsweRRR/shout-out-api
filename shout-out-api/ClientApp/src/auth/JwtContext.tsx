@@ -1,18 +1,8 @@
 import { createContext, useEffect, useReducer, useCallback, useMemo } from 'react';
-// utils
 import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
-//
 import { isValidToken, setSession } from './utils';
 import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
-
-// ----------------------------------------------------------------------
-
-// NOTE:
-// We only build demo at basic level.
-// Customer will need to do some extra handling yourself if you want to extend the logic and other features...
-
-// ----------------------------------------------------------------------
 
 enum Types {
   INITIAL = 'INITIAL',
@@ -101,7 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         const response = await axios.get('/api/user/my-account');
 
-        const { user } = response.data;
+        const user = response.data;
 
         dispatch({
           type: Types.INITIAL,

@@ -7,7 +7,7 @@ import { PATH_APP } from '../../routes/paths';
 import { useSettingsContext } from '../../components/settings';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 // sections
-import UserNewEditForm from '../../sections/@dashboard/user/UserNewEditForm';
+import UserNewEditForm from '../../sections/user/UserNewEditForm';
 
 // ----------------------------------------------------------------------
 

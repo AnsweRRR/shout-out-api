@@ -26,7 +26,6 @@ import {
 
 export default function Router() {
   return useRoutes([
-    // Auth
     {
       path: 'auth',
       children: [
@@ -55,7 +54,6 @@ export default function Router() {
         },
       ],
     },
-
     {
       element: (
         <AuthGuard>

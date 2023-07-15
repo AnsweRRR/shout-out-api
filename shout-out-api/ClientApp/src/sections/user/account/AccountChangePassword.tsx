@@ -6,11 +6,11 @@ import { useForm } from 'react-hook-form';
 import { Stack, Card } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // @types
-import { IUserAccountChangePassword } from '../../../../@types/user';
+import { IUserAccountChangePassword } from '../../../@types/user';
 // components
-import Iconify from '../../../../components/iconify';
-import { useSnackbar } from '../../../../components/snackbar';
-import FormProvider, { RHFTextField } from '../../../../components/hook-form';
+import Iconify from '../../../components/iconify';
+import { useSnackbar } from '../../../components/snackbar';
+import FormProvider, { RHFTextField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 

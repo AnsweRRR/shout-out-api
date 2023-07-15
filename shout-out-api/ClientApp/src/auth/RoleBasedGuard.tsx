@@ -1,14 +1,8 @@
 import { m } from 'framer-motion';
-// @mui
 import { Container, Typography } from '@mui/material';
-// components
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
 import { ForbiddenIllustration } from '../assets/illustrations';
-//
 import { useAuthContext } from './useAuthContext';
-
-// ----------------------------------------------------------------------
 
 type RoleBasedGuardProp = {
   hasContent?: boolean;

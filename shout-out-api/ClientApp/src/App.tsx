@@ -9,10 +9,6 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/captions.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
-// map
-import './utils/mapboxgl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-
 // editor
 import 'react-quill/dist/quill.snow.css';
 
@@ -46,9 +42,6 @@ import SnackbarProvider from './components/snackbar';
 import ScrollToTop from './components/scroll-to-top';
 import { MotionLazyContainer } from './components/animate';
 import { ThemeSettings, SettingsProvider } from './components/settings';
-
-// Check our docs
-// https://docs.minimals.cc/authentication/ts-version
 
 import { AuthProvider } from './auth/JwtContext';
 
