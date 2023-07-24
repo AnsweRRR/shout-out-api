@@ -19,7 +19,8 @@ namespace shout_out_api.Helpers
                 StartAtCompany = entity.StartAtCompany,
                 Birthday = entity.Birthday,
                 PointsToGive = entity.PointsToGive,
-                PointToHave = entity.PointToHave
+                PointToHave = entity.PointToHave,
+                RefreshToken = entity.RefreshToken
             };
 
             return userResultDto;

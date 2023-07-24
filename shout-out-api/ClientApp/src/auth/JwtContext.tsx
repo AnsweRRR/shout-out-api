@@ -92,6 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const response = await axios.get('/api/user/my-account');
 
         const user = response.data;
+        user.accessToken = accessToken;
 
         dispatch({
           type: Types.INITIAL,

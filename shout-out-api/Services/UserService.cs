@@ -5,6 +5,7 @@ using shout_out_api.Dto.Email;
 using shout_out_api.Dto.User;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
+using System.Security.Cryptography;
 
 namespace shout_out_api.Services
 {
@@ -39,6 +40,8 @@ namespace shout_out_api.Services
                 CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
 
                 UserResultDto userDto = user.ToUserResultDto();
+                userDto.AccessToken = jwtToken;
+                userDto.RefreshToken = newRefreshToken.Token;
 
                 LoginResultDto dto = new LoginResultDto()
                 {
@@ -60,6 +63,9 @@ namespace shout_out_api.Services
         {
             try
             {
+                //string verificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+                string verificationToken = Guid.NewGuid().ToString();
+
                 User newUser = new User
                 {
                     Email = model.Email,
@@ -68,20 +74,19 @@ namespace shout_out_api.Services
                     LastName = model.LastName,
                     PointsToGive = 100,
                     PointToHave = 0,
+                    VerificationToken = verificationToken
                 };
 
                 _db.Users.Add(newUser);
                 _db.SaveChanges();
 
-                string emailConfirmationToken = Guid.NewGuid().ToString();
-                string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/register:${emailConfirmationToken}";
-                string confirmationLink = urlHelper.Action("ConfirmEmail", "User", new { token = emailConfirmationToken }, requestScheme);
+                string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/${newUser.VerificationToken}";
 
                 EmailDto emailModel = new EmailDto()
                 {
                     ToEmailAddress = newUser.Email,
-                    Subject = "Invited to ShoutOut",
-                    Body = $"Itt lenne az url helye...{confirmationLink}"
+                    Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
+                    Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
                 };
 
                 _emailService.SendEmail(emailModel);

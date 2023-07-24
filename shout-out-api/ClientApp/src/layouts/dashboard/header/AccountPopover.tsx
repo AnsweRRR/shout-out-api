@@ -93,7 +93,7 @@ export default function AccountPopover() {
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {`${user?.firstName} ${user?.lastName}`}
+            {user?.email}
           </Typography>
         </Box>
 

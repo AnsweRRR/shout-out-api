@@ -3,6 +3,12 @@ import storage from 'redux-persist/lib/storage';
 
 // ----------------------------------------------------------------------
 
+export interface AppState {
+
+}
+
+// ----------------------------------------------------------------------
+
 export const rootPersistConfig = {
   key: 'root',
   storage,
@@ -10,8 +16,8 @@ export const rootPersistConfig = {
   whitelist: [],
 };
 
-const rootReducer = combineReducers({
-  
+const rootReducer = combineReducers<AppState>({
+
 });
 
 export default rootReducer;

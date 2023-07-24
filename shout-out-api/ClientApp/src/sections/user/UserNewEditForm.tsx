@@ -1,22 +1,18 @@
 import * as Yup from 'yup';
+import { createUserAsync } from 'src/api/userClient';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import { fData } from '../../utils/formatNumber';
 import { PATH_APP } from '../../routes/paths';
-import { IUserAccountGeneral, Roles } from '../../@types/user';
+import { IUserAccountGeneral, InviteRequestDto, Roles } from '../../@types/user';
 import { CustomFile } from '../../components/upload';
 import { useSnackbar } from '../../components/snackbar';
-import FormProvider, {
-  RHFSelect,
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../components/hook-form';
-
+import FormProvider, { RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
 // ----------------------------------------------------------------------
 
 interface FormValuesProps extends Omit<IUserAccountGeneral, 'avatarUrl'> {
@@ -30,15 +26,16 @@ type Props = {
 
 export default function UserNewEditForm({ isEdit = false, currentUser }: Props) {
   const navigate = useNavigate();
-
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuthContext();
+  console.log(user);
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    role: Yup.string().required('Role is required'),
-    avatarUrl: Yup.mixed(),
+    role: Yup.mixed<Roles>().required('Role is required'),
+    // avatarUrl: Yup.mixed(),
   });
 
   const defaultValues = useMemo(
@@ -48,7 +45,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
       userName: currentUser?.userName || '',
       email: currentUser?.email || '',
       avatarUrl: currentUser?.avatarUrl || null,
-      role: currentUser?.role || '',
+      role: currentUser?.role || Roles.User,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser]
@@ -78,7 +75,18 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (!isEdit) {
+        const newUserDto: InviteRequestDto = {
+          email: data.email,
+          role: data.role,
+          firstName: data.firstName,
+          lastName: data.lastName
+        }
+        await createUserAsync(newUserDto, user?.accessToken);
+      } else {
+        // TODO: edit here...
+      }
+      
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_APP.user.list);
@@ -149,12 +157,8 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
               <RHFTextField name="email" label="Email Address" />
 
               <RHFSelect native name="role" label="Role" placeholder="Role">
-                <option value="" />
-                {Object.values(Roles).filter((value) => typeof value === 'string').map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
+                <option value={Roles.Admin} label='Admin'>{Roles.Admin}</option>
+                <option value={Roles.User} label='User'>{Roles.User}</option>
               </RHFSelect>
 
             </Box>

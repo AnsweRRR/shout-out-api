@@ -52,5 +52,5 @@ export const _userList = [...Array(24)].map((_, index) => ({
   email: _mock.email(index),
   company: _mock.company(index),
   isVerified: true,
-  role: 'User'
+  role: Roles.User
 }));

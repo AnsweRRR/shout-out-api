@@ -15,5 +15,7 @@ namespace shout_out_api.Dto.User
         public int PointToHave { get; set; }
         public DateTime? Birthday { get; set; }
         public DateTime? StartAtCompany { get; set; }
+        public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
     }
 }

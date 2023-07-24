@@ -23,9 +23,9 @@ export default function Login() {
         <Stack direction="row" spacing={0.5}>
           <Typography variant="body2">New user?</Typography>
 
-          <Link component={RouterLink} to={PATH_AUTH.register} variant="subtitle2">
+          {/* <Link component={RouterLink} to={PATH_AUTH.register} variant="subtitle2">
             Create an account
-          </Link>
+          </Link> */}
         </Stack>
 
         <Tooltip title={method} placement="left">

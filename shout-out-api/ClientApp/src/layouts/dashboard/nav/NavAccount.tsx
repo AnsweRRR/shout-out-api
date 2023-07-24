@@ -1,6 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Typography } from '@mui/material';
+import { Roles, RolesToDisplay } from 'src/@types/user';
 import { useAuthContext } from '../../../auth/useAuthContext';
 import { PATH_APP } from '../../../routes/paths';
 import { CustomAvatar } from '../../../components/custom-avatar';
@@ -34,7 +35,7 @@ export default function NavAccount() {
           </Typography>
 
           <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
-            {user?.role}
+            {RolesToDisplay[user?.role]}
           </Typography>
         </Box>
       </StyledRoot>

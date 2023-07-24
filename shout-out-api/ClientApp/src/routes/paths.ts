@@ -12,7 +12,7 @@ const ROOTS_APP = '';
 export const PATH_AUTH = {
   root: ROOTS_AUTH,
   login: path(ROOTS_AUTH, '/login'),
-  register: path(ROOTS_AUTH, '/register'),
+  register: (verificationToken: string) => path(ROOTS_AUTH, `/register/${verificationToken}`),
   loginUnprotected: path(ROOTS_AUTH, '/login-unprotected'),
   registerUnprotected: path(ROOTS_AUTH, '/register-unprotected'),
   resetPassword: path(ROOTS_AUTH, '/reset-password'),
