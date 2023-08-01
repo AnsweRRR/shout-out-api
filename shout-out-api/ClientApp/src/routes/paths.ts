@@ -28,12 +28,13 @@ export const PATH_PAGE = {
 export const PATH_APP = {
   root: ROOTS_APP,
   feed: path(ROOTS_APP, '/feed'),
+  reward: path(ROOTS_APP, '/reward'),
   permissionDenied: path(ROOTS_APP, '/permission-denied'),
   user: {
     root: path(ROOTS_APP, '/user'),
     new: path(ROOTS_APP, '/user/new'),
     list: path(ROOTS_APP, '/user/list'),
     account: path(ROOTS_APP, '/user/account'),
-    edit: (id: string) => path(ROOTS_APP, `/user/${id}/edit`),
+    edit: (id: number) => path(ROOTS_APP, `/user/${id}/edit`),
   }
 };

@@ -17,5 +17,6 @@ namespace shout_out_api.Dto.User
         public DateTime? StartAtCompany { get; set; }
         public string? AccessToken { get; set; }
         public string? RefreshToken { get; set; }
+        public bool? Verified { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-const en = {
+const hu = {
   app: `app`,
   user: `user`,
   list: `list`,
@@ -28,4 +28,4 @@ const en = {
   only_admin_can_see_this_item: `Only admin can see this item`,
 };
 
-export default en;
+export default hu;

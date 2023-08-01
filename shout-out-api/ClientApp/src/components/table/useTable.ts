@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-//
 import { TableProps } from './types';
 
 // ----------------------------------------------------------------------
@@ -10,23 +9,18 @@ export type UseTableProps = {
   defaultDense?: boolean;
   defaultOrder?: 'asc' | 'desc';
   defaultOrderBy?: string;
-  defaultSelected?: string[];
+  defaultSelected?: number[];
   defaultRowsPerPage?: number;
   defaultCurrentPage?: number;
 };
 
 export default function useTable(props?: UseTableProps): ReturnType {
   const [dense, setDense] = useState(!!props?.defaultDense);
-
   const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
-
   const [order, setOrder] = useState<'asc' | 'desc'>(props?.defaultOrder || 'asc');
-
   const [page, setPage] = useState(props?.defaultCurrentPage || 0);
-
   const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
-
-  const [selected, setSelected] = useState<string[]>(props?.defaultSelected || []);
+  const [selected, setSelected] = useState<number[]>(props?.defaultSelected || []);
 
   const onSort = useCallback(
     (id: string) => {
@@ -40,10 +34,10 @@ export default function useTable(props?: UseTableProps): ReturnType {
   );
 
   const onSelectRow = useCallback(
-    (id: string) => {
+    (id: number) => {
       const selectedIndex = selected.indexOf(id);
 
-      let newSelected: string[] = [];
+      let newSelected: number[] = [];
 
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, id);
@@ -62,7 +56,7 @@ export default function useTable(props?: UseTableProps): ReturnType {
     [selected]
   );
 
-  const onSelectAllRows = useCallback((checked: boolean, newSelecteds: string[]) => {
+  const onSelectAllRows = useCallback((checked: boolean, newSelecteds: number[]) => {
     if (checked) {
       setSelected(newSelecteds);
       return;

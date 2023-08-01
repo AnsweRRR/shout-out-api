@@ -1,8 +1,5 @@
-// routes
 import { PATH_AUTH, PATH_PAGE } from '../../../routes/paths';
-// config
 import { PATH_AFTER_LOGIN } from '../../../config-global';
-// components
 import Iconify from '../../../components/iconify';
 
 // ----------------------------------------------------------------------

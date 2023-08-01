@@ -1,4 +1,4 @@
-import { enUS } from '@mui/material/locale';
+import { enUS, huHU } from '@mui/material/locale';
 
 export const allLangs = [
   {
@@ -6,6 +6,12 @@ export const allLangs = [
     value: 'en',
     systemValue: enUS,
     icon: '/assets/icons/flags/ic_flag_en.svg',
+  },
+  {
+    label: 'Hungarian',
+    value: 'hu',
+    systemValue: huHU,
+    icon: '/assets/icons/flags/ic_flag_hu.svg',
   }
 ];
 

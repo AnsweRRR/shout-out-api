@@ -20,12 +20,12 @@ namespace shout_out_api.Dto.User
         [Required]
         public string Token { get; set; }
 
-        [Required]
-        public DateTime Birthday { get; set; }
+        //[Required]
+        //public DateTime Birthday { get; set; }
 
-        [Required]
-        public DateTime StartAtCompany { get; set; }
+        //[Required]
+        //public DateTime StartAtCompany { get; set; }
 
-        public byte[] Avatar { get; set; }
+        //public byte[] Avatar { get; set; }
     }
 }

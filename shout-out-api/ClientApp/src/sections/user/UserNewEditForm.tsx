@@ -12,7 +12,8 @@ import { PATH_APP } from '../../routes/paths';
 import { IUserAccountGeneral, InviteRequestDto, Roles } from '../../@types/user';
 import { CustomFile } from '../../components/upload';
 import { useSnackbar } from '../../components/snackbar';
-import FormProvider, { RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
+import FormProvider, { RHFSelect, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
+
 // ----------------------------------------------------------------------
 
 interface FormValuesProps extends Omit<IUserAccountGeneral, 'avatarUrl'> {
@@ -28,14 +29,12 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
-  console.log(user);
 
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     role: Yup.mixed<Roles>().required('Role is required'),
-    // avatarUrl: Yup.mixed(),
   });
 
   const defaultValues = useMemo(
@@ -99,7 +98,6 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
@@ -114,7 +112,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        {/* <Grid item xs={12} md={4}>
           <Card sx={{ pt: 10, pb: 5, px: 3 }}>
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
@@ -139,9 +137,9 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
               />
             </Box>
           </Card>
-        </Grid>
+        </Grid> */}
 
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Box
               rowGap={3}

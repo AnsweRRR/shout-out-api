@@ -1,15 +1,11 @@
-import { NavigateFunction } from 'react-router';
-import { InviteRequestDto } from 'src/@types/user';
-import { PATH_PAGE } from 'src/routes/paths';
 import axios from 'src/utils/axios';
 
-export async function createUserAsync(newUserDto: InviteRequestDto, accessToken: string) {
+export async function getRewardsAsync(accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-
-        const response = await axios.post(`/api/user/inviteuser`, newUserDto, { headers });
+        const response = await axios.get(`/api/reward`, { headers });
         return response;
     }
     catch(error) {
@@ -18,24 +14,12 @@ export async function createUserAsync(newUserDto: InviteRequestDto, accessToken:
     }
 }
 
-export async function verifyInviteToken(verificationToken: string) {
-    try {
-        const response = await axios.get(`/api/user/verifyInviteToken`, { params: { verificationToken } });
-        return response;
-    }
-    catch(error) {
-        console.error(error);
-        throw error;
-    }
-}
-
-export async function getUsersAsync(accessToken: string) {
+export async function createRewardAsync(newRewardDto: any, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-
-        const response = await axios.get(`/api/user`, { headers });
+        const response = await axios.post(`/api/reward/create`, newRewardDto, { headers });
         return response;
     }
     catch(error) {
@@ -44,36 +28,55 @@ export async function getUsersAsync(accessToken: string) {
     }
 }
 
-export async function getUserDataAsync(userId: number, accessToken: string, navigate: NavigateFunction) {
-    try {
-        const headers = {
-            'Authorization': `Bearer ${accessToken}`
-        };
-        const params = {
-            userId
-        };
-
-        const response = await axios.get(`/api/user/userdata`, { params, headers });
-        return response;
-    }
-    catch(error) {
-        navigate(PATH_PAGE.page404);
-        console.error(error);
-        throw error;
-    }
-}
-
-export async function deleteUsersAsync(userId: number, accessToken: string) {
+export async function editRewardAsync(rewardId: number, rewardToEditDto: any, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
 
         const params = {
-            userId
+            id: rewardId
         };
 
-        const response = await axios.delete(`/api/user/delete`, { params, headers });
+        const response = await axios.patch(`/api/reward/edit`, rewardToEditDto, { params, headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function deleteRewardAsync(rewardId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const params = {
+            id: rewardId
+        };
+
+        const response = await axios.delete(`/api/reward/delete`, { params, headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function buyRewardAsync(rewardId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const params = {
+            id: rewardId
+        };
+
+        const response = await axios.post(`/api/reward/buy`, { params, headers });
         return response;
     }
     catch(error) {

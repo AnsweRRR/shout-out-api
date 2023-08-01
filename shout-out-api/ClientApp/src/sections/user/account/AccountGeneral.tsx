@@ -1,47 +1,49 @@
 import * as Yup from 'yup';
 import { useCallback } from 'react';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
-import { Box, Grid, Card, Stack, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Box, Grid, Card, Stack, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// auth
 import { useAuthContext } from '../../../auth/useAuthContext';
-// utils
 import { fData } from '../../../utils/formatNumber';
-// components
 import { CustomFile } from '../../../components/upload';
 import { useSnackbar } from '../../../components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../../components/hook-form';
+import FormProvider, { RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
-  displayName: string;
-  email: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  // email: string;
+  birthDay: Date | null;
+  startAtCompany: Date | null;
   photoURL: CustomFile | string | null;
   phoneNumber: string | null;
 };
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
-
   const { user } = useAuthContext();
 
   const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    photoURL: Yup.mixed().required('Avatar is required'),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    userName: Yup.string().required('User name is required'),
+    // email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    // birthDay: Yup.date().nullable().required('Birthday is required'),
+    // startAtCompany: Yup.date().nullable().required('Start at company is required'),
   });
 
   const defaultValues = {
-    displayName: user?.displayName || '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    userName: user?.userName || '',
     email: user?.email || '',
+    birthDay: user?.birthDay || null,
+    startAtCompany: user?.startAtCompany || null,
     photoURL: user?.photoURL || null,
   };
 
@@ -69,7 +71,6 @@ export default function AccountGeneral() {
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
@@ -106,13 +107,6 @@ export default function AccountGeneral() {
                 </Typography>
               }
             />
-
-            <RHFSwitch
-              name="isPublic"
-              labelPlacement="start"
-              label="Public Profile"
-              sx={{ mt: 5 }}
-            />
           </Card>
         </Grid>
 
@@ -127,14 +121,30 @@ export default function AccountGeneral() {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="displayName" label="Name" />
+              <RHFTextField name="firstName" label="First name" />
+              <RHFTextField name="lastName" label="Last name" />
+              <RHFTextField name="userName" label="User name" />
 
-              <RHFTextField name="email" label="Email Address" />
+              <DatePicker
+                // name="birthDay"
+                label="Birthday"
+                value={methods.watch('birthDay')}
+                onChange={(date) => setValue('birthDay', date, { shouldValidate: true })}
+                renderInput={(params) => <TextField {...params} />}
+              />
+
+              <DatePicker
+                // name="startAtCompany"
+                label="Start at company"
+                value={methods.watch('startAtCompany')}
+                onChange={(date) => setValue('startAtCompany', date, { shouldValidate: true })}
+                renderInput={(params) => <TextField {...params} />}
+              />
+
+              <RHFTextField disabled name="email" label="Email Address" />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-              <RHFTextField name="about" multiline rows={4} label="About" />
-
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
                 Save Changes
               </LoadingButton>

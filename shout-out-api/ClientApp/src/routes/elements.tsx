@@ -14,6 +14,7 @@ const Loadable = (Component: ElementType) => (props: any) =>
 
 // App
 export const FeedPage = Loadable(lazy(() => import('../pages/dashboard/FeedPage')));
+export const RewardPage = Loadable(lazy(() => import('../pages/dashboard/RewardPage')));
 
 // AUTH
 export const LoginPage = Loadable(lazy(() => import('../pages/auth/LoginPage')));

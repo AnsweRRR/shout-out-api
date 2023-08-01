@@ -1,19 +1,15 @@
 import { useState } from 'react';
-// @mui
 import {
   Stack,
   Avatar,
   Button,
-  Checkbox,
   TableRow,
   MenuItem,
   TableCell,
   IconButton,
   Typography,
 } from '@mui/material';
-// @types
-import { IUserAccountGeneral } from '../../../@types/user';
-// components
+import { IUserAccountGeneral, RolesToDisplay } from '../../../@types/user';
 import Iconify from '../../../components/iconify';
 import MenuPopover from '../../../components/menu-popover';
 import ConfirmDialog from '../../../components/confirm-dialog';
@@ -22,23 +18,17 @@ import ConfirmDialog from '../../../components/confirm-dialog';
 
 type Props = {
   row: IUserAccountGeneral;
-  selected: boolean;
   onEditRow: VoidFunction;
-  onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
 
 export default function UserTableRow({
   row,
-  selected,
   onEditRow,
-  onSelectRow,
   onDeleteRow,
 }: Props) {
-  const { firstName, avatarUrl, company, role, isVerified } = row;
-
+  const { avatarUrl, firstName, lastName, userName, email, role, isVerified } = row;
   const [openConfirm, setOpenConfirm] = useState(false);
-
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
   const handleOpenConfirm = () => {
@@ -59,25 +49,31 @@ export default function UserTableRow({
 
   return (
     <>
-      <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
-
+      <TableRow hover>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={firstName} src={avatarUrl} />
+            <Avatar alt={firstName + lastName} src={avatarUrl} />
 
             <Typography variant="subtitle2" noWrap>
-              {firstName}
+              {firstName + lastName}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell align="left">{company}</TableCell>
+        <TableCell>
+          <Typography variant="subtitle2" noWrap>
+            {userName}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
+          <Typography variant="subtitle2" noWrap>
+            {email}
+          </Typography>
+        </TableCell>
 
         <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-          {role}
+          {RolesToDisplay[role]}
         </TableCell>
 
         <TableCell align="center">

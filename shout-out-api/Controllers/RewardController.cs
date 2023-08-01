@@ -35,7 +35,7 @@ namespace shout_out_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("edit")]
+        [HttpPatch("edit")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, RewardCreateEditDto model)
         {
@@ -44,7 +44,7 @@ namespace shout_out_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {

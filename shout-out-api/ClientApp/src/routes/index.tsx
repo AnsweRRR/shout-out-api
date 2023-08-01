@@ -6,6 +6,7 @@ import DashboardLayout from '../layouts/dashboard';
 import { PATH_AFTER_LOGIN } from '../config-global';
 import {
   FeedPage,
+  RewardPage,
 
   LoginPage,
   RegisterPage,
@@ -63,13 +64,14 @@ export default function Router() {
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
         { path: 'feed', element: <FeedPage /> },
+        { path: 'reward', element: <RewardPage /> },
         {
           path: 'user',
           children: [
             { element: <Navigate to="/user/account" replace />, index: true },
             { path: 'list', element: <UserListPage /> },
             { path: 'new', element: <UserCreatePage /> },
-            { path: ':name/edit', element: <UserEditPage /> },
+            { path: ':id/edit', element: <UserEditPage /> },
             { path: 'account', element: <UserAccountPage /> },
           ],
         }

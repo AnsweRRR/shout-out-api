@@ -56,19 +56,6 @@ type SettingsProviderProps = {
 export function SettingsProvider({ children }: SettingsProviderProps) {
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
 
-  const storageAvailable = localStorageAvailable();
-
-  const langStorage = storageAvailable ? localStorage.getItem('i18nextLng') : '';
-
-  const isArabic = langStorage === 'ar';
-
-  useEffect(() => {
-    if (isArabic) {
-      onChangeDirectionByLang('ar');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isArabic]);
-
   // Mode
   const onToggleMode = useCallback(() => {
     const themeMode = settings.themeMode === 'light' ? 'dark' : 'light';

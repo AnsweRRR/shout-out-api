@@ -6,7 +6,6 @@ import Iconify from '../../../components/iconify';
 type Props = {
   filterName: string;
   isFiltered: boolean;
-  optionsRole: string[];
   onResetFilter: VoidFunction;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -14,7 +13,6 @@ type Props = {
 export default function UserTableToolbar({
   isFiltered,
   filterName,
-  optionsRole,
   onFilterName,
   onResetFilter,
 }: Props) {

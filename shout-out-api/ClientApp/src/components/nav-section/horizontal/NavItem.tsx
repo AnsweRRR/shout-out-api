@@ -1,12 +1,8 @@
 import { forwardRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { Box, Tooltip, ListItemText, Link } from '@mui/material';
-// locales
 import { useLocales } from '../../../locales';
-// auth
 import RoleBasedGuard from '../../../auth/RoleBasedGuard';
-//
 import Iconify from '../../iconify';
 import { NavItemProps } from '../types';
 import { StyledItem, StyledIcon } from './styles';

@@ -1,3 +1,4 @@
+import { RegisterDto } from "src/@types/user";
 
 export type ActionMapType<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -26,6 +27,6 @@ export type JWTContextType = {
   isInitialized: boolean;
   user: AuthUserType;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  register: (dto: RegisterDto) => Promise<void>;
   logout: () => void;
 };

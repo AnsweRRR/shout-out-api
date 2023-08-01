@@ -10,13 +10,12 @@ export const RolesToDisplay: { [index: number]: string } = {
 };
 
 export type IUserAccountGeneral = {
-  id: string;
+  id: number;
   avatarUrl: string;
   firstName: string;
   lastName: string;
   userName: string | null;
   email: string;
-  company: string | null;
   isVerified: boolean;
   role: Roles;
   pointsToGive?: number;
@@ -49,4 +48,11 @@ export type InviteRequestDto = {
   role: Roles,
   firstName: string,
   lastName: string
+};
+
+export type RegisterDto = {
+  userName: string,
+  password: string,
+  confirmPassword: string,
+  token: string
 };

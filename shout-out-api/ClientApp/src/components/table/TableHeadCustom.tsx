@@ -1,9 +1,7 @@
-// @mui
 import { Theme } from '@mui/material/styles';
 import {
   Box,
   SxProps,
-  Checkbox,
   TableRow,
   TableCell,
   TableHead,
@@ -30,38 +28,20 @@ type Props = {
   order?: 'asc' | 'desc';
   orderBy?: string;
   headLabel: any[];
-  rowCount?: number;
-  numSelected?: number;
   onSort?: (id: string) => void;
-  onSelectAllRows?: (checked: boolean) => void;
   sx?: SxProps<Theme>;
 };
 
 export default function TableHeadCustom({
   order,
   orderBy,
-  rowCount = 0,
   headLabel,
-  numSelected = 0,
   onSort,
-  onSelectAllRows,
   sx,
 }: Props) {
   return (
     <TableHead sx={sx}>
       <TableRow>
-        {onSelectAllRows && (
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                onSelectAllRows(event.target.checked)
-              }
-            />
-          </TableCell>
-        )}
-
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}

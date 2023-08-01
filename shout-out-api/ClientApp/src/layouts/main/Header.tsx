@@ -1,20 +1,12 @@
 import { useRef } from 'react';
-// @mui
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, AppBar, Toolbar, Container, Link, BoxProps } from '@mui/material';
-// hooks
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
-// utils
 import { bgBlur } from '../../utils/cssStyles';
-// config
 import { HEADER } from '../../config-global';
-// routes
-
-// components
 import Logo from '../../components/logo';
 import Label from '../../components/label';
-//
 import navConfig from './nav/config-navigation';
 import NavMobile from './nav/mobile';
 import NavDesktop from './nav/desktop';

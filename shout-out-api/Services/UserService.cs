@@ -37,6 +37,12 @@ namespace shout_out_api.Services
 
                 string jwtToken = _tokenService.CreateJWTToken(user);
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+                user.RefreshToken = newRefreshToken.Token;
+                user.ResetTokenExpires = DateTime.Now.AddDays(7);
+                _db.Update(user);
+                _db.SaveChanges();
+
                 CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
 
                 UserResultDto userDto = user.ToUserResultDto();
@@ -59,39 +65,55 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<User> CreateUser(InviteRequestDto model, IUrlHelper urlHelper, string requestScheme)
+        public async Task CreateUser(InviteRequestDto model, IUrlHelper urlHelper, string requestScheme)
         {
             try
             {
-                //string verificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-                string verificationToken = Guid.NewGuid().ToString();
+                var user = _db.Users.SingleOrDefault(u => u.Email == model.Email && (u.VerifiedAt == null || u.VerifiedAt == DateTime.MinValue));
 
-                User newUser = new User
+                if(user != null)
                 {
-                    Email = model.Email,
-                    Role = model.Role,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PointsToGive = 100,
-                    PointToHave = 0,
-                    VerificationToken = verificationToken
-                };
+                    //string verificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+                    string verificationToken = Guid.NewGuid().ToString();
 
-                _db.Users.Add(newUser);
-                _db.SaveChanges();
+                    User newUser = new User
+                    {
+                        Email = model.Email,
+                        Role = model.Role,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        PointsToGive = 100,
+                        PointToHave = 0,
+                        VerificationToken = verificationToken
+                    };
 
-                string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/${newUser.VerificationToken}";
+                    _db.Users.Add(newUser);
+                    _db.SaveChanges();
 
-                EmailDto emailModel = new EmailDto()
+                    string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/{newUser.VerificationToken}";
+
+                    EmailDto emailModel = new EmailDto()
+                    {
+                        ToEmailAddress = newUser.Email,
+                        Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
+                        Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
+                    };
+
+                    _emailService.SendEmail(emailModel);
+                }
+                else
                 {
-                    ToEmailAddress = newUser.Email,
-                    Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
-                    Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
-                };
+                    string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/{user!.VerificationToken}";
 
-                _emailService.SendEmail(emailModel);
+                    EmailDto emailModel = new EmailDto()
+                    {
+                        ToEmailAddress = user!.Email,
+                        Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
+                        Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
+                    };
 
-                return newUser;
+                    _emailService.SendEmail(emailModel);
+                }
             }
             catch (Exception ex)
             {
@@ -99,13 +121,30 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<User> Register(RegisterRequestDto model)
+        public async Task VerifyInviteToken(string verificationToken)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.VerificationToken == verificationToken);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<LoginResultDto> Register(RegisterRequestDto model)
         {
             try
             {
                 DateTime now = DateTime.UtcNow;
 
-                User? user = await _db.Users.SingleOrDefaultAsync(u => u.VerificationToken == model.Token);
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.VerificationToken == model.Token);
                 if (user == null)
                 {
                     throw new Exception("User not found");
@@ -116,17 +155,43 @@ namespace shout_out_api.Services
                     throw new Exception("Passwords are not the same.");
                 }
 
-                user.Avatar = model.Avatar;
-                user.UserName = model.UserName;
-                user.Birthday = model.Birthday;
-                user.StartAtCompany = model.StartAtCompany;
+                if(user.VerifiedAt.HasValue && user.VerifiedAt.Value == DateTime.MinValue)
+                {
+                    throw new Exception("Already registered.");
+                }
+
+                //user.Avatar = model.Avatar;
+                //user.UserName = model.UserName;
+                //user.Birthday = model.Birthday;
+                //user.StartAtCompany = model.StartAtCompany;
                 user.VerifiedAt = now;
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
-                _db.Users.Update(user);
+                string jwtToken = _tokenService.CreateJWTToken(user);
+                var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+                user.RefreshToken = newRefreshToken.Token;
+                user.ResetTokenExpires = DateTime.Now.AddDays(7);
+                user.VerificationToken = null;
+
+                _db.Update(user);
                 _db.SaveChanges();
 
-                return user;
+                CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
+
+                UserResultDto userDto = user.ToUserResultDto();
+                userDto.AccessToken = jwtToken;
+                userDto.RefreshToken = newRefreshToken.Token;
+
+                LoginResultDto dto = new LoginResultDto()
+                {
+                    CookieOptions = cookieOptions,
+                    RefreshToken = newRefreshToken.Token,
+                    AccessToken = jwtToken,
+                    User = userDto
+                };
+
+                return dto;
             }
             catch (Exception ex)
             {
@@ -134,7 +199,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<User> EditUser(int userId, EditUserRequestDto model)
+        public async Task EditUser(int userId, EditUserRequestDto model, bool editByAdmin)
         {
             try
             {
@@ -149,12 +214,24 @@ namespace shout_out_api.Services
                 user.LastName = model.LastName;
                 user.UserName = model.UserName;
                 user.Avatar = model.Avatar;
-                user.Role = model.Role;
+
+                if (!user.StartAtCompany.HasValue)
+                {
+                    user.StartAtCompany = model.StartAtCompany;
+                }
+
+                if (!user.Birthday.HasValue)
+                {
+                    user.Birthday = model.Birthday;
+                }
+
+                if (editByAdmin)
+                {
+                    user.Role = model.Role;
+                }
 
                 _db.Update(user);
                 _db.SaveChanges();
-
-                return user;
             }
             catch (Exception ex)
             {
@@ -162,7 +239,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async void DeleteUser(int userId)
+        public async Task DeleteUser(int userId)
         {
             try
             {
@@ -177,6 +254,62 @@ namespace shout_out_api.Services
                 _db.SaveChanges();
             }
             catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<UserResultDto>> GetUsers()
+        {
+            try
+            {
+                var users = await _db.Users
+                    .Select(u => new UserResultDto()
+                    {
+                        Id = u.Id,
+                        Avatar = u.Avatar,
+                        Birthday = u.Birthday,
+                        StartAtCompany = u.StartAtCompany,
+                        Email = u.Email,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        UserName = u.UserName,
+                        Role = u.Role,
+                        Verified = u.VerifiedAt.HasValue
+                    })
+                    .ToListAsync();
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<UserResultDto> GetUserData(int userId)
+        {
+            try
+            {
+                var user = await _db.Users.Where(u => u.Id == userId)
+                    .Select(u => new UserResultDto()
+                    {
+                        Id = u.Id,
+                        Avatar = u.Avatar,
+                        Birthday = u.Birthday,
+                        StartAtCompany = u.StartAtCompany,
+                        Email = u.Email,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        UserName = u.UserName,
+                        Role = u.Role,
+                        Verified = u.VerifiedAt.HasValue
+                    })
+                    .SingleAsync();
+
+                return user;
+            }
+            catch (Exception ex)
             {
                 throw;
             }

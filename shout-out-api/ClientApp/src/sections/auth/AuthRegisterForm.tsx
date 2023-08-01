@@ -1,44 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-// form
+import { useNavigate, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { Stack, IconButton, InputAdornment, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// auth
-import { useAuthContext } from '../../auth/useAuthContext';
-// components
-import Iconify from '../../components/iconify';
+import { PATH_PAGE } from 'src/routes/paths';
+import { verifyInviteToken } from 'src/api/userClient';
+import { RegisterDto } from 'src/@types/user';
 import FormProvider, { RHFTextField } from '../../components/hook-form';
+import Iconify from '../../components/iconify';
+import { useAuthContext } from '../../auth/useAuthContext';
 
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
-  email: string;
+  userName: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  confirmPassword: string;
   afterSubmit?: string;
 };
 
 export default function AuthRegisterForm() {
   const { register } = useAuthContext();
-
+  const navigate = useNavigate();
+  const { verificationToken } = useParams<{ verificationToken: string }>();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    userName: Yup.string().required('User name required'),
+    password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+    confirmPassword: Yup.string().required('Confirm password is required').oneOf([Yup.ref('password')], 'Passwords must match'),
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
+    userName: '',
     password: '',
+    confirmPassword: '',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -56,7 +55,14 @@ export default function AuthRegisterForm() {
   const onSubmit = async (data: FormValuesProps) => {
     try {
       if (register) {
-        await register(data.email, data.password, data.firstName, data.lastName);
+        const registerDto: RegisterDto = {
+          userName: data.userName,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+          token: verificationToken!
+        };
+
+        await register(registerDto);
       }
     } catch (error) {
       console.error(error);
@@ -68,17 +74,20 @@ export default function AuthRegisterForm() {
     }
   };
 
+  useEffect(() => {
+    if (!verificationToken) {
+      navigate(PATH_PAGE.page404);
+    } else {
+      verifyInviteToken(verificationToken);
+    }
+  }, [verificationToken, navigate]);
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2.5}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
-        </Stack>
-
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="userName" label="User name" />
 
         <RHFTextField
           name="password"
@@ -89,6 +98,21 @@ export default function AuthRegisterForm() {
               <InputAdornment position="end">
                 <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                   <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <RHFTextField
+          name="confirmPassword"
+          label="Confirm password"
+          type={showConfirmPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                  <Iconify icon={showConfirmPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
                 </IconButton>
               </InputAdornment>
             ),

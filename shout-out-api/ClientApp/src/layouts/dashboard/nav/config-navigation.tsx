@@ -1,4 +1,3 @@
-// routes
 import { PATH_APP } from '../../../routes/paths';
 import SvgColor from '../../../components/svg-color';
 
@@ -22,6 +21,20 @@ const ICONS = {
 };
 
 const navConfig = [
+  {
+    subheader: '',
+    items: [
+      {
+        title: 'menu',
+        path: PATH_APP.root,
+        icon: ICONS.analytics,
+        children: [
+          { title: 'feed', path: PATH_APP.feed },
+          { title: 'reward', path: PATH_APP.reward },
+        ],
+      }
+    ]
+  },
   {
     subheader: 'management',
     items: [

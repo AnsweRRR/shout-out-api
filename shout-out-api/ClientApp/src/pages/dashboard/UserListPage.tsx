@@ -1,31 +1,22 @@
 import { Helmet } from 'react-helmet-async';
-import { paramCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// @mui
 import {
-  Tab,
-  Tabs,
   Card,
   Table,
   Button,
   Tooltip,
-  Divider,
   TableBody,
   Container,
   IconButton,
   TableContainer,
 } from '@mui/material';
-// routes
+import { useAuthContext } from 'src/auth/useAuthContext';
+import { deleteUsersAsync, getUsersAsync } from 'src/api/userClient';
 import { PATH_APP } from '../../routes/paths';
-// @types
 import { IUserAccountGeneral } from '../../@types/user';
-// _mock_
-import { _userList } from '../../_mock/arrays';
-// components
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
-import ConfirmDialog from '../../components/confirm-dialog';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import {
@@ -38,31 +29,14 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from '../../components/table';
-// sections
 import { UserTableToolbar, UserTableRow } from '../../sections/user/list';
-
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = ['all', 'active', 'banned'];
-
-const ROLE_OPTIONS = [
-  'all',
-  'ux designer',
-  'full stack designer',
-  'backend developer',
-  'project manager',
-  'leader',
-  'ui designer',
-  'ui/ux designer',
-  'front end developer',
-  'full stack developer',
-];
-
 const TABLE_HEAD = [
-  { id: 'firstName', label: 'First name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
+  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'userName', label: 'User name', align: 'left' },
+  { id: 'email', label: 'Email', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
-  { id: 'isVerified', label: 'Verified', align: 'center' },
+  { id: 'verified', label: 'Verified', align: 'center' },
   { id: '' },
 ];
 
@@ -70,7 +44,6 @@ const TABLE_HEAD = [
 
 export default function UserListPage() {
   const {
-    dense,
     page,
     order,
     orderBy,
@@ -83,21 +56,15 @@ export default function UserListPage() {
     onSelectAllRows,
     //
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
-
+  const { user } = useAuthContext();
   const { themeStretch } = useSettingsContext();
-
   const navigate = useNavigate();
-
-  const [tableData, setTableData] = useState(_userList);
-
+  const [tableData, setTableData] = useState<Array<IUserAccountGeneral>>([]);
   const [filterName, setFilterName] = useState('');
-
   const [openConfirm, setOpenConfirm] = useState(false);
-
   const [filterStatus, setFilterStatus] = useState('all');
 
   const dataFiltered = applyFilter({
@@ -107,71 +74,81 @@ export default function UserListPage() {
     filterStatus,
   });
 
-  const dataInPage = dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-  const denseHeight = dense ? 52 : 72;
-
+  const denseHeight = 72;
   const isFiltered = filterName !== '' || filterStatus !== 'all';
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterStatus);
+  const isNotFound = (!dataFiltered.length && !!filterName) || (!dataFiltered.length && !!filterStatus);
 
-  const handleOpenConfirm = () => {
-    setOpenConfirm(true);
-  };
+  const getUsers = async () => {
+    if (user) {
+      const getUsersList = async () => {
+        const result = await getUsersAsync(user?.accessToken);
+        const userList = result.data;
 
-  const handleCloseConfirm = () => {
-    setOpenConfirm(false);
-  };
+        const userListGeneral: Array<IUserAccountGeneral> = userList.map((userData: any) => ({
+          id: userData.id,
+          avatarUrl: userData.avatar,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          userName: userData.userName,
+          email: userData.email,
+          isVerified: userData.verified,
+          role: userData.role,
+          birthDay: userData.birthday ? new Date(userData.birthday) : null,
+          startAtCompany: userData.startAtCompany ? new Date(userData.startAtCompany) : null,
+        }));
 
-  const handleFilterStatus = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
-    setPage(0);
-    setFilterStatus(newValue);
-  };
+        setTableData(userListGeneral);
+      }
+      
+      getUsersList();
+    }
+  }
 
   const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPage(0);
     setFilterName(event.target.value);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
-
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
-      }
-    }
+  const handleDeleteRow = async (id: number) => {
+    await deleteUsersAsync(id, user?.accessToken);
+    getUsers();
   };
 
-  const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
-
-    if (page > 0) {
-      if (selectedRows.length === dataInPage.length) {
-        setPage(page - 1);
-      } else if (selectedRows.length === dataFiltered.length) {
-        setPage(0);
-      } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
-        setPage(newPage);
-      }
-    }
-  };
-
-  const handleEditRow = (id: string) => {
-    navigate(PATH_APP.user.edit(paramCase(id)));
+  const handleEditRow = (id: number) => {
+    navigate(PATH_APP.user.edit(id));
   };
 
   const handleResetFilter = () => {
     setFilterName('');
     setFilterStatus('all');
   };
+
+  useEffect(() => {
+    if (user) {
+      const getUsersList = async () => {
+        const result = await getUsersAsync(user?.accessToken);
+        const userList = result.data;
+
+        const userListGeneral: Array<IUserAccountGeneral> = userList.map((userData: any) => ({
+          id: userData.id,
+          avatarUrl: userData.avatar,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          userName: userData.userName,
+          email: userData.email,
+          isVerified: userData.verified,
+          role: userData.role,
+          birthDay: userData.birthday ? new Date(userData.birthday) : null,
+          startAtCompany: userData.startAtCompany ? new Date(userData.startAtCompany) : null,
+        }));
+
+        setTableData(userListGeneral);
+      }
+      
+      getUsersList();
+    }
+  }, [user]);
 
   return (
     <>
@@ -200,32 +177,15 @@ export default function UserListPage() {
         />
 
         <Card>
-          <Tabs
-            value={filterStatus}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2,
-              bgcolor: 'background.neutral',
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab key={tab} label={tab} value={tab} />
-            ))}
-          </Tabs>
-
-          <Divider />
-
           <UserTableToolbar
             isFiltered={isFiltered}
             filterName={filterName}
-            optionsRole={ROLE_OPTIONS}
             onFilterName={handleFilterName}
             onResetFilter={handleResetFilter}
           />
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <TableSelectedAction
-              dense={dense}
               numSelected={selected.length}
               rowCount={tableData.length}
               onSelectAllRows={(checked) =>
@@ -236,7 +196,7 @@ export default function UserListPage() {
               }
               action={
                 <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={handleOpenConfirm}>
+                  <IconButton color="primary" onClick={() => setOpenConfirm(true)}>
                     <Iconify icon="eva:trash-2-outline" />
                   </IconButton>
                 </Tooltip>
@@ -244,20 +204,12 @@ export default function UserListPage() {
             />
 
             <Scrollbar>
-              <Table size={dense ? 'small' : 'medium'} sx={{ minWidth: 800 }}>
+              <Table size='medium' sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row) => row.id)
-                    )
-                  }
                 />
 
                 <TableBody>
@@ -267,8 +219,6 @@ export default function UserListPage() {
                       <UserTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
@@ -291,35 +241,9 @@ export default function UserListPage() {
             rowsPerPage={rowsPerPage}
             onPageChange={onChangePage}
             onRowsPerPageChange={onChangeRowsPerPage}
-            //
-            dense={dense}
-            onChangeDense={onChangeDense}
           />
         </Card>
       </Container>
-
-      <ConfirmDialog
-        open={openConfirm}
-        onClose={handleCloseConfirm}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleDeleteRows(selected);
-              handleCloseConfirm();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
     </>
   );
 }

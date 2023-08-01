@@ -1,22 +1,17 @@
-// @mui
 import { useTheme } from '@mui/material/styles';
-import { Stack, AppBar, Toolbar, IconButton } from '@mui/material';
-// utils
+import { Stack, AppBar, Toolbar, IconButton, Box } from '@mui/material';
+import SvgColor from 'src/components/svg-color';
 import { bgBlur } from '../../../utils/cssStyles';
-// hooks
 import useOffSetTop from '../../../hooks/useOffSetTop';
 import useResponsive from '../../../hooks/useResponsive';
-// config
 import { HEADER, NAV } from '../../../config-global';
-// components
 import Logo from '../../../components/logo';
 import Iconify from '../../../components/iconify';
 import { useSettingsContext } from '../../../components/settings';
-//
-import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
+
 
 // ----------------------------------------------------------------------
 
@@ -26,15 +21,10 @@ type Props = {
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-
-  const { themeLayout } = useSettingsContext();
-
+  const { onToggleMode, themeLayout } = useSettingsContext();
   const isNavHorizontal = themeLayout === 'horizontal';
-
   const isNavMini = themeLayout === 'mini';
-
   const isDesktop = useResponsive('up', 'lg');
-
   const isOffset = useOffSetTop(HEADER.H_DASHBOARD_DESKTOP) && !isNavHorizontal;
 
   const renderContent = (
@@ -47,8 +37,6 @@ export default function Header({ onOpenNav }: Props) {
         </IconButton>
       )}
 
-      <Searchbar />
-
       <Stack
         flexGrow={1}
         direction="row"
@@ -56,6 +44,14 @@ export default function Header({ onOpenNav }: Props) {
         justifyContent="flex-end"
         spacing={{ xs: 0.5, sm: 1.5 }}
       >
+
+        <IconButton sx={{ ml: 1 }} onClick={() => onToggleMode()} color="inherit">
+          <SvgColor
+            src={`/assets/icons/setting/${theme.palette.mode === 'light' ? 'ic_sun' : 'ic_moon'}.svg`}
+            color={theme.palette.mode === 'light' ? 'grey' : 'inherit'}
+          />
+        </IconButton>
+
         <LanguagePopover />
         <NotificationsPopover />
         <AccountPopover />

@@ -1,4 +1,5 @@
 import { createContext, useEffect, useReducer, useCallback, useMemo } from 'react';
+import { RegisterDto } from 'src/@types/user';
 import axios from '../utils/axios';
 import localStorageAvailable from '../utils/localStorageAvailable';
 import { isValidToken, setSession } from './utils';
@@ -146,13 +147,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // REGISTER
   const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
-      const response = await axios.post('/api/user/register', {
-        email,
-        password,
-        firstName,
-        lastName,
-      });
+    async (registerDto: RegisterDto) => {
+      const response = await axios.post('/api/user/register', registerDto);
       const { accessToken, user } = response.data;
 
       localStorage.setItem('accessToken', accessToken);
