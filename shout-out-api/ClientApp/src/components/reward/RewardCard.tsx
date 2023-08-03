@@ -67,7 +67,7 @@ export default function RewardCard({ reward, cover }: Props) {
 
   return (
     <>
-      <Card sx={{ textAlign: 'center' }}>
+      <Card sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ position: 'relative' }}>
           <SvgColor
             src="/assets/shape_avatar.svg"
@@ -116,7 +116,7 @@ export default function RewardCard({ reward, cover }: Props) {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" sx={{ py: 3 }}>
+        <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" sx={{ py: 3, marginTop: 'auto' }}>
           <Box>
             <Typography variant="caption" component="div" sx={{ mb: 0.75, color: 'text.disabled' }}>
               Cost
