@@ -9,6 +9,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import { IUserAccountGeneral, RolesToDisplay } from '../../../@types/user';
 import Iconify from '../../../components/iconify';
 import MenuPopover from '../../../components/menu-popover';
@@ -27,9 +28,10 @@ export default function UserTableRow({
   onEditRow,
   onDeleteRow,
 }: Props) {
-  const { avatarUrl, firstName, lastName, userName, email, role, isVerified } = row;
+  const { avatarUrl, firstName, lastName, userName, email, role, isVerified, id } = row;
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
+  const { user } = useAuthContext();
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -89,10 +91,13 @@ export default function UserTableRow({
         </TableCell>
 
         <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
+          {user?.id !== id &&
+            <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          }
         </TableCell>
+
       </TableRow>
 
       <MenuPopover

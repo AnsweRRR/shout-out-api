@@ -1,5 +1,5 @@
 import { NavigateFunction } from 'react-router';
-import { InviteRequestDto } from 'src/@types/user';
+import { EditUserDto, InviteRequestDto } from 'src/@types/user';
 import { PATH_PAGE } from 'src/routes/paths';
 import axios from 'src/utils/axios';
 
@@ -10,6 +10,22 @@ export async function createUserAsync(newUserDto: InviteRequestDto, accessToken:
         };
 
         const response = await axios.post(`/api/user/inviteuser`, newUserDto, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function editOwnUserAccountAsync(userDto: EditUserDto, accessToken: string) {
+    try {
+        const headers = {
+            'Content-Type': `multipart/form-data`,
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.patch(`/api/user/editownuseraccount`, userDto, { headers });
         return response;
     }
     catch(error) {

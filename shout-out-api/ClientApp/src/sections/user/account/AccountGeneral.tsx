@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Box, Grid, Card, Stack, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { EditUserDto } from 'src/@types/user';
+import { editOwnUserAccountAsync } from 'src/api/userClient';
 import { useAuthContext } from '../../../auth/useAuthContext';
 import { fData } from '../../../utils/formatNumber';
 import { CustomFile } from '../../../components/upload';
@@ -17,10 +19,9 @@ type FormValuesProps = {
   firstName: string;
   lastName: string;
   userName: string;
-  // email: string;
-  birthDay: Date | null;
+  birthday: Date | null;
   startAtCompany: Date | null;
-  photoURL: CustomFile | string | null;
+  avatar: CustomFile | string | null;
   phoneNumber: string | null;
 };
 
@@ -32,8 +33,7 @@ export default function AccountGeneral() {
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     userName: Yup.string().required('User name is required'),
-    // email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    // birthDay: Yup.date().nullable().required('Birthday is required'),
+    // birthday: Yup.date().nullable().required('Birthday is required'),
     // startAtCompany: Yup.date().nullable().required('Start at company is required'),
   });
 
@@ -42,9 +42,9 @@ export default function AccountGeneral() {
     lastName: user?.lastName || '',
     userName: user?.userName || '',
     email: user?.email || '',
-    birthDay: user?.birthDay || null,
+    birthday: user?.birthday || null,
     startAtCompany: user?.startAtCompany || null,
-    photoURL: user?.photoURL || null,
+    avatar: user?.avatar || null,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -60,7 +60,17 @@ export default function AccountGeneral() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const editUserDto: EditUserDto = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        userName: data.userName,
+        avatar: data.avatar,
+        birthday: data.birthday,
+        startAtCompany: data.startAtCompany
+      };
+      await editOwnUserAccountAsync(editUserDto, user?.accessToken);
+
       enqueueSnackbar('Update success!');
       console.log('DATA', data);
     } catch (error) {
@@ -76,7 +86,7 @@ export default function AccountGeneral() {
       });
 
       if (file) {
-        setValue('photoURL', newFile, { shouldValidate: true });
+        setValue('avatar', newFile, { shouldValidate: true });
       }
     },
     [setValue]
@@ -88,8 +98,8 @@ export default function AccountGeneral() {
         <Grid item xs={12} md={4}>
           <Card sx={{ py: 10, px: 3, textAlign: 'center' }}>
             <RHFUploadAvatar
-              name="photoURL"
-              maxSize={3145728}
+              name="avatar"
+              maxSize={10000000}
               onDrop={handleDrop}
               helperText={
                 <Typography
@@ -103,7 +113,7 @@ export default function AccountGeneral() {
                   }}
                 >
                   Allowed *.jpeg, *.jpg, *.png, *.gif
-                  <br /> max size of {fData(3145728)}
+                  <br /> max size of {fData(10000000)}
                 </Typography>
               }
             />
@@ -126,16 +136,16 @@ export default function AccountGeneral() {
               <RHFTextField name="userName" label="User name" />
 
               <DatePicker
-                // name="birthDay"
                 label="Birthday"
-                value={methods.watch('birthDay')}
-                onChange={(date) => setValue('birthDay', date, { shouldValidate: true })}
+                disabled={methods.watch('birthday') !== null}
+                value={methods.watch('birthday')}
+                onChange={(date) => setValue('birthday', date, { shouldValidate: true })}
                 renderInput={(params) => <TextField {...params} />}
               />
 
               <DatePicker
-                // name="startAtCompany"
                 label="Start at company"
+                disabled={methods.watch('startAtCompany') !== null}
                 value={methods.watch('startAtCompany')}
                 onChange={(date) => setValue('startAtCompany', date, { shouldValidate: true })}
                 renderInput={(params) => <TextField {...params} />}

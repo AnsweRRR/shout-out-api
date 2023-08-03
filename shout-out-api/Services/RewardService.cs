@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GiphyDotNet.Model.GiphyImage;
+using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.Reward;
+using shout_out_api.Helpers;
 using shout_out_api.Model;
 
 namespace shout_out_api.Services
@@ -8,19 +10,22 @@ namespace shout_out_api.Services
     public class RewardService
     {
         private readonly Context _db;
+        private readonly FileConverter _fileConverter;
 
-        public RewardService(Context db)
+        public RewardService(Context db, FileConverter fileConverter)
         {
             _db = db;
+            _fileConverter = fileConverter;
         }
 
-        public async Task<IList<Reward>> GetRewards()
+        public async Task<IList<RewardDto>> GetRewards()
         {
             try
             {
-                List<Reward> rewards = _db.Rewards.ToListAsync().Result;
+                List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync();
+                List<RewardDto> rewardsDto = rewards.ToRewardResultDto();
 
-                return rewards;
+                return rewardsDto;
             }
             catch (Exception ex)
             {
@@ -28,7 +33,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<Reward> AddReward(RewardCreateEditDto model)
+        public async Task<RewardDto> AddReward(RewardCreateEditDto model)
         {
             try
             {
@@ -36,14 +41,21 @@ namespace shout_out_api.Services
                 {
                     Cost = model.Cost,
                     Description = model.Description,
-                    Name = model.Name,
-                    Avatar = model.Avatar
+                    Name = model.Name
                 };
+
+                if (model.Avatar != null && model.Avatar.Length > 0)
+                {
+                    byte[] file = _fileConverter.ConvertIFormFileToByteArray(model.Avatar);
+                    newReward.Avatar = file;
+                }
 
                 await _db.Rewards.AddAsync(newReward);
                 _db.SaveChanges();
 
-                return newReward;
+                var rewardDto = newReward.ToRewardResultDto();
+
+                return rewardDto;
             }
             catch(Exception ex)
             {
@@ -51,7 +63,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<Reward> EditReward(int id, RewardCreateEditDto model)
+        public async Task EditReward(int id, RewardCreateEditDto model)
         {
             try
             {
@@ -64,13 +76,16 @@ namespace shout_out_api.Services
 
                 reward.Description = model.Description;
                 reward.Name = model.Name;
-                reward.Avatar = model.Avatar;
                 reward.Cost = model.Cost;
+
+                if (model.Avatar != null && model.Avatar.Length > 0)
+                {
+                    byte[] file = _fileConverter.ConvertIFormFileToByteArray(model.Avatar);
+                    reward.Avatar = file;
+                }
 
                 _db.Update(reward);
                 _db.SaveChanges();
-
-                return reward;
             }
             catch (Exception ex)
             {
@@ -78,7 +93,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async void DeleteReward(int id)
+        public async Task DeleteReward(int id)
         {
             try
             {
@@ -98,7 +113,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<Reward> BuyReward(int id, int buyerUserId)
+        public async Task<int> BuyReward(int id, int buyerUserId)
         {
             try
             {
@@ -126,7 +141,7 @@ namespace shout_out_api.Services
                 _db.Update(user);
                 _db.SaveChanges();
 
-                return reward;
+                return user.PointToHave;
             }
             catch(Exception ex)
             {

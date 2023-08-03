@@ -1,13 +1,9 @@
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-// form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-// @mui
 import { LoadingButton } from '@mui/lab';
-// routes
 import { PATH_AUTH } from '../../routes/paths';
-// components
 import FormProvider, { RHFTextField } from '../../components/hook-form';
 
 // ----------------------------------------------------------------------

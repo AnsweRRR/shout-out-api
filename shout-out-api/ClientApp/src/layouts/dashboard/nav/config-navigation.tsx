@@ -45,7 +45,6 @@ const navConfig = [
         children: [
           { title: 'list', path: PATH_APP.user.list },
           { title: 'create', path: PATH_APP.user.new },
-          // { title: 'edit', path: PATH_APP.user.edit },
           { title: 'account', path: PATH_APP.user.account },
         ],
       }

@@ -33,6 +33,7 @@ builder.Services.AddScoped<RewardService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<PointSystemService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<FileConverter>();
 
 builder.Services.AddSwaggerGen(options =>
 {

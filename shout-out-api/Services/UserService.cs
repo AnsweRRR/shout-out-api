@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.Email;
 using shout_out_api.Dto.User;
+using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace shout_out_api.Services
@@ -15,13 +17,15 @@ namespace shout_out_api.Services
         private readonly EmailService _emailService;
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
+        private readonly FileConverter _fileConverter;
 
-        public UserService(TokenService tokenService, EmailService emailService, Context db, ConfigHelper configHelper)
+        public UserService(TokenService tokenService, EmailService emailService, Context db, ConfigHelper configHelper, FileConverter fileConverter)
         {
             _tokenService = tokenService;
             _emailService = emailService;
             _db = db;
             _configHelper = configHelper;
+            _fileConverter = fileConverter;
         }
 
         public async Task<LoginResultDto> Login(LoginRequestDto model)
@@ -213,7 +217,12 @@ namespace shout_out_api.Services
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.UserName = model.UserName;
-                user.Avatar = model.Avatar;
+
+                if (model.Avatar != null && model.Avatar.Length > 0)
+                {
+                    byte[] file = _fileConverter.ConvertIFormFileToByteArray(model.Avatar);
+                    user.Avatar = file;
+                }
 
                 if (!user.StartAtCompany.HasValue)
                 {
@@ -225,9 +234,9 @@ namespace shout_out_api.Services
                     user.Birthday = model.Birthday;
                 }
 
-                if (editByAdmin)
+                if (editByAdmin && model.Role.HasValue)
                 {
-                    user.Role = model.Role;
+                    user.Role = (Role)model.Role;
                 }
 
                 _db.Update(user);
@@ -263,23 +272,11 @@ namespace shout_out_api.Services
         {
             try
             {
-                var users = await _db.Users
-                    .Select(u => new UserResultDto()
-                    {
-                        Id = u.Id,
-                        Avatar = u.Avatar,
-                        Birthday = u.Birthday,
-                        StartAtCompany = u.StartAtCompany,
-                        Email = u.Email,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName,
-                        UserName = u.UserName,
-                        Role = u.Role,
-                        Verified = u.VerifiedAt.HasValue
-                    })
-                    .ToListAsync();
+                var users = await _db.Users.ToListAsync();
 
-                return users;
+                var userResultDtoList = users.ToUsersResultDto();
+
+                return userResultDtoList;
             }
             catch (Exception ex)
             {
@@ -291,23 +288,11 @@ namespace shout_out_api.Services
         {
             try
             {
-                var user = await _db.Users.Where(u => u.Id == userId)
-                    .Select(u => new UserResultDto()
-                    {
-                        Id = u.Id,
-                        Avatar = u.Avatar,
-                        Birthday = u.Birthday,
-                        StartAtCompany = u.StartAtCompany,
-                        Email = u.Email,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName,
-                        UserName = u.UserName,
-                        Role = u.Role,
-                        Verified = u.VerifiedAt.HasValue
-                    })
-                    .SingleAsync();
+                var user = await _db.Users.Where(u => u.Id == userId).SingleAsync();
 
-                return user;
+                var userResultDto = user.ToUserResultDto();
+
+                return userResultDto;
             }
             catch (Exception ex)
             {

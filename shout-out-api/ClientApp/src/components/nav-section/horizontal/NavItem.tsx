@@ -61,22 +61,10 @@ const NavItem = forwardRef<HTMLDivElement, NavItemProps>(
       </StyledItem>
     );
 
-    const renderItem = () => {
-      // ExternalLink
-      if (isExternalLink)
-        return (
-          <Link href={path} target="_blank" rel="noopener" underline="none">
-            {renderContent}
-          </Link>
-        );
-
-      // Default
-      return (
-        <Link component={RouterLink} to={path} underline="none">
-          {renderContent}
-        </Link>
-      );
-    };
+    const renderItem = () => 
+      <Link component={RouterLink} to={path} underline="none">
+        {renderContent}
+      </Link>
 
     return <RoleBasedGuard roles={roles}> {renderItem()} </RoleBasedGuard>;
   }

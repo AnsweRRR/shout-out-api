@@ -1,3 +1,4 @@
+import { Reward } from 'src/@types/reward';
 import axios from 'src/utils/axios';
 
 export async function getRewardsAsync(accessToken: string) {
@@ -14,9 +15,10 @@ export async function getRewardsAsync(accessToken: string) {
     }
 }
 
-export async function createRewardAsync(newRewardDto: any, accessToken: string) {
+export async function createRewardAsync(newRewardDto: Reward, accessToken: string) {
     try {
         const headers = {
+            'Content-Type': `multipart/form-data`,
             'Authorization': `Bearer ${accessToken}`
         };
         const response = await axios.post(`/api/reward/create`, newRewardDto, { headers });
@@ -28,9 +30,10 @@ export async function createRewardAsync(newRewardDto: any, accessToken: string) 
     }
 }
 
-export async function editRewardAsync(rewardId: number, rewardToEditDto: any, accessToken: string) {
+export async function editRewardAsync(rewardId: number, rewardToEditDto: Reward, accessToken: string) {
     try {
         const headers = {
+            'Content-Type': `multipart/form-data`,
             'Authorization': `Bearer ${accessToken}`
         };
 
@@ -72,11 +75,7 @@ export async function buyRewardAsync(rewardId: number, accessToken: string) {
             'Authorization': `Bearer ${accessToken}`
         };
 
-        const params = {
-            id: rewardId
-        };
-
-        const response = await axios.post(`/api/reward/buy`, { params, headers });
+        const response = await axios.post(`/api/reward/buy?id=${rewardId}`, { headers });
         return response;
     }
     catch(error) {

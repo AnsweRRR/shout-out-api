@@ -28,7 +28,7 @@ namespace shout_out_api.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(RewardCreateEditDto model)
+        public async Task<IActionResult> Create([FromForm] RewardCreateEditDto model)
         {
             var result = await _rewardService.AddReward(model);
 
@@ -37,25 +37,25 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("edit")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, RewardCreateEditDto model)
+        public async Task<IActionResult> Edit(int id, [FromForm] RewardCreateEditDto model)
         {
-            var result = await _rewardService.EditReward(id, model);
+            await _rewardService.EditReward(id, model);
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpDelete("delete")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _rewardService.DeleteReward(id);
+            await _rewardService.DeleteReward(id);
 
             return Ok();
         }
 
         [HttpPost("buy")]
         [Authorize]
-        public async Task<IActionResult> Buy(int id)
+        public async Task<IActionResult> Buy([FromQuery] int id)
         {
             string? buyerUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 

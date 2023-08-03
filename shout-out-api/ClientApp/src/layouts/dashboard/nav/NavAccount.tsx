@@ -27,7 +27,7 @@ export default function NavAccount() {
   return (
     <Link component={RouterLink} to={PATH_APP.user.account} underline="none" color="inherit">
       <StyledRoot>
-        <CustomAvatar src={user?.photoURL} alt={DISPLAY_NAME} name={DISPLAY_NAME} />
+        <CustomAvatar src={user?.avatar} alt={DISPLAY_NAME} name={DISPLAY_NAME} />
 
         <Box sx={{ ml: 2, minWidth: 0 }}>
           <Typography variant="subtitle2" noWrap>

@@ -114,7 +114,7 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("editownuseraccount")]
         [Authorize]
-        public async Task<IActionResult> EditOwnUserAccount(EditUserRequestDto model)
+        public async Task<IActionResult> EditOwnUserAccount([FromForm] EditUserRequestDto model)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 

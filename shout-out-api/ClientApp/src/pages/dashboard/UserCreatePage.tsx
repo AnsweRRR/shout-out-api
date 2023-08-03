@@ -1,12 +1,8 @@
 import { Helmet } from 'react-helmet-async';
-// @mui
 import { Container } from '@mui/material';
-// routes
 import { PATH_APP } from '../../routes/paths';
-// components
 import { useSettingsContext } from '../../components/settings';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-// sections
 import UserNewEditForm from '../../sections/user/UserNewEditForm';
 
 // ----------------------------------------------------------------------

@@ -10,7 +10,7 @@ namespace shout_out_api.Dto.User
         public string? LastName { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
-        public byte[]? Avatar { get; set; }
+        public string? Avatar { get; set; }
         public int PointsToGive { get; set; }
         public int PointToHave { get; set; }
         public DateTime? Birthday { get; set; }

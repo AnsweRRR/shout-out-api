@@ -1,3 +1,4 @@
+import { CustomFile } from "src/components/upload";
 
 export enum Roles {
   Admin = 0,
@@ -48,6 +49,16 @@ export type InviteRequestDto = {
   role: Roles,
   firstName: string,
   lastName: string
+};
+
+export type EditUserDto = {
+  firstName?: string,
+  lastName?: string,
+  userName?: string | null,
+  avatar?: CustomFile | string | null,
+  role?: Roles,
+  birthday?: Date | null,
+  startAtCompany?: Date | null
 };
 
 export type RegisterDto = {
