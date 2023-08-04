@@ -36,7 +36,7 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            _pointSystemService.GivePoints(int.Parse(senderUserId), model);
+            await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
 
             return Ok();
         }

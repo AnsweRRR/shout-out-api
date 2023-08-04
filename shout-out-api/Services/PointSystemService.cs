@@ -38,50 +38,66 @@ namespace shout_out_api.Services
             }
         }
 
-        public async void GivePoints(int senderUserId, GivePointsDto model)
+        public async Task GivePoints(int senderUserId, GivePointsDto model)
         {
-            try
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-
-                List<User> users = await _db.Users.Where(u => model.ReceiverUsers.Contains(u.Id)).ToListAsync();
-
-                if (users == null || !users.Any())
+                try
                 {
-                    throw new Exception("No users found");
-                }
+                    DateTimeOffset now = DateTimeOffset.UtcNow;
 
-                PointHistory pointEvent = new PointHistory()
-                {
-                    Amount = model.Amount,
-                    Description = model.Description,
-                    SenderId = senderUserId,
-                    EventDate = now,
-                };
+                    var senderUser = await _db.Users.SingleOrDefaultAsync(u => u.Id == senderUserId);
 
-                _db.PointHistories.Add(pointEvent);
-                _db.SaveChanges();
-
-
-                List<PointHistory_ReceiverUser> pointHistory_ReceiverUser = new List<PointHistory_ReceiverUser>();
-
-                foreach (User user in users)
-                {
-                    PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
+                    if (senderUser == null)
                     {
-                        User = user,
-                        PointHistory = pointEvent
+                        throw new Exception("Unathorized user");
+                    }
+
+                    senderUser.PointsToGive = senderUser.PointsToGive - (model.ReceiverUsers.Count() * model.Amount);
+
+                    _db.Users.Update(senderUser);
+                    _db.SaveChanges();
+
+                    List<User> users = await _db.Users.Where(u => model.ReceiverUsers.Contains(u.Id)).ToListAsync();
+
+                    if (users == null || !users.Any())
+                    {
+                        throw new Exception("No users found");
+                    }
+
+                    PointHistory pointEvent = new PointHistory()
+                    {
+                        Amount = model.Amount,
+                        Description = model.Description,
+                        SenderId = senderUserId,
+                        EventDate = now,
                     };
 
-                    pointHistory_ReceiverUser.Add(receiverUsers);
-                }
+                    _db.PointHistories.Add(pointEvent);
+                    _db.SaveChanges();
 
-                _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
-                _db.SaveChanges();
-            }
-            catch(Exception ex)
-            {
-                throw;
+                    List<PointHistory_ReceiverUser> pointHistory_ReceiverUser = new List<PointHistory_ReceiverUser>();
+
+                    foreach (User user in users)
+                    {
+                        PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
+                        {
+                            User = user,
+                            PointHistory = pointEvent
+                        };
+
+                        pointHistory_ReceiverUser.Add(receiverUsers);
+                    }
+
+                    _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
+                    _db.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
         }
 
