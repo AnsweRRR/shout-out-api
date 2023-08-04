@@ -382,14 +382,14 @@ namespace shout_out_api.Services
 
                 EmailDto emailDto = new EmailDto()
                 {
-                    Subject = "Forgot password",
-                    Body = user.PasswordResetToken,
-                    ToEmailAddress = user.Email
+                    Subject = EmailContants.PASSWORD_RESET_TOKEN_SUBJECT(),
+                    Body = EmailContants.PASSWORD_RESET_TOKEN_BODY(user.PasswordResetToken),
+                    ToEmailAddress = user.Email!
                 };
 
                 _emailService.SendEmail(emailDto);
 
-                return user.Email;
+                return user.Email!;
             }
             catch (Exception ex)
             {
