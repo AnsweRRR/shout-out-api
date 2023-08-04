@@ -41,14 +41,6 @@ namespace shout_out_api.Controllers
             return Ok();
         }
 
-        [HttpPost("resetpoints")]
-        public async Task<IActionResult> Reset()
-        {
-            _pointSystemService.ResetPoints();
-
-            return Ok();
-        }
-
         [HttpGet("giphy")]
         [Authorize]
         public async Task<IActionResult> GetGiphyGifs(string? filterName = null)

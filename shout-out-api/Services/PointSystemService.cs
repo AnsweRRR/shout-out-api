@@ -85,17 +85,39 @@ namespace shout_out_api.Services
             }
         }
 
-        public async void ResetPoints()
+        public async Task ScheduledTask()
         {
-            List<User> users = await _db.Users.ToListAsync();
-
-            foreach (User user in users)
+            try
             {
-                user.PointsToGive = 100;
-            }
+                DateTime now = DateTime.Now;
 
-            _db.UpdateRange(users);
-            _db.SaveChanges();
+                List<User> users = await _db.Users.ToListAsync();
+
+                foreach (var user in users)
+                {
+                    if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date)
+                    {
+                        //TODO: Create Birthday point event
+                    }
+
+                    if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
+                    {
+                        //TODO: Create StartAtCompany point event
+                    }
+
+                    if (now.Day == 1)
+                    {
+                        user.PointsToGive = 100;
+                    }
+                }
+
+                _db.Users.UpdateRange(users);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                //TODO: log the error
+            }
         }
 
         public async Task<GiphySearchResult?> GetGiphyGifs(string? filterName = null)
