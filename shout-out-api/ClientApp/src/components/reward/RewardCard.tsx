@@ -1,14 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Avatar, Divider, Typography, Stack, IconButton, Button } from '@mui/material';
 import { Reward } from 'src/@types/reward';
-import { useAuthContext } from 'src/auth/useAuthContext';
-import { buyRewardAsync } from 'src/api/rewardClient';
-import { useSnackbar } from '../snackbar';
 import { fShortenNumber } from '../../utils/formatNumber';
 import Image from '../image';
 import SvgColor from '../svg-color';
 import ConfirmDialog from '../confirm-dialog';
+import Iconify from '../iconify';
+import EditRewardCardDialog from './EditRewardDialog';
 
 // ----------------------------------------------------------------------
 
@@ -27,35 +26,25 @@ const StyledOverlay = styled('div')(({ theme }) => ({
 type Props = {
   reward: Reward;
   cover: string;
+  userPoints: number;
+  handleClaimButtonClick: (id: number) => Promise<void>;
+  handleDeleteButtonClick: (id: number) => Promise<void>;
+  handleEditButtonClick: (id: number, editedRewardDto: Reward) => Promise<void>;
 };
 
-export default function RewardCard({ reward, cover }: Props) {
-  const { user } = useAuthContext();
-  const { enqueueSnackbar } = useSnackbar();
+export default function RewardCard({ reward, cover, userPoints, handleClaimButtonClick, handleDeleteButtonClick, handleEditButtonClick }: Props) {
   const { id, name, description, cost, avatar } = reward;
-
   const FILLCOLOR = '#b9f6ca';
   const [percentage, setPercentage] = useState(0);
-  const [userPoints, setUserPoints] = useState<number>((user?.pointToHave !== null || user?.pointToHave !== undefined) ? user?.pointToHave : 0);
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditorDialog, setOpenEditorDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const buttonStyle = {
     background: percentage < 100 ? `linear-gradient(to right, ${FILLCOLOR} ${percentage}%, white ${percentage}% ${100-percentage}%)` : 'inherit',
     minWidth: '100px'
   };
-
-  const handleClaimButtonClick = async () => {
-    if (user && id) {
-      const result = await buyRewardAsync(id, user?.accessToken);
-      if (result.status === 200) {
-        enqueueSnackbar('Reward claimed successfully!', { variant: 'success' });
-        const userPointsLeftAfterClaim = result.data;
-        setUserPoints(userPointsLeftAfterClaim);
-      } else {
-        enqueueSnackbar('Something went wrong!', { variant: 'error' });
-      }
-    }
-  }
 
   useEffect(() => {
     if (cost !== null && cost !== undefined && userPoints !== null && userPoints !== undefined) {
@@ -68,6 +57,32 @@ export default function RewardCard({ reward, cover }: Props) {
   return (
     <>
       <Card sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '16px',
+            left: '16px',
+            zIndex: 20,
+          }}
+        >
+          <Button variant="text" onClick={() => setOpenEditorDialog(true)} >
+            <Iconify icon="eva:edit-fill" />
+          </Button>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            zIndex: 20,
+          }}
+        >
+          <Button variant="text" sx={{ color: 'error.main' }} onClick={() => setOpenDeleteDialog(true)} >
+            <Iconify icon="eva:trash-2-outline" />
+          </Button>
+        </Box>
+
         <Box sx={{ position: 'relative' }}>
           <SvgColor
             src="/assets/shape_avatar.svg"
@@ -100,7 +115,7 @@ export default function RewardCard({ reward, cover }: Props) {
           />
 
           <StyledOverlay />
-
+          
           <Image src={cover} alt={cover} ratio="21/9" />
         </Box>
 
@@ -129,13 +144,6 @@ export default function RewardCard({ reward, cover }: Props) {
               Claim
             </Button>
           </Box>
-
-          <Box>
-            <Typography variant="caption" component="div" sx={{ mb: 0.75, color: 'text.disabled' }}>
-              Total Post
-            </Typography>
-            <Typography variant="subtitle1">{fShortenNumber(cost!)}</Typography>
-          </Box>
         </Box>
       </Card>
 
@@ -153,13 +161,43 @@ export default function RewardCard({ reward, cover }: Props) {
             variant="contained"
             color="success"
             onClick={() => {
-              handleClaimButtonClick();
+              handleClaimButtonClick(id!);
               setOpenDialog(false);
             }}
           >
             Claim
           </Button>
         }
+      />
+
+      <ConfirmDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        title="Delete"
+        content={
+          <>
+            Are you sure want to delete &quot;<strong>{name}</strong>&quot; item?
+          </>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              handleDeleteButtonClick(id!);
+              setOpenDeleteDialog(false);
+            }}
+          >
+            Delete
+          </Button>
+        }
+      />
+
+      <EditRewardCardDialog
+        reward={reward}
+        open={openEditorDialog}
+        onClose={() => setOpenEditorDialog(false)}
+        onEditReward={handleEditButtonClick}
       />
     </>
   );

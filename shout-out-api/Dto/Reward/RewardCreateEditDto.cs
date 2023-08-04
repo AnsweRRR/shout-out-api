@@ -13,7 +13,6 @@ namespace shout_out_api.Dto.Reward
         [Required]
         public int Cost { get; set; }
 
-        [Required]
-        public IFormFile Avatar { get; set; }
+        public IFormFile? Avatar { get; set; }
     }
 }

@@ -1,14 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { Link, Typography } from '@mui/material';
-// routes
 import { PATH_AUTH } from '../../routes/paths';
-// components
 import Iconify from '../../components/iconify';
-// sections
 import AuthNewPasswordForm from '../../sections/auth/AuthNewPasswordForm';
-// assets
 import { SentIcon } from '../../assets/icons';
 
 // ----------------------------------------------------------------------
@@ -36,7 +31,13 @@ export default function NewPasswordPage() {
 
       <Typography variant="body2" sx={{ my: 3 }}>
         Don’t have a code? &nbsp;
-        <Link variant="subtitle2">Resend code</Link>
+        <Link
+          variant="subtitle2"
+          component={RouterLink}
+          to={PATH_AUTH.resetPassword}
+        >
+          Resend code
+        </Link>
       </Typography>
 
       <Link

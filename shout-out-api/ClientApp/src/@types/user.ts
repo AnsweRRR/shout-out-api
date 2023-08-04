@@ -51,6 +51,19 @@ export type InviteRequestDto = {
   lastName: string
 };
 
+export type ResetPasswordDto = {
+  email: string,
+  sixDigitCode: string,
+  newPassword: string,
+  confirmNewPassword: string
+};
+
+export type ChangePasswordDto = {
+  oldPassword: string,
+  newPassword: string,
+  confirmNewPassword: string
+};
+
 export type EditUserDto = {
   firstName?: string,
   lastName?: string,

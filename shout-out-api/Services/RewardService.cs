@@ -1,5 +1,4 @@
-﻿using GiphyDotNet.Model.GiphyImage;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.Reward;
 using shout_out_api.Helpers;
@@ -63,7 +62,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task EditReward(int id, RewardCreateEditDto model)
+        public async Task<RewardDto> EditReward(int id, RewardCreateEditDto model)
         {
             try
             {
@@ -86,6 +85,10 @@ namespace shout_out_api.Services
 
                 _db.Update(reward);
                 _db.SaveChanges();
+
+                var rewardDto = reward.ToRewardResultDto();
+
+                return rewardDto;
             }
             catch (Exception ex)
             {

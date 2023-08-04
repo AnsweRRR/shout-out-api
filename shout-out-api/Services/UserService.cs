@@ -6,6 +6,7 @@ using shout_out_api.Dto.User;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
@@ -13,6 +14,8 @@ namespace shout_out_api.Services
 {
     public class UserService
     {
+        private static readonly Random random = new Random();
+
         private readonly TokenService _tokenService;
         private readonly EmailService _emailService;
         private readonly Context _db;
@@ -43,7 +46,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.ResetTokenExpires = DateTime.Now.AddDays(7);
+                user.TokenCreated = DateTime.Now;
+                user.TokenExpires = DateTime.Now.AddDays(7);
                 _db.Update(user);
                 _db.SaveChanges();
 
@@ -175,7 +179,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.ResetTokenExpires = DateTime.Now.AddDays(7);
+                user.TokenCreated = DateTime.Now;
+                user.TokenExpires = DateTime.Now.AddDays(7);
                 user.VerificationToken = null;
 
                 _db.Update(user);
@@ -337,16 +342,133 @@ namespace shout_out_api.Services
 
         public async Task<UserResultDto> GetMyUserData(string userId)
         {
-            var user = _db.Users.SingleOrDefault(u => u.Id == int.Parse(userId));
-
-            if (user == null)
+            try
             {
-                throw new Exception("User not found");
+                var user = _db.Users.SingleOrDefault(u => u.Id == int.Parse(userId));
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                UserResultDto userDto = user.ToUserResultDto();
+
+                return userDto;
             }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
 
-            UserResultDto userDto = user.ToUserResultDto();
+        public async Task<string> ResetPasswordRequest(string email)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == email);
 
-            return userDto;
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                int sixDigitCode = random.Next(100000, 1000000);
+
+                user.PasswordResetToken = sixDigitCode.ToString("D6");
+                user.ResetTokenExpires = DateTime.UtcNow.AddDays(1);
+
+                _db.Users.Update(user);
+                _db.SaveChanges();
+
+                EmailDto emailDto = new EmailDto()
+                {
+                    Subject = "Forgot password",
+                    Body = user.PasswordResetToken,
+                    ToEmailAddress = user.Email
+                };
+
+                _emailService.SendEmail(emailDto);
+
+                return user.Email;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<UserResultDto> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == resetPasswordDto.Email && u.PasswordResetToken == resetPasswordDto.SixDigitCode);
+
+                if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmNewPassword)
+                {
+                    throw new Exception("Passwords are not the same");
+                }
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                if (user.ResetTokenExpires < DateTime.UtcNow)
+                {
+                    throw new Exception("Reset password token expired");
+                }
+
+                user.PasswordResetToken = null;
+                user.ResetTokenExpires = null;
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.NewPassword);
+
+                _db.Users.Update(user);
+                _db.SaveChanges();
+
+                var userResultDto = user.ToUserResultDto();
+
+                return userResultDto;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<UserResultDto> ChangePassword(int userId, ChangePasswordDto changePasswordDto)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                if(!BCrypt.Net.BCrypt.Verify(changePasswordDto.OldPassword, user.PasswordHash))
+                {
+                    throw new Exception("Incorrect password");
+                }
+
+                if(changePasswordDto.NewPassword != changePasswordDto.ConfirmNewPassword)
+                {
+                    throw new Exception("Passwords are not the same");
+                }
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
+
+                _db.Users.Update(user);
+                _db.SaveChanges();
+
+                var userResultDto = user.ToUserResultDto();
+
+                return userResultDto;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

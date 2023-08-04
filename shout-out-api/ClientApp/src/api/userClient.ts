@@ -1,5 +1,5 @@
 import { NavigateFunction } from 'react-router';
-import { EditUserDto, InviteRequestDto } from 'src/@types/user';
+import { ChangePasswordDto, EditUserDto, InviteRequestDto, ResetPasswordDto } from 'src/@types/user';
 import { PATH_PAGE } from 'src/routes/paths';
 import axios from 'src/utils/axios';
 
@@ -90,6 +90,43 @@ export async function deleteUsersAsync(userId: number, accessToken: string) {
         };
 
         const response = await axios.delete(`/api/user/delete`, { params, headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function resetPasswordRequestAsync(email: string) {
+    try {
+        const response = await axios.post(`/api/user/resetpasswordrequest?email=${email}`);
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function resetPasswordAsync(resetPasswordDto: ResetPasswordDto) {
+    try {
+        const response = await axios.post(`/api/user/resetpassword`, resetPasswordDto);
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function changePasswordAsync(changePasswordDto: ChangePasswordDto, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.post(`/api/user/changepassword`, changePasswordDto, { headers });
         return response;
     }
     catch(error) {

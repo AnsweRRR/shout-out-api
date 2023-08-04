@@ -1,13 +1,11 @@
 import * as Yup from 'yup';
-// form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-// @mui
 import { Stack, Card } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// @types
-import { IUserAccountChangePassword } from '../../../@types/user';
-// components
+import { changePasswordAsync } from 'src/api/userClient';
+import { useAuthContext } from 'src/auth/useAuthContext';
+import { ChangePasswordDto, IUserAccountChangePassword } from '../../../@types/user';
 import Iconify from '../../../components/iconify';
 import { useSnackbar } from '../../../components/snackbar';
 import FormProvider, { RHFTextField } from '../../../components/hook-form';
@@ -18,12 +16,13 @@ type FormValuesProps = IUserAccountChangePassword;
 
 export default function AccountChangePassword() {
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuthContext();
 
   const ChangePassWordSchema = Yup.object().shape({
     oldPassword: Yup.string().required('Old Password is required'),
     newPassword: Yup.string()
       .required('New Password is required')
-      .min(6, 'Password must be at least 6 characters')
+      .min(5, 'Password must be at least 5 characters')
       .test(
         'no-match',
         'New password must be different than old password',
@@ -51,10 +50,16 @@ export default function AccountChangePassword() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar('Update success!');
-      console.log('DATA', data);
+      if (user) {
+        const changePasswordDto: ChangePasswordDto = {
+          oldPassword: data.oldPassword,
+          newPassword: data.newPassword,
+          confirmNewPassword: data.confirmNewPassword
+        }
+        const result = await changePasswordAsync(changePasswordDto, user?.accessToken);
+        reset();
+        enqueueSnackbar('Update success!');
+      }
     } catch (error) {
       console.error(error);
     }

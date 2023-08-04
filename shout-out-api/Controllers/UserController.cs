@@ -163,5 +163,39 @@ namespace shout_out_api.Controllers
 
             return Ok(users);
         }
+
+        [HttpPost("resetpasswordrequest")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordRequest(string email)
+        {
+            var result = await _userService.ResetPasswordRequest(email);
+
+            return Ok(result);
+        }
+
+        [HttpPost("resetpassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            var result = await _userService.ResetPassword(model);
+
+            return Ok(result);
+        }
+
+        [HttpPost("changepassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto model)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.ChangePassword(int.Parse(userId), model);
+
+            return Ok();
+        }
     }
 }

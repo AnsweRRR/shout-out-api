@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
+import { resetPasswordRequestAsync } from 'src/api/userClient';
 import { PATH_AUTH } from '../../routes/paths';
 import FormProvider, { RHFTextField } from '../../components/hook-form';
-
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
@@ -21,7 +21,7 @@ export default function AuthResetPasswordForm() {
 
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(ResetPasswordSchema),
-    defaultValues: { email: 'demo@minimals.cc' },
+    defaultValues: { email: 'admin@admin.hu' },
   });
 
   const {
@@ -31,7 +31,7 @@ export default function AuthResetPasswordForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const result = await resetPasswordRequestAsync(data.email);
       sessionStorage.setItem('email-recovery', data.email);
       navigate(PATH_AUTH.newPassword);
     } catch (error) {

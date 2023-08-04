@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { Stack, IconButton, InputAdornment, FormHelperText } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-// routes
-import { PATH_APP } from '../../routes/paths';
-// components
+import { LoadingButton } from '@mui/lab';import { resetPasswordAsync } from 'src/api/userClient';
+import { ResetPasswordDto } from 'src/@types/user';
+import { PATH_APP, PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/iconify';
 import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFTextField, RHFCodes } from '../../components/hook-form';
@@ -47,7 +44,7 @@ export default function AuthNewPasswordForm() {
     code6: Yup.string().required('Code is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string()
-      .min(6, 'Password must be at least 6 characters')
+      .min(5, 'Password must be at least 5 characters')
       .required('Password is required'),
     confirmPassword: Yup.string()
       .required('Confirm password is required')
@@ -79,15 +76,16 @@ export default function AuthNewPasswordForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log('DATA:', {
+      const resetPasswordDto: ResetPasswordDto = {
         email: data.email,
-        code: `${data.code1}${data.code2}${data.code3}${data.code4}${data.code5}${data.code6}`,
-        password: data.password,
-      });
+        sixDigitCode: `${data.code1}${data.code2}${data.code3}${data.code4}${data.code5}${data.code6}`,
+        newPassword: data.password,
+        confirmNewPassword: data.confirmPassword
+      }
+      await resetPasswordAsync(resetPasswordDto);
       sessionStorage.removeItem('email-recovery');
       enqueueSnackbar('Change password success!');
-      navigate(PATH_APP.root);
+      navigate(PATH_AUTH.login);
     } catch (error) {
       console.error(error);
     }

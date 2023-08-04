@@ -39,9 +39,9 @@ namespace shout_out_api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [FromForm] RewardCreateEditDto model)
         {
-            await _rewardService.EditReward(id, model);
+            var result = await _rewardService.EditReward(id, model);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpDelete("delete")]
