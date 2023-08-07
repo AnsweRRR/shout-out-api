@@ -305,7 +305,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<RefreshTokenResultDto> RefreshToken(string refreshToken)
+        public async Task<LoginResultDto> RefreshToken(string refreshToken)
         {
             try
             {
@@ -326,10 +326,16 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
                 CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
 
-                RefreshTokenResultDto dto = new RefreshTokenResultDto()
+                UserResultDto userDto = user.ToUserResultDto();
+                userDto.AccessToken = jwtToken;
+                userDto.RefreshToken = newRefreshToken.Token;
+
+                LoginResultDto dto = new LoginResultDto()
                 {
                     CookieOptions = cookieOptions,
-                    RefreshToken = newRefreshToken.Token
+                    RefreshToken = newRefreshToken.Token,
+                    AccessToken = jwtToken,
+                    User = userDto
                 };
 
                 return dto;
