@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-// utils
 import localStorageAvailable from '../utils/localStorageAvailable';
 
 // ----------------------------------------------------------------------

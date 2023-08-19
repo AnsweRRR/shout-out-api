@@ -8,9 +8,8 @@ import RewardCard from "./RewardCard";
 import CreateRewardCard from "./CreateRewardCard";
 
 export default function Rewards() {
-    const { user } = useAuthContext();
+    const { user, updatePointToHave } = useAuthContext();
     const { enqueueSnackbar } = useSnackbar();
-    const [userPoints, setUserPoints] = useState<number>((user?.pointToHave !== null || user?.pointToHave !== undefined) ? user?.pointToHave : 0);
     const [rewards, setRewards] = useState<Array<Reward>>([]);
     const cover = 'https://api-dev-minimal-v4.vercel.app/assets/images/covers/cover_6.jpg';
 
@@ -20,7 +19,7 @@ export default function Rewards() {
             if (result.status === 200) {
                 enqueueSnackbar('Reward claimed successfully!', { variant: 'success' });
                 const userPointsLeftAfterClaim = result.data;
-                setUserPoints(userPointsLeftAfterClaim);
+                updatePointToHave(userPointsLeftAfterClaim);
             } else {
                 enqueueSnackbar('Something went wrong!', { variant: 'error' });
             }
@@ -75,7 +74,7 @@ export default function Rewards() {
             }
         }
         getRewards();
-    }, [user, userPoints]);
+    }, [user]);
 
     return (
         <Box
@@ -94,7 +93,7 @@ export default function Rewards() {
                     key={reward.id}
                     reward={reward}
                     cover={cover}
-                    userPoints={userPoints}
+                    userPoints={user?.pointToHave}
                     handleClaimButtonClick={handleClaimButtonClick}
                     handleDeleteButtonClick={handleDeleteButtonClick}
                     handleEditButtonClick={handleEditButtonClick}

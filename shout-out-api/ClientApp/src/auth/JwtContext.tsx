@@ -10,6 +10,7 @@ enum Types {
   LOGIN = 'LOGIN',
   REGISTER = 'REGISTER',
   LOGOUT = 'LOGOUT',
+  UPDATE_POINTS_TO_HAVE = "UPDATE_POINTS_TO_HAVE"
 }
 
 type Payload = {
@@ -24,6 +25,9 @@ type Payload = {
     user: AuthUserType;
   };
   [Types.LOGOUT]: undefined;
+  [Types.UPDATE_POINTS_TO_HAVE]: {
+    user: AuthUserType;
+  };
 };
 
 type ActionsType = ActionMapType<Payload>[keyof ActionMapType<Payload>];
@@ -63,6 +67,13 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
       ...state,
       isAuthenticated: false,
       user: null,
+    };
+  }
+
+  if (action.type === Types.UPDATE_POINTS_TO_HAVE) {
+    return {
+      ...state,
+      user: action.payload.user,
     };
   }
   return state;
@@ -171,6 +182,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
   }, []);
 
+  const updatePointToHave = useCallback((pointsToHaveAfterClaim: number) => {
+    const updatedUser = {
+      ...state.user,
+      pointToHave: pointsToHaveAfterClaim,
+    };
+  
+    dispatch({
+      type: Types.UPDATE_POINTS_TO_HAVE,
+      payload: {
+        user: updatedUser,
+      },
+    });
+  }, [state.user, dispatch]);
+
   const memoizedValue = useMemo(
     () => ({
       isInitialized: state.isInitialized,
@@ -180,8 +205,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       register,
       logout,
+      updatePointToHave
     }),
-    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register]
+    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register, updatePointToHave]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
