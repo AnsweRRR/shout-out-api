@@ -54,16 +54,21 @@ namespace shout_out_api.Migrations
 
             modelBuilder.Entity("shout_out_api.Model.PointHistory_ReceiverUser", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("PointHistoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.HasKey("PointHistoryId", "UserId");
+                    b.HasIndex("PointHistoryId");
 
                     b.HasIndex("UserId");
 
@@ -180,7 +185,7 @@ namespace shout_out_api.Migrations
                             PointsToGive = 100,
                             Role = 0,
                             UserName = "Admin User",
-                            VerifiedAt = new DateTime(2023, 8, 31, 11, 36, 49, 104, DateTimeKind.Utc).AddTicks(2332)
+                            VerifiedAt = new DateTime(2023, 8, 31, 15, 7, 43, 733, DateTimeKind.Utc).AddTicks(4332)
                         });
                 });
 

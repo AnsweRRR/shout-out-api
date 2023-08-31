@@ -5,7 +5,7 @@ export async function getPointsHistoryAsync(accessToken: string) {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.post(`/api/pointSystem/history`, { headers });
+        const response = await axios.get(`/api/pointSystem/history`, { headers });
         return response;
     }
     catch(error) {
@@ -35,7 +35,7 @@ export async function getGiphyGifsAsync(accessToken: string, filterName?: string
         };
 
         const params = {
-            filterName: filterName
+            filterName
         };
 
         const response = await axios.get(`/api/pointSystem/giphy`, { params, headers });

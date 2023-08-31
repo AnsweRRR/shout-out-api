@@ -20,9 +20,6 @@ namespace shout_out_api.DataAccess
             modelBuilder.Entity<User>(entity => { entity.HasIndex(e => e.Email).IsUnique(); });
 
             modelBuilder.Entity<PointHistory_ReceiverUser>()
-                .HasKey(phru => new { phru.PointHistoryId, phru.UserId });
-
-            modelBuilder.Entity<PointHistory_ReceiverUser>()
                 .HasOne(phru => phru.PointHistory)
                 .WithMany()
                 .HasForeignKey(phru => phru.PointHistoryId)

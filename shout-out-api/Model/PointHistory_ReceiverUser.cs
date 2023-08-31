@@ -1,15 +1,22 @@
 ﻿using shout_out_api.Model.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace shout_out_api.Model
 {
     public class PointHistory_ReceiverUser : IEntity
     {
+        [Key]
         public int Id { get; set; }
 
         public int PointHistoryId { get; set; }
-        public PointHistory PointHistory { get; set; }
+
+        [ForeignKey("PointHistoryId")]
+        public PointHistory PointHistory { get; set; } = new PointHistory();
 
         public int UserId { get; set; }
-        public User User { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; } = new User();
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shout_out_api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -83,13 +83,14 @@ namespace shout_out_api.Migrations
                 name: "PointHistory_ReceiverUsers",
                 columns: table => new
                 {
-                    PointHistoryId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PointHistoryId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PointHistory_ReceiverUsers", x => new { x.PointHistoryId, x.UserId });
+                    table.PrimaryKey("PK_PointHistory_ReceiverUsers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PointHistory_ReceiverUsers_PointHistories_PointHistoryId",
                         column: x => x.PointHistoryId,
@@ -105,12 +106,17 @@ namespace shout_out_api.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Avatar", "Birthday", "Email", "FirstName", "LastName", "PasswordHash", "PasswordResetToken", "PasswordResetTokenExpires", "PointToHave", "PointsToGive", "RefreshToken", "RefreshTokenCreated", "RefreshTokenExpires", "Role", "StartAtCompany", "UserName", "VerificationToken", "VerifiedAt" },
-                values: new object[] { 1, null, null, "admin@admin.hu", "admin", "user", "$2a$11$s4fJC1smXEopJu7Bll5MgOVc.gWLp3rLqnkHgXAlPbtxV8UGDIIdq", null, null, 0, 100, null, null, null, 0, null, "Admin User", null, new DateTime(2023, 8, 31, 11, 36, 49, 104, DateTimeKind.Utc).AddTicks(2332) });
+                values: new object[] { 1, null, null, "admin@admin.hu", "admin", "user", "$2a$11$s4fJC1smXEopJu7Bll5MgOVc.gWLp3rLqnkHgXAlPbtxV8UGDIIdq", null, null, 0, 100, null, null, null, 0, null, "Admin User", null, new DateTime(2023, 8, 31, 15, 7, 43, 733, DateTimeKind.Utc).AddTicks(4332) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PointHistories_SenderId",
                 table: "PointHistories",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PointHistory_ReceiverUsers_PointHistoryId",
+                table: "PointHistory_ReceiverUsers",
+                column: "PointHistoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PointHistory_ReceiverUsers_UserId",

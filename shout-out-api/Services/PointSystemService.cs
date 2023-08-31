@@ -2,10 +2,12 @@
 using GiphyDotNet.Model.Parameters;
 using GiphyDotNet.Model.Results;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
+using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -20,16 +22,61 @@ namespace shout_out_api.Services
             _configHelper = configHelper;
         }
 
-        public async Task<IList<PointHistory>> GetHistory()
+        public async Task<IList<FeedItem>> GetHistory()
         {
             try
             {
-                List<PointHistory> history = await _db.PointHistory_ReceiverUsers
-                    .Include(phru => phru.User)
-                    .Include(phru => phru.PointHistory)
-                    .Select(phru => phru.PointHistory)
+                List<FeedItem> history = await _db.PointHistories
+                    .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUsers = phru })
+                    .Select(fi => new FeedItem()
+                    {
+                        Id = fi.PointHistory.Id,
+                        Amount = fi.PointHistory.Amount,
+                        SenderId = fi.PointHistory.SenderId,
+                        SenderName = !string.IsNullOrEmpty(fi.PointHistory.SenderUser.UserName)
+                            ? fi.PointHistory.SenderUser.UserName
+                            : fi.PointHistory.SenderUser.FirstName + fi.PointHistory.SenderUser.LastName,
+                        SenderAvatar = fi.PointHistory.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.PointHistory.SenderUser.Avatar)}" : null,
+                        EventDate = fi.PointHistory.EventDate,
+                        Description = fi.PointHistory.Description,
+                        EventType = fi.PointHistory.EventType,
+                        GiphyGif = "https://media1.giphy.com/media/CuMiNoTRz2bYc/giphy.gif",
+                        ReceiverUsers = new List<ReceiverUsers>()
+                        {
+                            new ReceiverUsers()
+                            {
+                                UserId = fi.ReceiverUsers.Id,
+                                UserName = !string.IsNullOrEmpty(fi.ReceiverUsers.User.UserName)
+                                    ? fi.ReceiverUsers.User.UserName
+                                    : fi.ReceiverUsers.User.FirstName + fi.ReceiverUsers.User.LastName,
+                                UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
+                            }
+                        }
+                    })
                     .ToListAsync();
 
+                /*
+                List<FeedItem> history = await _db.PointHistory_ReceiverUsers
+                    .Include(phru => phru.User)
+                    .Include(phru => phru.PointHistory)
+                    .Select(fi => new FeedItem()
+                    {
+                        Id = fi.PointHistoryId,
+                        Amount = fi.PointHistory.Amount,
+                        SenderId = fi.PointHistory.SenderId,
+                        SenderName = !string.IsNullOrEmpty(fi.PointHistory.SenderUser.UserName)
+                            ? fi.PointHistory.SenderUser.UserName
+                            : fi.PointHistory.SenderUser.FirstName + fi.PointHistory.SenderUser.LastName,
+                        SenderAvatar = fi.PointHistory.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.PointHistory.SenderUser.Avatar)}" : null,
+                        EventDate = fi.PointHistory.EventDate,
+                        Description = fi.PointHistory.Description,
+                        EventType = fi.PointHistory.EventType,
+                        GiphyGif = "https://media1.giphy.com/media/CuMiNoTRz2bYc/giphy.gif"
+                    })
+                    .ToListAsync();
+                */
                 return history;
             }
             catch(Exception ex)

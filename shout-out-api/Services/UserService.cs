@@ -79,7 +79,7 @@ namespace shout_out_api.Services
             {
                 var user = _db.Users.SingleOrDefault(u => u.Email == model.Email && (u.VerifiedAt == null || u.VerifiedAt == DateTime.MinValue));
 
-                if(user != null)
+                if(user == null)
                 {
                     //string verificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
                     string verificationToken = Guid.NewGuid().ToString();
