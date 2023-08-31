@@ -26,58 +26,35 @@ namespace shout_out_api.Services
         {
             try
             {
-                List<FeedItem> history = await _db.PointHistories
+                List<FeedItem> feedItems = await _db.PointHistories
                     .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUsers = phru })
-                    .Select(fi => new FeedItem()
+                    .GroupBy(fi => fi.PointHistory.Id)
+                    .Select(group => new FeedItem()
                     {
-                        Id = fi.PointHistory.Id,
-                        Amount = fi.PointHistory.Amount,
-                        SenderId = fi.PointHistory.SenderId,
-                        SenderName = !string.IsNullOrEmpty(fi.PointHistory.SenderUser.UserName)
-                            ? fi.PointHistory.SenderUser.UserName
-                            : fi.PointHistory.SenderUser.FirstName + fi.PointHistory.SenderUser.LastName,
-                        SenderAvatar = fi.PointHistory.SenderUser.Avatar != null
-                            ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.PointHistory.SenderUser.Avatar)}" : null,
-                        EventDate = fi.PointHistory.EventDate,
-                        Description = fi.PointHistory.Description,
-                        EventType = fi.PointHistory.EventType,
-                        GiphyGif = "https://media1.giphy.com/media/CuMiNoTRz2bYc/giphy.gif",
-                        ReceiverUsers = new List<ReceiverUsers>()
+                        Id = group.Key,
+                        Amount = group.First().PointHistory.Amount,
+                        SenderId = group.First().PointHistory.SenderId,
+                        SenderName = !string.IsNullOrEmpty(group.First().PointHistory.SenderUser.UserName)
+                            ? group.First().PointHistory.SenderUser.UserName
+                            : group.First().PointHistory.SenderUser.FirstName + " " + group.First().PointHistory.SenderUser.LastName,
+                        SenderAvatar = group.First().PointHistory.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().PointHistory.SenderUser.Avatar)}" : null,
+                        EventDate = group.First().PointHistory.EventDate,
+                        Description = group.First().PointHistory.Description,
+                        EventType = group.First().PointHistory.EventType,
+                        GiphyGif = "https://media0.giphy.com/media/2wTHINnwbIe7lNQBOg/giphy.gif",
+                        ReceiverUsers = group.Select(fi => new ReceiverUsers()
                         {
-                            new ReceiverUsers()
-                            {
-                                UserId = fi.ReceiverUsers.Id,
-                                UserName = !string.IsNullOrEmpty(fi.ReceiverUsers.User.UserName)
-                                    ? fi.ReceiverUsers.User.UserName
-                                    : fi.ReceiverUsers.User.FirstName + fi.ReceiverUsers.User.LastName,
-                                UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
-                            }
-                        }
+                            UserId = fi.ReceiverUsers.Id,
+                            UserName = !string.IsNullOrEmpty(fi.ReceiverUsers.User.UserName)
+                                ? fi.ReceiverUsers.User.UserName
+                                : fi.ReceiverUsers.User.FirstName + " " + fi.ReceiverUsers.User.LastName,
+                            UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
+                        }).ToList()
                     })
                     .ToListAsync();
 
-                /*
-                List<FeedItem> history = await _db.PointHistory_ReceiverUsers
-                    .Include(phru => phru.User)
-                    .Include(phru => phru.PointHistory)
-                    .Select(fi => new FeedItem()
-                    {
-                        Id = fi.PointHistoryId,
-                        Amount = fi.PointHistory.Amount,
-                        SenderId = fi.PointHistory.SenderId,
-                        SenderName = !string.IsNullOrEmpty(fi.PointHistory.SenderUser.UserName)
-                            ? fi.PointHistory.SenderUser.UserName
-                            : fi.PointHistory.SenderUser.FirstName + fi.PointHistory.SenderUser.LastName,
-                        SenderAvatar = fi.PointHistory.SenderUser.Avatar != null
-                            ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.PointHistory.SenderUser.Avatar)}" : null,
-                        EventDate = fi.PointHistory.EventDate,
-                        Description = fi.PointHistory.Description,
-                        EventType = fi.PointHistory.EventType,
-                        GiphyGif = "https://media1.giphy.com/media/CuMiNoTRz2bYc/giphy.gif"
-                    })
-                    .ToListAsync();
-                */
-                return history;
+                return feedItems;
             }
             catch(Exception ex)
             {

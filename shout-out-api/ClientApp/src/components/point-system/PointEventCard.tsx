@@ -1,44 +1,58 @@
 import { Avatar, Box, Card, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { FeedItem, ReceiverUser } from "src/@types/feed";
+import { fDateTime } from "src/utils/formatTime";
 
-export default function PointSystemFeed() {
+type Props = {
+    event: FeedItem;
+};
+
+export default function PointSystemFeed({ event }: Props) {
+    console.log(event);
+
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
-                <Tooltip title="teszt">
+                <Tooltip title={event.senderName}>
                     <Avatar
-                        alt="asd"
-                        src="/assets/illustrations/illustration_dashboard.png"
+                        alt={event.senderName!}
+                        src={event.senderAvatar!}
                         sx={{ width: 48, height: 48 }}
                     />
                 </Tooltip>
                 
-                <Chip label="+10" />
+                <Chip label={`+ ${event.amount}`} />
 
-                <Tooltip title="teszt">
-                    <Avatar
-                        alt="asd"
-                        src="/assets/illustrations/illustration_dashboard.png"
-                        sx={{ width: 48, height: 48 }}
-                    />
-                </Tooltip>
-
+                {event.receiverUsers.map((receiverUser: ReceiverUser) => 
+                    <Tooltip key={receiverUser.userId} title={receiverUser.userName} >
+                        <Avatar
+                            alt={receiverUser.userName}
+                            src={receiverUser.userAvatar!}
+                            sx={{ width: 48, height: 48 }}
+                        />
+                    </Tooltip>
+                )}
 
                 <Box style={{ marginLeft: "auto" }}>
-                    <Chip label="2023.08.31" />
+                    <Chip label={fDateTime(event.eventDate)} />
                 </Box>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 3}}>
-                <Typography>FromUserName</Typography>
+                <Typography>{event.senderName}</Typography>
                 <Typography>@ToUserName</Typography>
-                <Typography>#IndoklásMertKurvaJófejvagy</Typography>
             </Stack>
 
-            <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 3}}>
-                <Box>
-                    Ide jön majd a giphy gif
-                </Box>
+            <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 1}}>
+                <Typography>{event.description}</Typography>
             </Stack>
+
+            {event.giphyGif &&
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Box>
+                        <img src={event.giphyGif} alt="Giphy GIF" />
+                    </Box>
+                </Stack>
+            }
         </Card>
     );
 }
