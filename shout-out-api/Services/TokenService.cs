@@ -37,8 +37,8 @@ namespace shout_out_api.Services
             };
 
             user.RefreshToken = newRefreshToken.Token;
-            user.TokenCreated = newRefreshToken.Created;
-            user.TokenExpires = newRefreshToken.Expires;
+            user.RefreshTokenCreated = newRefreshToken.Created;
+            user.RefreshTokenExpires = newRefreshToken.Expires;
 
             return cookieOptions;
         }

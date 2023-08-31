@@ -46,8 +46,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.TokenCreated = DateTime.Now;
-                user.TokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = DateTime.Now;
+                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
                 _db.Update(user);
                 _db.SaveChanges();
 
@@ -179,8 +179,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.TokenCreated = DateTime.Now;
-                user.TokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = DateTime.Now;
+                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
                 user.VerificationToken = null;
 
                 _db.Update(user);
@@ -316,7 +316,7 @@ namespace shout_out_api.Services
                     throw new Exception("User not found.");
                 }
 
-                if (user.TokenExpires < DateTime.Now)
+                if (user.RefreshTokenExpires < DateTime.Now)
                 {
                     throw new Exception("Token expired.");
                 }
@@ -381,7 +381,7 @@ namespace shout_out_api.Services
                 int sixDigitCode = random.Next(100000, 1000000);
 
                 user.PasswordResetToken = sixDigitCode.ToString("D6");
-                user.ResetTokenExpires = DateTime.UtcNow.AddDays(1);
+                user.PasswordResetTokenExpires = DateTime.UtcNow.AddDays(1);
 
                 _db.Users.Update(user);
                 _db.SaveChanges();
@@ -419,13 +419,13 @@ namespace shout_out_api.Services
                     throw new Exception("User not found");
                 }
 
-                if (user.ResetTokenExpires < DateTime.UtcNow)
+                if (user.PasswordResetTokenExpires < DateTime.UtcNow)
                 {
                     throw new Exception("Reset password token expired");
                 }
 
                 user.PasswordResetToken = null;
-                user.ResetTokenExpires = null;
+                user.PasswordResetTokenExpires = null;
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.NewPassword);
 
                 _db.Users.Update(user);

@@ -12,8 +12,8 @@ using shout_out_api.DataAccess;
 namespace shout_out_api.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230712105543_Init_Migration")]
-    partial class Init_Migration
+    [Migration("20230831113649_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,10 @@ namespace shout_out_api.Migrations
                     b.Property<DateTimeOffset>("EventDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("SenderId")
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SenderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -127,6 +130,9 @@ namespace shout_out_api.Migrations
                     b.Property<string>("PasswordResetToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("PasswordResetTokenExpires")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PointToHave")
                         .HasColumnType("int");
 
@@ -136,19 +142,16 @@ namespace shout_out_api.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ResetTokenExpires")
+                    b.Property<DateTime?>("RefreshTokenCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RefreshTokenExpires")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("StartAtCompany")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TokenCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TokenExpires")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
@@ -180,7 +183,7 @@ namespace shout_out_api.Migrations
                             PointsToGive = 100,
                             Role = 0,
                             UserName = "Admin User",
-                            VerifiedAt = new DateTime(2023, 7, 12, 10, 55, 43, 454, DateTimeKind.Utc).AddTicks(5)
+                            VerifiedAt = new DateTime(2023, 8, 31, 11, 36, 49, 104, DateTimeKind.Utc).AddTicks(2332)
                         });
                 });
 
@@ -188,9 +191,7 @@ namespace shout_out_api.Migrations
                 {
                     b.HasOne("shout_out_api.Model.User", "SenderUser")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SenderId");
 
                     b.Navigation("SenderUser");
                 });

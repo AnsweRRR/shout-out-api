@@ -20,9 +20,9 @@ namespace shout_out_api.Model
         public string? VerificationToken { get; set; }
         public DateTime? VerifiedAt { get; set; }
         public string? PasswordResetToken { get; set; }
-        public DateTime? ResetTokenExpires { get; set; }
+        public DateTime? PasswordResetTokenExpires { get; set; }
         public string? RefreshToken { get; set; }
-        public DateTime? TokenCreated { get; set; }
-        public DateTime? TokenExpires { get; set; }
+        public DateTime? RefreshTokenCreated { get; set; }
+        public DateTime? RefreshTokenExpires { get; set; }
     }
 }

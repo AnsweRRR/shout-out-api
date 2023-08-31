@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shout_out_api.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_Migration : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,10 +47,10 @@ namespace shout_out_api.Migrations
                     VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasswordResetTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TokenCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    RefreshTokenCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RefreshTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,9 +64,10 @@ namespace shout_out_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<int>(type: "int", nullable: false),
-                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    SenderId = table.Column<int>(type: "int", nullable: true),
                     EventDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EventType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,8 +76,7 @@ namespace shout_out_api.Migrations
                         name: "FK_PointHistories_Users_SenderId",
                         column: x => x.SenderId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -104,8 +104,8 @@ namespace shout_out_api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Avatar", "Birthday", "Email", "FirstName", "LastName", "PasswordHash", "PasswordResetToken", "PointToHave", "PointsToGive", "RefreshToken", "ResetTokenExpires", "Role", "StartAtCompany", "TokenCreated", "TokenExpires", "UserName", "VerificationToken", "VerifiedAt" },
-                values: new object[] { 1, null, null, "admin@admin.hu", "admin", "user", "$2a$11$s4fJC1smXEopJu7Bll5MgOVc.gWLp3rLqnkHgXAlPbtxV8UGDIIdq", null, 0, 100, null, null, 0, null, null, null, "Admin User", null, new DateTime(2023, 7, 12, 10, 55, 43, 454, DateTimeKind.Utc).AddTicks(5) });
+                columns: new[] { "Id", "Avatar", "Birthday", "Email", "FirstName", "LastName", "PasswordHash", "PasswordResetToken", "PasswordResetTokenExpires", "PointToHave", "PointsToGive", "RefreshToken", "RefreshTokenCreated", "RefreshTokenExpires", "Role", "StartAtCompany", "UserName", "VerificationToken", "VerifiedAt" },
+                values: new object[] { 1, null, null, "admin@admin.hu", "admin", "user", "$2a$11$s4fJC1smXEopJu7Bll5MgOVc.gWLp3rLqnkHgXAlPbtxV8UGDIIdq", null, null, 0, 100, null, null, null, 0, null, "Admin User", null, new DateTime(2023, 8, 31, 11, 36, 49, 104, DateTimeKind.Utc).AddTicks(2332) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PointHistories_SenderId",

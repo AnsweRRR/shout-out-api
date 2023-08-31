@@ -62,6 +62,8 @@ export default function EditRewardCardDialog({ reward, open, onClose, onEditRewa
                 cost: data.cost,
                 avatar: isAvatarChanged ? data.avatar : null
             });
+
+            onClose();
         } catch (error) {
             console.error(error);
         }
