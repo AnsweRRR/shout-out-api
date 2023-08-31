@@ -16,6 +16,12 @@ export function fDateTime(date: InputValue, newFormat?: string) {
   return date ? format(new Date(date), fm) : '';
 }
 
+export function fHungarianDateTime(date: InputValue, newFormat?: string) {
+  const fm = newFormat || 'yyyy.MMM.dd  hh:mm';
+
+  return date ? format(new Date(date), fm) : '';
+}
+
 export function fTimestamp(date: InputValue) {
   return date ? getTime(new Date(date)) : '';
 }

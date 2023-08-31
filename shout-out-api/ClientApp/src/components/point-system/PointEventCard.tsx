@@ -1,6 +1,6 @@
-import { Avatar, Box, Card, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Card, Chip, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import { FeedItem, ReceiverUser } from "src/@types/feed";
-import { fDateTime } from "src/utils/formatTime";
+import { fHungarianDateTime } from "src/utils/formatTime";
 
 type Props = {
     event: FeedItem;
@@ -22,24 +22,36 @@ export default function PointSystemFeed({ event }: Props) {
                 
                 <Chip label={`+ ${event.amount}`} />
 
-                {event.receiverUsers.map((receiverUser: ReceiverUser) => 
-                    <Tooltip key={receiverUser.userId} title={receiverUser.userName} >
-                        <Avatar
-                            alt={receiverUser.userName}
-                            src={receiverUser.userAvatar!}
-                            sx={{ width: 48, height: 48 }}
-                        />
-                    </Tooltip>
+                {event.receiverUsers.map((receiverUser: ReceiverUser, index: number) =>
+                    <Box
+                        style={{
+                            display: 'flex',
+                            overflow: 'hidden',
+                            position: 'relative',
+                            marginLeft: index !== 0 ? '-16px' : '16px'
+                        }}
+                    >
+                        <Tooltip key={receiverUser.userId} title={receiverUser.userName} >
+                            <Avatar
+                                alt={receiverUser.userName}
+                                src={receiverUser.userAvatar!}
+                                sx={{ width: 48, height: 48 }}
+                            />
+                        </Tooltip>
+                    </Box>
                 )}
 
                 <Box style={{ marginLeft: "auto" }}>
-                    <Chip label={fDateTime(event.eventDate)} />
+                    <Chip label={fHungarianDateTime(event.eventDate)} />
                 </Box>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 3}}>
                 <Typography>{event.senderName}</Typography>
-                <Typography>@ToUserName</Typography>
+                <Typography style={{ margin: 0 }}>🎉</Typography>
+                {event.receiverUsers.map((receiverUser: ReceiverUser) => 
+                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>{`@${receiverUser.userName}`}</Typography>
+                )}
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 1}}>
@@ -47,12 +59,14 @@ export default function PointSystemFeed({ event }: Props) {
             </Stack>
 
             {event.giphyGif &&
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack direction="row" alignItems="center" spacing={2} style={{ marginBottom: 10 }}>
                     <Box>
                         <img src={event.giphyGif} alt="Giphy GIF" />
                     </Box>
                 </Stack>
             }
+
+            <Divider />
         </Card>
     );
 }
