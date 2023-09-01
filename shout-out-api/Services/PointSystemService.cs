@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
 using shout_out_api.Model.Interfaces;
@@ -95,6 +96,7 @@ namespace shout_out_api.Services
                         Description = model.Description,
                         SenderId = senderUserId,
                         EventDate = now,
+                        EventType = PointEventType.UserEvent
                     };
 
                     _db.PointHistories.Add(pointEvent);
@@ -137,15 +139,63 @@ namespace shout_out_api.Services
                 {
                     if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date)
                     {
-                        //TODO: Create Birthday point event
+                        using (var transaction = _db.Database.BeginTransaction())
+                        {
+                            PointHistory pointEvent = new PointHistory()
+                            {
+                                Amount = 50,
+                                Description = "Happy birthday!",
+                                SenderId = null,
+                                EventDate = now,
+                                EventType = PointEventType.SystemEvent
+                            };
+
+                            _db.PointHistories.Add(pointEvent);
+                            _db.SaveChanges();
+
+                            var receiverUser = new PointHistory_ReceiverUser()
+                            {
+                                User = user,
+                                PointHistory = pointEvent
+                            };
+
+                            _db.PointHistory_ReceiverUsers.Add(receiverUser);
+                            _db.SaveChanges();
+
+                            transaction.Commit();
+                        }
                     }
 
                     if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
                     {
-                        //TODO: Create StartAtCompany point event
+                        using (var transaction = _db.Database.BeginTransaction())
+                        {
+                            PointHistory pointEvent = new PointHistory()
+                            {
+                                Amount = 50,
+                                Description = "Happy work anniversary!",
+                                SenderId = null,
+                                EventDate = now,
+                                EventType = PointEventType.SystemEvent
+                            };
+
+                            _db.PointHistories.Add(pointEvent);
+                            _db.SaveChanges();
+
+                            var receiverUser = new PointHistory_ReceiverUser()
+                            {
+                                User = user,
+                                PointHistory = pointEvent
+                            };
+
+                            _db.PointHistory_ReceiverUsers.Add(receiverUser);
+                            _db.SaveChanges();
+
+                            transaction.Commit();
+                        }
                     }
 
-                    if (now.Day == 1)
+                    if (now.Day == 1) //new month
                     {
                         user.PointsToGive = 100;
                     }

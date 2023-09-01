@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, Chip, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Card, Chip, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
 import { FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
 
@@ -12,6 +12,16 @@ export default function PointSystemFeed({ event }: Props) {
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
+                {/* <Grid container>
+                    <Grid item xs={8} md={8}>
+
+                    </Grid>
+
+                    <Grid item xs={4} md={4}>
+
+                    </Grid>
+                </Grid> */}
+
                 <Tooltip title={event.senderName}>
                     <Avatar
                         alt={event.senderName!}
