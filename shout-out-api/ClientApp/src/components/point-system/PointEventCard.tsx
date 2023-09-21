@@ -57,7 +57,7 @@ export default function PointSystemFeed({ event }: Props) {
                 <Typography>{event.senderName}</Typography>
                 <Typography style={{ margin: 0 }}>🎉</Typography>
                 {event.receiverUsers.map((receiverUser: ReceiverUser) => 
-                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>{`@${receiverUser.userName}`}</Typography>
+                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>&nbsp;{`@${receiverUser.userName}`}</Typography>
                 )}
             </Stack>
 

@@ -4,7 +4,8 @@ const en = {
     PointsToGive: 'Points to give'
   },
   Feed: {
-    Send: "Send"
+    Send: "Send",
+    PlaceHolderExample: "@nickname +10 comment..."
   }
 };
 

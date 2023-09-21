@@ -4,7 +4,8 @@ const hu = {
     PointsToGive: 'Adható pontok'
   },
   Feed: {
-    Send: "Elküldöm"
+    Send: "Elküldöm",
+    PlaceHolderExample: "@felhasználónév +10 hozzászólás..."
   }
 };
 
