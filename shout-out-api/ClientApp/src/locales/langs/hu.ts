@@ -1,31 +1,11 @@
 const hu = {
-  app: `app`,
-  user: `user`,
-  list: `list`,
-  edit: `edit`,
-  post: `post`,
-  cards: `cards`,
-  posts: `posts`,
-  create: `create`,
-  kanban: `kanban`,
-  general: `general`,
-  banking: `banking`,
-  booking: `booking`,
-  profile: `profile`,
-  account: `account`,
-  product: `product`,
-  details: `details`,
-  checkout: `checkout`,
-  analytics: `analytics`,
-  management: `management`,
-  item_disabled: `item disabled`,
-  item_label: `item label`,
-  item_caption: `item caption`,
-  item_external_link: `item external link`,
-  description: `description`,
-  other_cases: `other cases`,
-  item_by_roles: `item by roles`,
-  only_admin_can_see_this_item: `Only admin can see this item`,
+  Header: {
+    PointsToHave: 'Pontjaid',
+    PointsToGive: 'Adható pontok'
+  },
+  Feed: {
+    Send: "Elküldöm"
+  }
 };
 
 export default hu;
