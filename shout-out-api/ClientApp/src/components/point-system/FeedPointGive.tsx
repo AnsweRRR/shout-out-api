@@ -1,4 +1,5 @@
-import { Box, Button, Card, Grid, Stack, TextField } from "@mui/material";
+import { Box, Card, Grid, Stack, TextField } from "@mui/material";
+import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 
 
 export default function PointSystemFeed() {
@@ -30,6 +31,18 @@ export default function PointSystemFeed() {
                     sx={{ width: '100%', border: 'none' }}
                 />
             </Stack>
+            <Box sx={{ marginTop: '10px' }} className="searchboxWrapper">
+                <GiphyGIFSearchBox
+                    apiKey="9Ixlv3DWC1biJRI57RanyL7RTbfzz0o7"
+                    imageRenditionFileType="gif"
+                    library="gifs"
+                    onSelect={(item: any) => console.log(item)}
+                    masonryConfig={[
+                        { columns: 2, imageWidth: 110, gutter: 5 },
+                        { mq: '700px', columns: 3, imageWidth: 120, gutter: 5 }
+                    ]}
+                />
+            </Box>
         </Card>
     );
 }
