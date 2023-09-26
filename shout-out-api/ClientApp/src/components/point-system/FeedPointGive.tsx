@@ -13,12 +13,19 @@ export default function PointSystemFeed() {
     const [isSendEnabled, setIsSendEnabled] = useState(false);
     const [taggerAnchorEl, setTaggerAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
 
     const handleTaggerButtonClick = () => {
         if (textareaRef.current) {
             textareaRef.current.value += '@';
             textareaRef.current.focus();
         }
+    };
+
+    const handleSelectGif = (selectedGif: any) => {
+        console.log(selectedGif);
+        setSelectedGiphyUrl(selectedGif.images.fixed_height_still.url);
+        setGifAnchorEl(null);
     };
 
     return (
@@ -95,6 +102,14 @@ export default function PointSystemFeed() {
                     />
                 </Stack>
 
+                {selectedGiphyUrl &&
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Box>
+                            <img src={selectedGiphyUrl} alt='selectedGiphyUrl' />
+                        </Box>
+                    </Stack>
+                }
+
                 <Stack direction="row" alignItems="center" spacing={2} style={{ justifyContent: 'space-between' }}>
                     <IconButton onClick={(event) => setGifAnchorEl(event.currentTarget)} sx={{ padding: 0 }}>
                         <Iconify icon="fluent:emoji-32-regular" width={20} />
@@ -134,7 +149,7 @@ export default function PointSystemFeed() {
                             apiKey="9Ixlv3DWC1biJRI57RanyL7RTbfzz0o7"
                             imageRenditionFileType="gif"
                             library="gifs"
-                            onSelect={(item: any) => console.log(item)}
+                            onSelect={(item: any) => handleSelectGif(item)}
                             masonryConfig={[
                                 { columns: 2, imageWidth: 110, gutter: 5 },
                                 { mq: '700px', columns: 3, imageWidth: 120, gutter: 5 }
