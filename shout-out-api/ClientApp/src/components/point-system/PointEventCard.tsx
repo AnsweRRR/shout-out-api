@@ -7,60 +7,57 @@ type Props = {
 };
 
 export default function PointSystemFeed({ event }: Props) {
-    console.log(event);
-
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
-                {/* <Grid container>
+                <Grid container>
                     <Grid item xs={8} md={8}>
-
-                    </Grid>
-
-                    <Grid item xs={4} md={4}>
-
-                    </Grid>
-                </Grid> */}
-
-                <Tooltip title={event.senderName}>
-                    <Avatar
-                        alt={event.senderName!}
-                        src={event.senderAvatar!}
-                        sx={{ width: 48, height: 48 }}
-                    />
-                </Tooltip>
-                
-                <Chip label={`+ ${event.amount}`} />
-
-                {event.receiverUsers.map((receiverUser: ReceiverUser, index: number) =>
-                    <Box
-                        style={{
-                            display: 'flex',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            marginLeft: index !== 0 ? '-16px' : '16px'
-                        }}
-                    >
-                        <Tooltip key={receiverUser.userId} title={receiverUser.userName} >
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                        <Tooltip title={event.senderName}>
                             <Avatar
-                                alt={receiverUser.userName}
-                                src={receiverUser.userAvatar!}
+                                alt={event.senderName!}
+                                src={event.senderAvatar!}
                                 sx={{ width: 48, height: 48 }}
                             />
                         </Tooltip>
-                    </Box>
-                )}
+                    
+                        <Chip label={`+ ${event.amount}`} />
 
-                <Box style={{ marginLeft: "auto" }}>
-                    <Chip label={fHungarianDateTime(event.eventDate)} />
-                </Box>
+                        {event.receiverUsers.map((receiverUser: ReceiverUser, index: number) =>
+                            <Box
+                                key={receiverUser.userId}
+                                style={{
+                                    display: 'flex',
+                                    overflow: 'hidden',
+                                    position: 'relative',
+                                    marginLeft: index !== 0 ? '-16px' : '16px'
+                                }}
+                            >
+                                <Tooltip title={receiverUser.userName} >
+                                    <Avatar
+                                        alt={receiverUser.userName}
+                                        src={receiverUser.userAvatar!}
+                                        sx={{ width: 48, height: 48 }}
+                                    />
+                                </Tooltip>
+                            </Box>
+                        )}
+                        </Stack>
+                    </Grid>
+
+                    <Grid item xs={4} md={4}>
+                        <Box style={{ marginLeft: "auto", textAlign: "right" }}>
+                            <Chip label={fHungarianDateTime(event.eventDate)} />
+                        </Box>
+                    </Grid>
+                </Grid>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 3}}>
                 <Typography>{event.senderName}</Typography>
                 <Typography style={{ margin: 0 }}>🎉</Typography>
                 {event.receiverUsers.map((receiverUser: ReceiverUser) => 
-                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>{`@${receiverUser.userName}`}</Typography>
+                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>&nbsp;{`@${receiverUser.userName}`}</Typography>
                 )}
             </Stack>
 
