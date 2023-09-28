@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import localStorageAvailable from '../utils/localStorageAvailable';
 import { defaultLang } from './config-lang';
 import enLocales from './langs/en';
+import huLocales from './langs/hu';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +22,7 @@ i18n
   .init({
     resources: {
       en: { translations: enLocales },
+      hu: { translations: huLocales }
     },
     lng,
     fallbackLng: defaultLang.value,
