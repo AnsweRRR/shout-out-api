@@ -168,9 +168,7 @@ export default function PointSystemFeed() {
             >
                     <Box sx={{ marginTop: '10px' }} className="searchboxWrapper">
                     <GiphyGIFSearchBox
-                        apiKey="9Ixlv3DWC1biJRI57RanyL7RTbfzz0o7"
                         imageRenditionFileType="gif"
-                        library="gifs"
                         onSelect={(item: any) => handleSelectGif(item)}
                         masonryConfig={[
                             { columns: 2, imageWidth: 110, gutter: 5 },

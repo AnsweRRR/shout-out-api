@@ -216,7 +216,7 @@ namespace shout_out_api.Services
 
             GiphySearchResult? gifResult;
 
-            if (!string.IsNullOrEmpty(filterName))
+            if (string.IsNullOrEmpty(filterName))
             {
                 gifResult = await giphy.TrendingGifs(new TrendingParameter() { Rating = Rating.G, Limit = 20 });
             }

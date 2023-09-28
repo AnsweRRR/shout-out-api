@@ -6,6 +6,7 @@ import { GiphyGIFSearchBoxStyles } from 'src/utils/cssStyles';
 import useSearchForm from 'src/hooks/useSearchForm';
 import useDebounce from 'src/hooks/useDebounce';
 import useMedia from 'src/hooks/useMedia';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import useApi from 'src/hooks/useApi';
 import { getComponentWrapperWidth, getDefaultMasonryConfig, getMasonryConfigExceptLast, getMediaBreakpoints } from 'src/utils/masonry';
 import SearchForm from './SearchForm';
@@ -23,9 +24,7 @@ type MasonryConfig = {
 }
 
 type Props = {
-    apiKey: string,
     imageRenditionFileType: ImageRenditionFileType,
-    library: 'gifs' | 'stickers',
     loadingImage?: null | string,
     masonryConfig: Array<MasonryConfig>,
     onSelect: Function,
@@ -33,9 +32,7 @@ type Props = {
 
 const GiphyGIFSearchBox = (props: Props) => {
     const {
-        apiKey,
         imageRenditionFileType,
-        library,
         loadingImage,
         masonryConfig,
         onSelect,
@@ -44,12 +41,11 @@ const GiphyGIFSearchBox = (props: Props) => {
     const { query, handleInputChange, handleSubmit } = useSearchForm();
     const debouncedQuery = useDebounce(query, 500);
 
-    const apiEndpoint = query ? 'search' : 'trending';
     const gifPerPage = 20;
-    const rating = 'g';
-    const apiUrl = (offset: number) => `https://api.giphy.com/v1/${library}/${apiEndpoint}?api_key=${apiKey}&limit=${gifPerPage}&rating=${rating}&offset=${offset}&q=${query}`;
+    // const apiUrl = (offset: number) => `https://api.giphy.com/v1/${library}/${apiEndpoint}?api_key=${apiKey}&limit=${gifPerPage}&rating=${rating}&offset=${offset}&q=${query}`;
 
     const [{ data, loading, error, lastPage }, fetchImages] = useApi();
+    const { user } = useAuthContext();
 
     const masonryConfigMatchMedia = useMedia(
         getMediaBreakpoints(masonryConfig),
@@ -61,7 +57,7 @@ const GiphyGIFSearchBox = (props: Props) => {
     const [firstRun, setFirstRun] = useState(true)
     const isFirstRun = useRef(true)
     useEffect(() => {
-        fetchImages(apiUrl(0));
+        fetchImages(user?.accessToken, 0, false, query);
 
         if (isFirstRun.current) {
             isFirstRun.current = false;
@@ -95,7 +91,7 @@ const GiphyGIFSearchBox = (props: Props) => {
 
                 <InfiniteScroll
                     pageStart={0}
-                    loadMore={(page: number) => fetchImages(apiUrl(page * gifPerPage), true)}
+                    loadMore={(page: number) => fetchImages(user?.accessToken, page * gifPerPage, true, query)}
                     hasMore={!loading && !lastPage}
                     useWindow={false}
                     initialLoad={false}
