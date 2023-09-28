@@ -210,11 +210,20 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<GiphySearchResult?> GetGiphyGifs(string? filterName = null)
+        public async Task<GiphySearchResult?> GetGiphyGifs(int offset, string? filterName = null)
         {
             var giphy = new Giphy(_configHelper.Giphy.ApiKey);
 
-            var gifResult = await giphy.GifSearch(new SearchParameter() { Query = filterName, Offset = 10, Limit = 10 });
+            GiphySearchResult? gifResult;
+
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                gifResult = await giphy.TrendingGifs(new TrendingParameter() { Rating = Rating.G, Limit = 20 });
+            }
+            else
+            {
+                gifResult = await giphy.GifSearch(new SearchParameter() { Query = filterName, Rating = Rating.G, Offset = offset, Limit = 20 });
+            }
 
             return gifResult;
         }
