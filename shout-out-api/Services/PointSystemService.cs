@@ -8,7 +8,6 @@ using shout_out_api.Dto.PointSystem;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
-using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -147,7 +146,8 @@ namespace shout_out_api.Services
                                 Description = "Happy birthday!",
                                 SenderId = null,
                                 EventDate = now,
-                                EventType = PointEventType.SystemEvent
+                                EventType = PointEventType.BirthdayEvent,
+                                GiphyGifUrl = "https://media2.giphy.com/media/qnWjDNWHm9Wy1zLwG8/giphy.gif"
                             };
 
                             _db.PointHistories.Add(pointEvent);
@@ -176,7 +176,8 @@ namespace shout_out_api.Services
                                 Description = "Happy work anniversary!",
                                 SenderId = null,
                                 EventDate = now,
-                                EventType = PointEventType.SystemEvent
+                                EventType = PointEventType.JoinToCompanyEvent,
+                                GiphyGifUrl = "https://media3.giphy.com/media/lNA3pbJxd2nmuMcOvH/giphy.gif"
                             };
 
                             _db.PointHistories.Add(pointEvent);
@@ -210,11 +211,11 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<GiphySearchResult?> GetGiphyGifs(string? filterName = null)
+        public async Task<GiphySearchResult?> GetGiphyGifs(Rating rating = Rating.G, string? filterName = null)
         {
             var giphy = new Giphy(_configHelper.Giphy.ApiKey);
 
-            var gifResult = await giphy.GifSearch(new SearchParameter() { Query = filterName, Offset = 10, Limit = 10 });
+            var gifResult = await giphy.GifSearch(new SearchParameter() { Query = filterName, Rating = rating, Offset = 10, Limit = 10 });
 
             return gifResult;
         }

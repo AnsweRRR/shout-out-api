@@ -15,5 +15,6 @@ namespace shout_out_api.Model
         public DateTimeOffset EventDate { get; set; }
         public string? Description { get; set; }
         public PointEventType EventType { get; set; }
+        public string? GiphyGifUrl { get; set; }
     }
 }

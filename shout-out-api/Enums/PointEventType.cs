@@ -3,6 +3,7 @@
     public enum PointEventType
     {
         UserEvent = 0,
-        SystemEvent = 1
+        BirthdayEvent = 1,
+        JoinToCompanyEvent = 2
     }
 }

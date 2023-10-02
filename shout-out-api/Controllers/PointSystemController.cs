@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GiphyDotNet.Model.Parameters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Services;
@@ -43,9 +44,9 @@ namespace shout_out_api.Controllers
 
         [HttpGet("giphy")]
         [Authorize]
-        public async Task<IActionResult> GetGiphyGifs(string? filterName = null)
+        public async Task<IActionResult> GetGiphyGifs(Rating rating, string? filterName = null)
         {
-            var result = await _pointSystemService.GetGiphyGifs(filterName);
+            var result = await _pointSystemService.GetGiphyGifs(rating, filterName);
 
             return Ok(result);
         }
