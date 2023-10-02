@@ -1,5 +1,5 @@
 const giphyGIFReducer = (state: any, action: any) => {
-    const { payload, pagination } = action
+    const { payload, pagination } = action;
   
     switch (action.type) {
         case 'FETCH_INIT':

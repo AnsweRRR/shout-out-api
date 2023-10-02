@@ -25,7 +25,7 @@ export default function PointSystemFeed() {
 
     const handleSelectGif = (selectedGif: any) => {
         console.log(selectedGif);
-        setSelectedGiphyUrl(selectedGif.images.fixed_height.url);
+        setSelectedGiphyUrl(selectedGif.images.fixedHeight.url);
         setGifAnchorEl(null);
     };
 
