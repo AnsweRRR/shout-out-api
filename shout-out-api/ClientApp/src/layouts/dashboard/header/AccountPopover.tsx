@@ -33,6 +33,8 @@ export default function AccountPopover() {
 
   const { user, logout } = useAuthContext();
 
+  console.log(user);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);

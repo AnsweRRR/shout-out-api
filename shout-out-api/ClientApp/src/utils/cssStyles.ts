@@ -116,3 +116,134 @@ export const hideScrollbarX = {
     display: 'none',
   },
 } as const;
+
+
+// ----------------------------------------------------------------------
+
+export const GiphyGIFSearchBoxStyles = `
+  .reactGiphySearchbox-componentWrapper {
+    box-sizing: border-box;
+  }
+
+  .reactGiphySearchbox-componentWrapper *,
+  .reactGiphySearchbox-componentWrapper *:before,
+  .reactGiphySearchbox-componentWrapper *:after {
+    box-sizing: inherit;
+  }
+
+  .reactGiphySearchbox-listWrapper {
+    overflow-y: auto;
+  }
+`;
+
+export const GiphyGIFSearchFormStyles = `
+  .reactGiphySearchbox-searchForm-form {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .reactGiphySearchbox-searchForm-input {
+    padding: 6px 4px;
+    width: 100%;
+    font-size: 1em;
+    font-family: inherit;
+    outline: none;
+    border: 1px solid #ddd;
+  }
+
+  .reactGiphySearchbox-searchForm-input:focus {
+    border-color: #bbb;
+  }
+`;
+
+export const GiphyGIFSpinnerStyles = `
+  .reactGiphySearchbox-spinnerWrapper {
+    text-align: center;
+    padding-bottom: 10px;
+  }
+
+  .reactGiphySearchbox-spinner {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    animation: spin 500ms linear infinite;
+  }
+
+  .reactGiphySearchbox-spinner img {
+    display: block;
+    width: 100%;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .reactGiphySearchbox-spinnerText {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    -webkit-clip-path: inset(50%);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+  }
+`;
+
+export const GiphyGIFAlertStyles = `
+  .reactGiphySearchbox-message {
+    margin: 0;
+  }
+`;
+
+export const GiphyGIFImageItemStyles = `
+  .reactGiphySearchbox-imageButton {
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    animation: fadeIn 300ms ease-in;
+  }
+
+  .reactGiphySearchbox-imageButton:focus {
+    opacity: 0.6;
+  }
+
+  .reactGiphySearchbox-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+export const GiphyGIFPoweredByStyles = `
+  .reactGiphySearchbox-poweredByGiphy {
+    padding-top: 10px;
+    width: 100px;
+  }
+
+  .reactGiphySearchbox-poweredByGiphy img {
+    display: block;
+    width: 100%;
+  }
+`;

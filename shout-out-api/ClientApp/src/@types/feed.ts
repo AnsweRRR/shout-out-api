@@ -21,3 +21,5 @@ export type ReceiverUser = {
     userName: string,
     userAvatar: string | null
 }
+
+export type ImageRenditionFileType = 'gif' | 'webp';

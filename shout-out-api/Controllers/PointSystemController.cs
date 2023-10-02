@@ -44,9 +44,9 @@ namespace shout_out_api.Controllers
 
         [HttpGet("giphy")]
         [Authorize]
-        public async Task<IActionResult> GetGiphyGifs(Rating rating, string? filterName = null)
+        public async Task<IActionResult> GetGiphyGifs(int offset, string? filterName = null)
         {
-            var result = await _pointSystemService.GetGiphyGifs(rating, filterName);
+            var result = await _pointSystemService.GetGiphyGifs(offset, filterName);
 
             return Ok(result);
         }

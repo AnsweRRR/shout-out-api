@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useLocales } from "src/locales";
+import { CloseIcon } from "src/theme/overrides/CustomIcons";
 import Iconify from "../iconify";
+import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
@@ -12,12 +14,19 @@ export default function PointSystemFeed() {
     const [isSendEnabled, setIsSendEnabled] = useState(false);
     const [taggerAnchorEl, setTaggerAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
 
     const handleTaggerButtonClick = () => {
         if (textareaRef.current) {
             textareaRef.current.value += '@';
             textareaRef.current.focus();
         }
+    };
+
+    const handleSelectGif = (selectedGif: any) => {
+        console.log(selectedGif);
+        setSelectedGiphyUrl(selectedGif.images.fixed_height.url);
+        setGifAnchorEl(null);
     };
 
     return (
@@ -94,6 +103,36 @@ export default function PointSystemFeed() {
                     />
                 </Stack>
 
+                {selectedGiphyUrl &&
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                        style={{ position: 'relative' }}
+                    >
+                        <Box style={{ position: 'relative' }}>
+                            <IconButton
+                                onClick={() => setSelectedGiphyUrl(null)}
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    transition: 'transform 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                            <img src={selectedGiphyUrl} alt="selectedGiphyUrl" />
+                        </Box>
+                    </Stack>
+                }
+
                 <Stack direction="row" alignItems="center" spacing={2} style={{ justifyContent: 'space-between' }}>
                     <IconButton onClick={(event) => setGifAnchorEl(event.currentTarget)} sx={{ padding: 0 }}>
                         <Iconify icon="fluent:emoji-32-regular" width={20} />
@@ -127,7 +166,16 @@ export default function PointSystemFeed() {
                     horizontal: 'left',
                 }}
             >
-                <Typography sx={{ p: 2 }}>Ide kerül majd a Gif box.</Typography>
+                    <Box sx={{ marginTop: '10px' }} className="searchboxWrapper">
+                    <GiphyGIFSearchBox
+                        imageRenditionFileType="gif"
+                        onSelect={(item: any) => handleSelectGif(item)}
+                        masonryConfig={[
+                            { columns: 2, imageWidth: 110, gutter: 5 },
+                            { mq: '700px', columns: 3, imageWidth: 120, gutter: 5 }
+                        ]}
+                    />
+                </Box>
             </Popover>
         </>
     );
