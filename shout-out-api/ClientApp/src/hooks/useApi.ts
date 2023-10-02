@@ -10,7 +10,7 @@ const useApi = () => {
         lastPage: false,
     });
 
-    const fetchImages = async (accessToken: string, offset: number, isMore: boolean, filterName?: string | null) => {
+    const fetchImages = async (accessToken: string, limit: number, offset: number, isMore: boolean, filterName?: string | null) => {
         if (isMore) {
             dispatch({ type: 'FETCH_MORE_INIT' });
         } else {
@@ -18,10 +18,9 @@ const useApi = () => {
         }
 
         try {
-            const response = await getGiphyGifsAsync(accessToken, offset, filterName);
+            const response = await getGiphyGifsAsync(accessToken, limit, offset, filterName);
 
             if (response.status === 200) {
-                // Successful API call
                 const { data } = response;
 
                 if (isMore) {
@@ -38,59 +37,13 @@ const useApi = () => {
                     });
                 }
             } else {
-                // Handle API error
                 dispatch({ type: 'FETCH_FAILURE' });
             }
         } catch (error) {
-            // Handle network or other errors
             console.error(error);
             dispatch({ type: 'FETCH_FAILURE' });
         }
     };
-
-
-    /*
-    const fetchImages = (url: string, isMore: boolean) => {
-        if (isMore) {
-            dispatch({ type: 'FETCH_MORE_INIT' });
-        } else {
-            dispatch({ type: 'FETCH_INIT' });
-        }
-
-        fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(json => {
-                    throw json
-                });
-            }
-
-            return response.json()
-        })
-        .then(response => {
-            if (!response.pagination) {
-                return dispatch({ type: 'FETCH_FAILURE' });
-            }
-
-            if (isMore) {
-                return dispatch({
-                    type: 'FETCH_MORE_SUCCESS',
-                    payload: response.data,
-                    pagination: response.pagination,
-                });
-            }
-
-            return dispatch({
-                type: 'FETCH_SUCCESS',
-                payload: response.data,
-                pagination: response.pagination
-            });
-        })
-        .catch(() => {
-            dispatch({ type: 'FETCH_FAILURE' });
-        })
-    }
-    */
 
     return [state, fetchImages];
 }

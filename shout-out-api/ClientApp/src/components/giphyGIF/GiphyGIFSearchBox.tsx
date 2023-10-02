@@ -55,7 +55,7 @@ const GiphyGIFSearchBox = (props: Props) => {
     const [firstRun, setFirstRun] = useState(true)
     const isFirstRun = useRef(true)
     useEffect(() => {
-        fetchImages(user?.accessToken, 0, false, query);
+        fetchImages(user?.accessToken, gifPerPage, 0, false, query);
 
         if (isFirstRun.current) {
             isFirstRun.current = false;
@@ -73,7 +73,6 @@ const GiphyGIFSearchBox = (props: Props) => {
                 value={query}
                 setValue={handleInputChange}
                 onSubmit={handleSubmit}
-                // loadingData={loading}
                 placeholder='Search for GIFs'
             />
 
@@ -89,7 +88,7 @@ const GiphyGIFSearchBox = (props: Props) => {
 
                 <InfiniteScroll
                     pageStart={0}
-                    loadMore={(page: number) => fetchImages(user?.accessToken, page * gifPerPage, true, query)}
+                    loadMore={(page: number) => fetchImages(user?.accessToken, gifPerPage, page * gifPerPage, true, query)}
                     hasMore={!loading && !lastPage}
                     useWindow={false}
                     initialLoad={false}

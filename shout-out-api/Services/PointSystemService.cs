@@ -210,7 +210,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<RootObject> GetGiphyGifs(int offset, string? filterName = null)
+        public async Task<RootObject> GetGiphyGifs(int limit, int offset, string? filterName = null)
         {
             var giphy = new Giphy(_configHelper.Giphy.ApiKey);
 
@@ -218,12 +218,12 @@ namespace shout_out_api.Services
 
             if (string.IsNullOrEmpty(filterName))
             {
-                var parameter = new TrendingParameter() { Limit = 20, Offset = offset, Rating = Rating.G };
+                var parameter = new TrendingParameter() { Limit = limit, Offset = offset, Rating = Rating.G };
                 result = await giphy.Trending(parameter);
             }
             else
             {
-                var parameter = new SearchParameter() { Query = filterName, Limit = 20, Offset = offset, Rating = Rating.G };
+                var parameter = new SearchParameter() { Query = filterName, Limit = limit, Offset = offset, Rating = Rating.G };
                 result = await giphy.Search(parameter);
             }
 

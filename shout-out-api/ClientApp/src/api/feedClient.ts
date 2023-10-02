@@ -28,13 +28,14 @@ export async function givePointsAsync(dto: any, accessToken: string) {
     }
 }
 
-export async function getGiphyGifsAsync(accessToken: string, offset: number, filterName?: string | null) {
+export async function getGiphyGifsAsync(accessToken: string, limit: number, offset: number, filterName?: string | null) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
 
         const params = {
+            limit,
             offset,
             filterName
         };
