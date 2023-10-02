@@ -110,7 +110,7 @@ const GiphyGIFSearchBox = (props: Props) => {
                             key={item.id}
                             onSelect={onSelect}
                             backgroundColor='#eee'
-                            imageRenditionName='fixed_width_downsampled'
+                            imageRenditionName='fixedWidthDownsampled'
                             imageRenditionFileType={imageRenditionFileType}
                         />
                     ))}

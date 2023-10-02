@@ -72,7 +72,6 @@ export default function AccountGeneral() {
       await editOwnUserAccountAsync(editUserDto, user?.accessToken);
 
       enqueueSnackbar('Update success!');
-      console.log('DATA', data);
     } catch (error) {
       console.error(error);
     }

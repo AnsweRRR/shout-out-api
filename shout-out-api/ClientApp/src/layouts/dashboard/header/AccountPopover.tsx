@@ -30,13 +30,8 @@ const OPTIONS = [
 
 export default function AccountPopover() {
   const navigate = useNavigate();
-
   const { user, logout } = useAuthContext();
-
-  console.log(user);
-
   const { enqueueSnackbar } = useSnackbar();
-
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
   /* eslint-disable-next-line no-unsafe-optional-chaining */

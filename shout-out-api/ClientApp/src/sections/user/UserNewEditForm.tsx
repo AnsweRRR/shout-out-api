@@ -89,7 +89,6 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_APP.user.list);
-      console.log('DATA', data);
     } catch (error) {
       console.error(error);
     }

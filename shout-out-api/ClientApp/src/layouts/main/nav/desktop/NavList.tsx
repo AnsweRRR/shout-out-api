@@ -18,13 +18,8 @@ type NavListProps = {
 
 export default function NavList({ item, isOffset }: NavListProps) {
   const { pathname } = useLocation();
-
   const [openMenu, setOpenMenu] = useState(false);
-
   const { path, children } = item;
-
-  console.log(item);
-
   const { active, isExternalLink } = useActiveLink(path, false);
 
   useEffect(() => {

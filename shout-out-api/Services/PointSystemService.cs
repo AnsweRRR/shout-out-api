@@ -1,8 +1,7 @@
-﻿using GiphyDotNet.Manager;
-using GiphyDotNet.Model.Parameters;
-using GiphyDotNet.Model.Results;
+﻿using GiphyApiWrapper;
+using GiphyApiWrapper.Models;
+using GiphyApiWrapper.Models.Parameters;
 using Microsoft.EntityFrameworkCore;
-using MimeKit;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Enums;
@@ -211,22 +210,24 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<GiphySearchResult?> GetGiphyGifs(int offset, string? filterName = null)
+        public async Task<RootObject> GetGiphyGifs(int offset, string? filterName = null)
         {
             var giphy = new Giphy(_configHelper.Giphy.ApiKey);
 
-            GiphySearchResult? gifResult;
+            RootObject result;
 
             if (string.IsNullOrEmpty(filterName))
             {
-                gifResult = await giphy.TrendingGifs(new TrendingParameter() { Rating = Rating.G, Limit = 20 });
+                var parameter = new TrendingParameter() { Limit = 20, Offset = offset, Rating = Rating.G };
+                result = await giphy.Trending(parameter);
             }
             else
             {
-                gifResult = await giphy.GifSearch(new SearchParameter() { Query = filterName, Rating = Rating.G, Offset = offset, Limit = 20 });
+                var parameter = new SearchParameter() { Query = filterName, Limit = 20, Offset = offset, Rating = Rating.G };
+                result = await giphy.Search(parameter);
             }
 
-            return gifResult;
+            return result;
         }
     }
 }

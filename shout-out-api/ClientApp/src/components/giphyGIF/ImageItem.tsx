@@ -23,6 +23,8 @@ const ImageItem = (props: Props) => {
     const {backgroundColor, item, imageRenditionName, imageRenditionFileType, size, onSelect } = props;
     useStyle('ImageItem', GiphyGIFImageItemStyles);
 
+    console.log(item);
+
     return (
         <button
             data-testid="ImageItemButton"
