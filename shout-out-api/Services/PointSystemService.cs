@@ -41,7 +41,9 @@ namespace shout_out_api.Services
                         EventDate = group.First().PointHistory.EventDate,
                         Description = group.First().PointHistory.Description,
                         EventType = group.First().PointHistory.EventType,
-                        GiphyGif = "https://media0.giphy.com/media/2wTHINnwbIe7lNQBOg/giphy.gif",
+                        GiphyGif = !string.IsNullOrEmpty(group.First().PointHistory.GiphyGifUrl)
+                            ? group.First().PointHistory.GiphyGifUrl
+                            : null,
                         ReceiverUsers = group.Select(fi => new ReceiverUsers()
                         {
                             UserId = fi.ReceiverUsers.Id,
