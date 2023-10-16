@@ -5,7 +5,8 @@ const hu = {
   },
   Feed: {
     Send: "Elküldöm",
-    PlaceHolderExample: "@felhasználónév +10 hozzászólás..."
+    PlaceHolderExample: "@felhasználónév +10 hozzászólás...",
+    Loading: "Töltés..."
   }
 };
 

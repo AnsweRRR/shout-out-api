@@ -1,11 +1,17 @@
 import axios from 'src/utils/axios';
 
-export async function getPointsHistoryAsync(accessToken: string) {
+export async function getPointsHistoryAsync(offset: number, take: number, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.get(`/api/pointSystem/history`, { headers });
+
+        const params = {
+            offset,
+            take
+        };
+
+        const response = await axios.get(`/api/pointSystem/history`, { params, headers });
         return response;
     }
     catch(error) {

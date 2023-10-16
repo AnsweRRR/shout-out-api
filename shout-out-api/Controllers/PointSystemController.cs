@@ -18,9 +18,9 @@ namespace shout_out_api.Controllers
 
         [HttpGet("history")]
         [Authorize]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int take, int offset)
         {
-            var result = await _pointSystemService.GetHistory();
+            var result = await _pointSystemService.GetHistory(take, offset);
 
             return Ok(result);
         }

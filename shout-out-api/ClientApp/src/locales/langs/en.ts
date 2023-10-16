@@ -5,7 +5,8 @@ const en = {
   },
   Feed: {
     Send: "Send",
-    PlaceHolderExample: "@nickname +10 comment..."
+    PlaceHolderExample: "@nickname +10 comment...",
+    Loading: "Loading..."
   }
 };
 

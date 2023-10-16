@@ -21,7 +21,7 @@ namespace shout_out_api.Services
             _configHelper = configHelper;
         }
 
-        public async Task<IList<FeedItem>> GetHistory()
+        public async Task<IList<FeedItem>> GetHistory(int take = 10, int offset = 0)
         {
             try
             {
@@ -51,6 +51,8 @@ namespace shout_out_api.Services
                             UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
                         }).ToList()
                     })
+                    .Skip(offset)
+                    .Take(take)
                     .ToListAsync();
 
                 return feedItems;
