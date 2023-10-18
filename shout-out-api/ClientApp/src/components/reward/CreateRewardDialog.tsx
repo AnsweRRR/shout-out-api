@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Reward } from 'src/@types/reward';
 import { Box, Stack, Dialog, Button, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { useLocales } from "src/locales";
 import { fData } from 'src/utils/formatNumber';
 import { useCallback } from 'react';
 import { CustomFile } from '../upload';
@@ -25,11 +26,13 @@ type Props = {
 };
 
 export default function CreateRewardCardDialog({ open, onClose, onCreateReward }: Props) {
+    const { translate } = useLocales();
+
     const NewRewardSchema = Yup.object().shape({
-        name: Yup.string().required('Name is required'),
-        description: Yup.string().required('Description is required'),
-        cost: Yup.number().required('Cost is required'),
-        avatar: Yup.mixed().required('Avatar is required'),
+        name: Yup.string().required(translate('Maintenance.Validator.NameIsRequired')),
+        description: Yup.string().required(translate('Maintenance.Validator.DescriptionIsRequired')),
+        cost: Yup.number().required(translate('Maintenance.Validator.CostIsRequired')),
+        avatar: Yup.mixed().required(translate('Maintenance.Validator.AvatarIsRequired')),
     });
 
     const defaultValues = {
@@ -78,7 +81,7 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
     return (
         <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-                <DialogTitle>Create new reward</DialogTitle>
+                <DialogTitle>{`${translate('Maintenance.CreateNewReward')}`}</DialogTitle>
 
                 <DialogContent dividers>
                     <Stack spacing={3}>
@@ -92,11 +95,11 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
                             }}
                             sx={{mt: '10px'}}
                         >
-                            <RHFTextField name="name" label="Name" />
-                            <RHFTextField name="cost" label="Cost" type='number' />
+                            <RHFTextField name="name" label={`${translate('Maintenance.Name')}`} />
+                            <RHFTextField name="cost" label={`${translate('Maintenance.Cost')}`} type='number' />
                         </Box>
 
-                        <RHFTextField name="description" label="Description" multiline rows={3} />
+                        <RHFTextField name="description" label={`${translate('Maintenance.Description')}`} multiline rows={3} />
 
                         <RHFUploadAvatar
                             name="avatar"
@@ -113,8 +116,8 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
                                         color: 'text.secondary',
                                     }}
                                 >
-                                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                                    <br /> max size of {fData(10000000)}
+                                    {`${translate('Maintenance.Allowed')}`} *.jpeg, *.jpg, *.png, *.gif
+                                    <br /> {`${translate('Maintenance.MaxSizeOf')}`} {fData(10000000)}
                                 </Typography>
                             }
                         />
@@ -123,11 +126,11 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
 
                 <DialogActions>
                     <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                        Create
+                        {`${translate('Maintenance.Create')}`}
                     </LoadingButton>
 
                     <Button color="inherit" variant="outlined" onClick={onClose}>
-                        Cancel
+                        {`${translate('Maintenance.Cancel')}`}
                     </Button>
                 </DialogActions>
             </FormProvider>

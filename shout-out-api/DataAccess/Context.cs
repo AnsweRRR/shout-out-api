@@ -41,6 +41,8 @@ namespace shout_out_api.DataAccess
                         VerifiedAt = DateTime.UtcNow,
                         UserName = "Admin User",
                         Role = Role.Admin,
+                        PointsToGive = 100,
+                        PointToHave = 0,
                         PasswordHash = "$2a$11$s4fJC1smXEopJu7Bll5MgOVc.gWLp3rLqnkHgXAlPbtxV8UGDIIdq" // Abcd1
                     });
         }

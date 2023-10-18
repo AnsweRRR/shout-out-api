@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Card, Avatar, Divider, Typography, Stack, IconButton, Button } from '@mui/material';
+import { Box, Card, Avatar, Divider, Typography, Stack, Button } from '@mui/material';
 import { Reward } from 'src/@types/reward';
+import { useLocales } from "src/locales";
 import { fShortenNumber } from '../../utils/formatNumber';
 import Image from '../image';
 import SvgColor from '../svg-color';
@@ -34,6 +35,7 @@ type Props = {
 
 export default function RewardCard({ reward, cover, userPoints, handleClaimButtonClick, handleDeleteButtonClick, handleEditButtonClick }: Props) {
   const { id, name, description, cost, avatar } = reward;
+  const { translate } = useLocales();
   const FILLCOLOR = '#b9f6ca';
   const [percentage, setPercentage] = useState(0);
 
@@ -134,14 +136,14 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
         <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" sx={{ py: 3, marginTop: 'auto' }}>
           <Box>
             <Typography variant="caption" component="div" sx={{ mb: 0.75, color: 'text.disabled' }}>
-              Cost
+              {`${translate('RewardCard.Cost')}`}
             </Typography>
             <Typography variant="subtitle1">{fShortenNumber(cost!)}</Typography>
           </Box>
 
           <Box display="flex" justifyContent="center" alignItems="center">
             <Button variant="outlined" onClick={() => setOpenDialog(true)} style={buttonStyle} disabled={percentage < 100}>
-              Claim
+              {`${translate('RewardCard.Claim')}`}
             </Button>
           </Box>
         </Box>
