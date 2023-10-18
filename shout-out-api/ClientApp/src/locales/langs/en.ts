@@ -19,6 +19,17 @@ const en = {
       AvatarIsRequired: "Avatar is required",
     }
   },
+  SideMenu: {
+    Menu: "Menu",
+    Feed: "Feed",
+    Reward: "Reward",
+    Management: "Management",
+    User: "User",
+    List: "List",
+    Create: "Create",
+    Account: "Account",
+    Logout: "Logout"
+  },
   Header: {
     PointsToHave: 'Points to have',
     PointsToGive: 'Points to give'

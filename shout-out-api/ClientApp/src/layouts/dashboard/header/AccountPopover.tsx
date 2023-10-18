@@ -17,11 +17,7 @@ import { IconButtonAnimate } from '../../../components/animate';
 
 const OPTIONS = [
   {
-    label: 'Home',
-    linkTo: '/',
-  },
-  {
-    label: 'Settings',
+    label: 'Account',
     linkTo: PATH_APP.user.account,
   },
 ];

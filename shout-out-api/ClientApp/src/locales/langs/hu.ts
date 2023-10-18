@@ -19,6 +19,17 @@ const hu = {
       AvatarIsRequired: "Az avatar kötelező",
     }
   },
+  SideMenu: {
+    Menu: "Menü",
+    Feed: "Feed",
+    Reward: "Jutalom",
+    Management: "Karbantartó",
+    User: "Felhasználó",
+    List: "Lista",
+    Create: "Létrehoz",
+    Account: "Fiók",
+    Logout: "Kijelentkezés"
+  },
   Header: {
     PointsToHave: 'Pontjaid',
     PointsToGive: 'Adható pontok'
