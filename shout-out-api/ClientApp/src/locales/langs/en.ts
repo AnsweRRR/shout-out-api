@@ -29,8 +29,11 @@ const en = {
     Loading: "Loading..."
   },
   RewardCard: {
-    "Cost": "Cost",
-    "Claim": "Claim"
+    Cost: "Cost",
+    Claim: "Claim"
+  },
+  Gif: {
+    SearchForGif: "Search for gif..."
   }
 };
 

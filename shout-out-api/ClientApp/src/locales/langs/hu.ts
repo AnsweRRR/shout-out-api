@@ -29,8 +29,11 @@ const hu = {
     Loading: "Töltés..."
   },
   RewardCard: {
-    "Cost": "Érték",
-    "Claim": "Kiváltom"
+    Cost: "Érték",
+    Claim: "Kiváltom"
+  },
+  Gif: {
+    SearchForGif: "Gif keresése..."
   }
 };
 

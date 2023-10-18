@@ -9,6 +9,7 @@ import useMedia from 'src/hooks/useMedia';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import useApi from 'src/hooks/useApi';
 import { getComponentWrapperWidth, getDefaultMasonryConfig, getMasonryConfigExceptLast, getMediaBreakpoints } from 'src/utils/masonry';
+import { useLocales } from 'src/locales';
 import SearchForm from './SearchForm';
 import ImageItem from './ImageItem';
 import MasonryLayout from './MasonryLayout';
@@ -38,6 +39,7 @@ const GiphyGIFSearchBox = (props: Props) => {
         onSelect,
     } = props;
     useStyle('Index', GiphyGIFSearchBoxStyles);
+    const { translate } = useLocales();
     const { query, handleInputChange, handleSubmit } = useSearchForm();
     const debouncedQuery = useDebounce(query, 500);
 
@@ -73,7 +75,7 @@ const GiphyGIFSearchBox = (props: Props) => {
                 value={query}
                 setValue={handleInputChange}
                 onSubmit={handleSubmit}
-                placeholder='Search for GIFs'
+                placeholder={`${translate('Gif.SearchForGif')}`}
             />
 
             <div
