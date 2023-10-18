@@ -108,13 +108,16 @@ namespace shout_out_api.Services
 
                     foreach (User user in users)
                     {
-                        PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
+                        if (user.Id != senderUserId)
                         {
-                            User = user,
-                            PointHistory = pointEvent
-                        };
+                            PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
+                            {
+                                User = user,
+                                PointHistory = pointEvent
+                            };
 
-                        pointHistory_ReceiverUser.Add(receiverUsers);
+                            pointHistory_ReceiverUser.Add(receiverUsers);
+                        }
                     }
 
                     _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
