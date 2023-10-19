@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-// @mui
 import { Stack, Fade, Portal } from '@mui/material';
-// hooks
 import useActiveLink from '../../../../hooks/useActiveLink';
-//
 import { NavItemProps } from '../types';
 import { NavItem, NavItemDashboard } from './NavItem';
 import { StyledSubheader, StyledMenu } from './styles';
-
-// ----------------------------------------------------------------------
 
 type NavListProps = {
   item: NavItemProps;

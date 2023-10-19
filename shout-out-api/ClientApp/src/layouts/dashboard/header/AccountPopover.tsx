@@ -1,37 +1,30 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem } from '@mui/material';
-// routes
 import { PATH_APP, PATH_AUTH } from '../../../routes/paths';
-// auth
 import { useAuthContext } from '../../../auth/useAuthContext';
-// components
+import { useLocales } from 'src/locales';
 import { CustomAvatar } from '../../../components/custom-avatar';
 import { useSnackbar } from '../../../components/snackbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
 
-// ----------------------------------------------------------------------
-
-const OPTIONS = [
-  {
-    label: 'Account',
-    linkTo: PATH_APP.user.account,
-  },
-];
-
-// ----------------------------------------------------------------------
-
 export default function AccountPopover() {
   const navigate = useNavigate();
+  const { translate } = useLocales();
   const { user, logout } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
-  /* eslint-disable-next-line no-unsafe-optional-chaining */
-  const DISPLAY_NAME = user?.userName ? user?.userName : `${user?.firstName} ${user?.lastName}`;
+  const DISPLAY_NAME = user?.userName ? `${user?.userName}` : `${user?.firstName} ${user?.lastName}`;
+
+  const OPTIONS = [
+    {
+      label: `${translate('SideMenu.Account')}`,
+      linkTo: PATH_APP.user.account,
+    }
+  ];
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
     setOpenPopover(event.currentTarget);
@@ -48,7 +41,7 @@ export default function AccountPopover() {
       handleClosePopover();
     } catch (error) {
       console.error(error);
-      enqueueSnackbar('Unable to logout!', { variant: 'error' });
+      enqueueSnackbar(`${translate('ApiCallResults.UnableToLogout')}`, { variant: 'error' });
     }
   };
 
@@ -103,7 +96,7 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
-          Logout
+          {`${translate('SideMenu.Logout')}`}
         </MenuItem>
       </MenuPopover>
     </>

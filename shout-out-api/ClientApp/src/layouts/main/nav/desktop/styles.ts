@@ -1,12 +1,7 @@
-// @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Paper, ListSubheader, ListItemButton } from '@mui/material';
-// utils
 import { bgBlur } from '../../../../utils/cssStyles';
-//
 import { NavItemDesktopProps } from '../types';
-
-// ----------------------------------------------------------------------
 
 type ListItemProps = Omit<NavItemDesktopProps, 'item'>;
 

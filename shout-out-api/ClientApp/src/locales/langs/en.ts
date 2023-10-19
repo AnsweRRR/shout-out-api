@@ -52,7 +52,8 @@ const en = {
     EditedSuccessfully: "Edited successfully!",
     DeletedSuccessfully: "Deleted successfully!",
     SomethingWentWrong: 'Something went wrong!',
-    RewardClaimedSuccessfully: "Reward claimed successfully!"
+    RewardClaimedSuccessfully: "Reward claimed successfully!",
+    UnableToLogout: "Unable to logout!"
   },
   Gif: {
     SearchForGif: "Search for gif..."

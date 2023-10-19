@@ -1,4 +1,3 @@
-import { useLocales } from 'src/locales';
 import i18n from 'i18next';
 import { PATH_APP } from '../../../routes/paths';
 import SvgColor from '../../../components/svg-color';
@@ -21,12 +20,6 @@ const ICONS = {
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
 };
-
-const useTranslate = (text: string) => {
-  const { translate } = useLocales();
-
-  return `${translate(text)}`;
-}
 
 const navConfig = [
   {

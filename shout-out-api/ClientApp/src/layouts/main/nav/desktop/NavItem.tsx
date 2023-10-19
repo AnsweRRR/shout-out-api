@@ -1,16 +1,11 @@
 import { m } from 'framer-motion';
 import { forwardRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { Link, LinkProps, CardActionArea } from '@mui/material';
-// components
 import Iconify from '../../../../components/iconify';
 import Image from '../../../../components/image';
-//
 import { NavItemDesktopProps, NavItemProps } from '../types';
 import { ListItem } from './styles';
-
-// ----------------------------------------------------------------------
 
 export const NavItem = forwardRef<HTMLDivElement, NavItemDesktopProps>(
   ({ item, open, isOffset, active, subItem, isExternalLink, ...other }, ref) => {

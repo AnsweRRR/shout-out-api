@@ -52,7 +52,8 @@ const hu = {
     EditedSuccessfully: "Edited successfully!",
     DeletedSuccessfully: "Deleted successfully!",
     SomethingWentWrong: 'Something went wrong!',
-    RewardClaimedSuccessfully: "Sikeres jutalom beváltás!"
+    RewardClaimedSuccessfully: "Sikeres jutalom beváltás!",
+    UnableToLogout: "Sikertelen kijelentkezés!"
   },
   Gif: {
     SearchForGif: "Gif keresése..."

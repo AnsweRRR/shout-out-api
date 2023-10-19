@@ -1,9 +1,6 @@
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-// @mui
 import { Box, Grid, Link, Stack, Divider, Container, Typography, IconButton } from '@mui/material';
-// components
 import Logo from '../../components/logo';
-// ----------------------------------------------------------------------
 
 const LINKS = [
   {

@@ -1,17 +1,14 @@
 import { useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Button, AppBar, Toolbar, Container, Link, BoxProps } from '@mui/material';
+import { Box, AppBar, Toolbar, Container, BoxProps } from '@mui/material';
 import useOffSetTop from '../../hooks/useOffSetTop';
 import useResponsive from '../../hooks/useResponsive';
 import { bgBlur } from '../../utils/cssStyles';
 import { HEADER } from '../../config-global';
 import Logo from '../../components/logo';
-import Label from '../../components/label';
 import navConfig from './nav/config-navigation';
 import NavMobile from './nav/mobile';
 import NavDesktop from './nav/desktop';
-
-// ----------------------------------------------------------------------
 
 export default function Header() {
   const carouselRef = useRef(null);

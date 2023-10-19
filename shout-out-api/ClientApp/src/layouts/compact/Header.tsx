@@ -1,17 +1,8 @@
-import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Toolbar, Box, BoxProps, Link } from '@mui/material';
-// config
+import { AppBar, Toolbar, Box, BoxProps } from '@mui/material';
 import { HEADER } from '../../config-global';
-// utils
 import { bgBlur } from '../../utils/cssStyles';
-// routes
-import { PATH_PAGE } from '../../routes/paths';
-// components
 import Logo from '../../components/logo';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   isOffset: boolean;

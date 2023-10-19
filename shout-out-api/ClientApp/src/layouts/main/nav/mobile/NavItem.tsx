@@ -1,9 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
-// @mui
 import { Link, ListItemText, ListItemIcon } from '@mui/material';
-// components
 import Iconify from '../../../../components/iconify';
-//
 import { NavItemMobileProps } from '../types';
 import { ListItem } from './styles';
 

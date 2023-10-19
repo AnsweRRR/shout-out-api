@@ -1,7 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Typography } from '@mui/material';
-import { Roles, RolesToDisplay } from 'src/@types/user';
+import { RolesToDisplay } from 'src/@types/user';
 import { useAuthContext } from '../../../auth/useAuthContext';
 import { PATH_APP } from '../../../routes/paths';
 import { CustomAvatar } from '../../../components/custom-avatar';
@@ -21,8 +21,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 export default function NavAccount() {
   const { user } = useAuthContext();
 
-  /* eslint-disable-next-line no-unsafe-optional-chaining */
-  const DISPLAY_NAME = user?.userName ? user?.userName : `${user?.firstName} ${user?.lastName}`;
+  const DISPLAY_NAME = user?.userName ? `${user?.userName}` : `${user?.firstName} ${user?.lastName}`;
 
   return (
     <Link component={RouterLink} to={PATH_APP.user.account} underline="none" color="inherit">

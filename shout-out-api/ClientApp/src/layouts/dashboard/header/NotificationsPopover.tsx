@@ -1,6 +1,5 @@
 import { noCase } from 'change-case';
 import { useState } from 'react';
-// @mui
 import {
   Box,
   Stack,
@@ -13,25 +12,18 @@ import {
   IconButton,
   Typography,
   ListItemText,
-  ListSubheader,
   ListItemAvatar,
   ListItemButton,
 } from '@mui/material';
-// utils
 import { fToNow } from '../../../utils/formatTime';
-// components
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
 
-// ----------------------------------------------------------------------
-
 export default function NotificationsPopover() {
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
-
   const [notifications, setNotifications] = useState<any>([]);
-
   const totalUnRead = notifications.filter((item: any) => item.isUnRead === true).length;
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
@@ -85,14 +77,7 @@ export default function NotificationsPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
-          <List
-            disablePadding
-            subheader={
-              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
-              </ListSubheader>
-            }
-          >
+          <List disablePadding>
             {notifications.slice(0, 2).map((notification: any) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
