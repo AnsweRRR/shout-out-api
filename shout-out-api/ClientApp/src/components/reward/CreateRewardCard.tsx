@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Card, Avatar, Divider, Typography, Stack, IconButton } from '@mui/material';
+import { Box, Card, Divider, IconButton } from '@mui/material';
 import { Reward } from 'src/@types/reward';
 import { createRewardAsync } from 'src/api/rewardClient';
 import { useAuthContext } from 'src/auth/useAuthContext';
+import { useLocales } from "src/locales";
 import AddIcon from '@mui/icons-material/Add';
 import { useSnackbar } from '../snackbar';
 import Image from '../image';
-import Iconify from '../iconify';
 import SvgColor from '../svg-color';
 import CreateRewardCardDialog from './CreateRewardDialog';
 
@@ -32,6 +32,7 @@ type Props = {
 
 export default function CreateRewardCard({ setRewards, cover }: Props) {
     const { user } = useAuthContext();
+    const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -40,10 +41,10 @@ export default function CreateRewardCard({ setRewards, cover }: Props) {
             const result = await createRewardAsync(reward, user.accessToken);
             if (result.status === 200 || result.status === 201) {
                 setIsDialogOpen(false);
-                enqueueSnackbar('Create success!', { variant: 'success' });
+                enqueueSnackbar(`${translate('ApiCallResults.CreatedSuccessfully')}`, { variant: 'success' });
                 setRewards((prevRewards) => [...prevRewards, result.data]);
             } else{
-                enqueueSnackbar('Something went wrong!', { variant: 'error' });
+                enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
         }
     }

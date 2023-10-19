@@ -34,14 +34,25 @@ const hu = {
     PointsToHave: 'Pontjaid',
     PointsToGive: 'Adható pontok'
   },
-  Feed: {
+  FeedPage: {
     Send: "Elküldöm",
     PlaceHolderExample: "@felhasználónév +10 hozzászólás...",
     Loading: "Töltés..."
   },
   RewardCard: {
     Cost: "Érték",
-    Claim: "Kiváltom"
+    Claim: "Kiváltom",
+    Delete: "Törlés",
+    AreYouSureWantToClaim: "Biztos ki szeretnéd váltani",
+    AreYouSureWantToDelete: "Biztos ki szeretnéd törölni",
+    Item: "tételt"
+  },
+  ApiCallResults: {
+    CreatedSuccessfully: "Created successfully!",
+    EditedSuccessfully: "Edited successfully!",
+    DeletedSuccessfully: "Deleted successfully!",
+    SomethingWentWrong: 'Something went wrong!',
+    RewardClaimedSuccessfully: "Sikeres jutalom beváltás!"
   },
   Gif: {
     SearchForGif: "Gif keresése..."

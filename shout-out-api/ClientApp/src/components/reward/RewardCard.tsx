@@ -152,12 +152,8 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
       <ConfirmDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        title="Claim"
-        content={
-          <>
-            Are you sure want to claim &quot;<strong>{name}</strong>&quot; item?
-          </>
-        }
+        title={`${translate('RewardCard.Claim')}`}
+        content={<>{`${translate('RewardCard.AreYouSureWantToClaim')}`} &quot;<strong>{name}</strong>&quot; {`${translate('RewardCard.Item')}`}?</>}
         action={
           <Button
             variant="contained"
@@ -167,7 +163,7 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
               setOpenDialog(false);
             }}
           >
-            Claim
+            {`${translate('RewardCard.Claim')}`}
           </Button>
         }
       />
@@ -175,12 +171,8 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
       <ConfirmDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete &quot;<strong>{name}</strong>&quot; item?
-          </>
-        }
+        title={`${translate('RewardCard.Delete')}`}
+        content={<>{`${translate('RewardCard.AreYouSureWantToDelete')}`} &quot;<strong>{name}</strong>&quot; {`${translate('RewardCard.Item')}`}?</>}
         action={
           <Button
             variant="contained"
@@ -190,7 +182,7 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
               setOpenDeleteDialog(false);
             }}
           >
-            Delete
+            {`${translate('RewardCard.Delete')}`}
           </Button>
         }
       />

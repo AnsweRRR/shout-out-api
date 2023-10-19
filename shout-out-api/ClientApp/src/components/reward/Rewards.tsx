@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box } from '@mui/material';
 import { Reward } from "src/@types/reward";
 import { useAuthContext } from "src/auth/useAuthContext";
+import { useLocales } from "src/locales";
 import { buyRewardAsync, deleteRewardAsync, editRewardAsync, getRewardsAsync } from 'src/api/rewardClient';
 import { useSnackbar } from '../snackbar';
 import RewardCard from "./RewardCard";
@@ -9,6 +10,7 @@ import CreateRewardCard from "./CreateRewardCard";
 
 export default function Rewards() {
     const { user, updatePointToHave } = useAuthContext();
+    const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
     const [rewards, setRewards] = useState<Array<Reward>>([]);
     const cover = 'https://api-dev-minimal-v4.vercel.app/assets/images/covers/cover_6.jpg';
@@ -17,11 +19,11 @@ export default function Rewards() {
         if (user && id) {
             const result = await buyRewardAsync(id, user?.accessToken);
             if (result.status === 200) {
-                enqueueSnackbar('Reward claimed successfully!', { variant: 'success' });
+                enqueueSnackbar(`${translate('ApiCallResults.RewardClaimedSuccessfully')}`, { variant: 'success' });
                 const userPointsLeftAfterClaim = result.data;
                 updatePointToHave(userPointsLeftAfterClaim);
             } else {
-                enqueueSnackbar('Something went wrong!', { variant: 'error' });
+                enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
         }
     }
@@ -30,10 +32,10 @@ export default function Rewards() {
         if (user && id) {
             const result = await deleteRewardAsync(id, user?.accessToken);
             if (result.status === 200) {
-                enqueueSnackbar('Reward deleted successfully!', { variant: 'success' });
+                enqueueSnackbar(`${translate('ApiCallResults.DeletedSuccessfully')}`, { variant: 'success' });
                 setRewards((prevState) => prevState.filter(r => r.id !== id));
             } else {
-                enqueueSnackbar('Something went wrong!', { variant: 'error' });
+                enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
         }
     }
@@ -42,7 +44,7 @@ export default function Rewards() {
         if (user) {
             const result = await editRewardAsync(id, editedRewardDto, user.accessToken);
             if (result.status === 200) {
-                enqueueSnackbar('Edit success!', { variant: 'success' });
+                enqueueSnackbar(`${translate('ApiCallResults.EditedSuccessfully')}`, { variant: 'success' });
                 
                 const indexToEdit = rewards.findIndex(reward => reward.id === id);
                 if (indexToEdit !== null && indexToEdit !== undefined) {
@@ -61,7 +63,7 @@ export default function Rewards() {
                     });
                 }
             } else{
-                enqueueSnackbar('Something went wrong!', { variant: 'error' });
+                enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
         }
     }

@@ -1,3 +1,5 @@
+import { useLocales } from 'src/locales';
+import i18n from 'i18next';
 import { PATH_APP } from '../../../routes/paths';
 import SvgColor from '../../../components/svg-color';
 
@@ -20,32 +22,38 @@ const ICONS = {
   dashboard: icon('ic_dashboard'),
 };
 
+const useTranslate = (text: string) => {
+  const { translate } = useLocales();
+
+  return `${translate(text)}`;
+}
+
 const navConfig = [
   {
     subheader: '',
     items: [
       {
-        title: 'menu',
+        title: i18n.t('SideMenu.Menu'),
         path: PATH_APP.root,
         icon: ICONS.analytics,
         children: [
-          { title: 'feed', path: PATH_APP.feed },
-          { title: 'reward', path: PATH_APP.reward },
+          { title: i18n.t('SideMenu.Feed'), path: PATH_APP.feed },
+          { title: i18n.t('SideMenu.Reward'), path: PATH_APP.reward },
         ],
       }
     ]
   },
   {
-    subheader: 'management',
+    subheader: i18n.t('SideMenu.Management'),
     items: [
       {
-        title: 'user',
+        title: i18n.t('SideMenu.User'),
         path: PATH_APP.user.root,
         icon: ICONS.user,
         children: [
-          { title: 'list', path: PATH_APP.user.list },
-          { title: 'create', path: PATH_APP.user.new },
-          { title: 'account', path: PATH_APP.user.account },
+          { title: i18n.t('SideMenu.List'), path: PATH_APP.user.list },
+          { title: i18n.t('SideMenu.Create'), path: PATH_APP.user.new },
+          { title: i18n.t('SideMenu.Account'), path: PATH_APP.user.account },
         ],
       }
     ],

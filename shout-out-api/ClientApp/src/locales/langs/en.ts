@@ -34,14 +34,25 @@ const en = {
     PointsToHave: 'Points to have',
     PointsToGive: 'Points to give'
   },
-  Feed: {
+  FeedPage: {
     Send: "Send",
     PlaceHolderExample: "@nickname +10 comment...",
     Loading: "Loading..."
   },
   RewardCard: {
     Cost: "Cost",
-    Claim: "Claim"
+    Claim: "Claim",
+    Delete: "Delete",
+    AreYouSureWantToClaim: "Are you sure want to claim",
+    AreYouSureWantToDelete: "Are you sure want to delete",
+    Item: "item"
+  },
+  ApiCallResults: {
+    CreatedSuccessfully: "Created successfully!",
+    EditedSuccessfully: "Edited successfully!",
+    DeletedSuccessfully: "Deleted successfully!",
+    SomethingWentWrong: 'Something went wrong!',
+    RewardClaimedSuccessfully: "Reward claimed successfully!"
   },
   Gif: {
     SearchForGif: "Search for gif..."

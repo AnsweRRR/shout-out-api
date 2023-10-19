@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { getPointsHistoryAsync } from "src/api/feedClient";
@@ -40,29 +40,27 @@ export default function PointSystemFeed() {
     }, [user, offset]);
 
     return (
-        <>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={2} />
-                <Grid item xs={12} md={7}>
-                    <FeedPointGive />
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={2} />
+            <Grid item xs={12} md={7}>
+                <FeedPointGive />
 
-                    <InfiniteScroll
-                        pageStart={0}
-                        loadMore={(page: number) => setOffset(page * eventPerPage)}
-                        hasMore={!isLoading && !isLastPage}
-                        // useWindow={false}
-                        initialLoad={false}
-                        loader={(
-                            <div key="loading">
-                                {isLoading && <Spinner message={`${translate(`Feed.Loading`)}`} image={null} />}
-                            </div>
-                        )}
-                    >
-                        {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} />)}
-                    </InfiniteScroll>
-                </Grid>
-                <Grid item xs={12} md={2} />
+                <InfiniteScroll
+                    pageStart={0}
+                    loadMore={(page: number) => setOffset(page * eventPerPage)}
+                    hasMore={!isLoading && !isLastPage}
+                    // useWindow={false}
+                    initialLoad={false}
+                    loader={(
+                        <div key="loading">
+                            {isLoading && <Spinner message={`${translate(`FeedPage.Loading`)}`} image={null} />}
+                        </div>
+                    )}
+                >
+                    {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} />)}
+                </InfiniteScroll>
             </Grid>
-        </>
+            <Grid item xs={12} md={2} />
+        </Grid>
     );
 }

@@ -93,7 +93,7 @@ export default function PointSystemFeed() {
                 <Stack direction="row" alignItems="center" spacing={2}>
                     <TextField
                         variant="standard"
-                        placeholder={`${translate('Feed.PlaceHolderExample')}`}
+                        placeholder={`${translate('FeedPage.PlaceHolderExample')}`}
                         multiline
                         minRows={3}
                         maxRows={6}
@@ -140,7 +140,7 @@ export default function PointSystemFeed() {
                     </IconButton>
 
                     <Button disabled={!isSendEnabled} type="submit" variant="contained">
-                        {`${translate('Feed.Send')}`}
+                        {`${translate('FeedPage.Send')}`}
                     </Button>
                 </Stack>
             </Card>
