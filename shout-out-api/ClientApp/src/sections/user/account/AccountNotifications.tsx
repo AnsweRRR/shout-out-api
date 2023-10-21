@@ -1,15 +1,9 @@
-// form
 import { useForm } from 'react-hook-form';
-// @mui
 import { Card, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// @types
 import { IUserAccountNotificationSettings } from '../../../@types/user';
-// components
 import { useSnackbar } from '../../../components/snackbar';
 import FormProvider, { RHFSwitch } from '../../../components/hook-form';
-
-// ----------------------------------------------------------------------
 
 const ACTIVITY_OPTIONS = [
   {

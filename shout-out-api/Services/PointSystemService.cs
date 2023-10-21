@@ -213,7 +213,7 @@ namespace shout_out_api.Services
             }
             catch (Exception ex)
             {
-                //TODO: log the error
+                throw;
             }
         }
 

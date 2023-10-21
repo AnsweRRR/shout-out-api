@@ -1,42 +1,43 @@
 import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link, Typography } from '@mui/material';
+import { useLocales } from 'src/locales';
 import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/iconify';
 import AuthNewPasswordForm from '../../sections/auth/AuthNewPasswordForm';
 import { SentIcon } from '../../assets/icons';
 
-// ----------------------------------------------------------------------
-
 export default function NewPasswordPage() {
+  const { translate } = useLocales();
+  
   return (
     <>
       <Helmet>
-        <title> New Password | Minimal UI</title>
+        <title>{`${translate('ForgotPasswordPage.NewPassword')}`}</title>
       </Helmet>
 
       <SentIcon sx={{ mb: 5, height: 96 }} />
 
       <Typography variant="h3" paragraph>
-        Request sent successfully!
+        {`${translate('ForgotPasswordPage.RequestSentSuccessfully')}`}
       </Typography>
 
       <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-        We&apos;ve sent a 6-digit confirmation email to your email.
+        {`${translate('ForgotPasswordPage.WeHaveSentA6DigitConfirmationEmailToYourEmail')}`}
         <br />
-        Please enter the code in below box to verify your email.
+        {`${translate('ForgotPasswordPage.PleaseEnterTheCodeInBelowBoxToVerifyYourEmail')}`}
       </Typography>
 
       <AuthNewPasswordForm />
 
       <Typography variant="body2" sx={{ my: 3 }}>
-        Don’t have a code? &nbsp;
+        {`${translate('ForgotPasswordPage.DontHaveACode')}`} &nbsp;
         <Link
           variant="subtitle2"
           component={RouterLink}
           to={PATH_AUTH.resetPassword}
         >
-          Resend code
+          {`${translate('ForgotPasswordPage.ResendCode')}`}
         </Link>
       </Typography>
 
@@ -52,7 +53,7 @@ export default function NewPasswordPage() {
         }}
       >
         <Iconify icon="eva:chevron-left-fill" width={16} />
-        Return to sign in
+        {`${translate('ForgotPasswordPage.ReturnToSignIn')}`}
       </Link>
     </>
   );

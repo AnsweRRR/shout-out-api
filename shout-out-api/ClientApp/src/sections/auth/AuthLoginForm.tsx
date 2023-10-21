@@ -1,21 +1,15 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { Link as RouterLink } from 'react-router-dom';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { Link, Stack, Alert, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// routes
+import { useLocales } from 'src/locales';
 import { PATH_AUTH } from '../../routes/paths';
-// auth
 import { useAuthContext } from '../../auth/useAuthContext';
-// components
 import Iconify from '../../components/iconify';
 import FormProvider, { RHFTextField } from '../../components/hook-form';
-
-// ----------------------------------------------------------------------
 
 type FormValuesProps = {
   email: string;
@@ -25,6 +19,7 @@ type FormValuesProps = {
 
 export default function AuthLoginForm() {
   const { login } = useAuthContext();
+  const { translate } = useLocales();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -68,11 +63,11 @@ export default function AuthLoginForm() {
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label={`${translate('LoginPage.EmailAddress')}`} />
 
         <RHFTextField
           name="password"
-          label="Password"
+          label={`${translate('LoginPage.Password')}`}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -94,7 +89,7 @@ export default function AuthLoginForm() {
           color="inherit"
           underline="always"
         >
-          Forgot password?
+          {`${translate('LoginPage.ForgotPassword')}`}
         </Link>
       </Stack>
 
@@ -114,7 +109,7 @@ export default function AuthLoginForm() {
           },
         }}
       >
-        Login
+        {`${translate('LoginPage.Login')}`}
       </LoadingButton>
     </FormProvider>
   );

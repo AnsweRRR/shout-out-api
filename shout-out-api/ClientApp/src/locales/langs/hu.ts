@@ -45,18 +45,22 @@ const hu = {
       DescriptionIsRequired: "A leírás kötelező",
       CostIsRequired: "Az érték kötelező",
       AvatarIsRequired: "Az avatar kötelező",
+      UserNameIsRequired: "Felhasználónév kötelező",
       FirstNameIsRequired: "Keresznév kötelező",
       LastNameIsRequired: "Vezetéknév kötelező",
       EmailIsRequired: "Email cím kötelező",
       EmailMustBeAValidEmailAddress: "Email címnek valósnak kell lennie",
       RoleIsRequired: "Szerepkör kötelező",
       PasswordMustBeMinimum: "A jelszó legalább",
+      PasswordIsRequired: "Jelszó kötelező",
       OldPasswordIsRequired: "Régi jelszó kötelező",
       NewPasswordIsRequired: "Új jelszó kötelező",
       PasswordsMustMatch: "A jelszavaknak egyezni kell",
       NewPasswordMustBeDifferentThanOldPassword: "Az új jelszónak különböznie kell a régitől",
       PasswordMustBeAtLeast: "A jelszónak legalább",
       Characters: "karakternek kell lennie",
+      CodeIsRequired: "Kód kötelező",
+      ConfirmPasswordIsRequired: "Új jelszó megerősítése kötelező"
     }
   },
   SideMenu: {
@@ -101,6 +105,36 @@ const hu = {
   },
   Gif: {
     SearchForGif: "Gif keresése..."
+  },
+  RegisterPage:{
+    AlreadyHaveAnCccount: "Már van fiókod?",
+    SignIn: "Belépés",
+    ManageTheJobMoreEffectivelyWithShoutOut: "Végezd a munkát vidámabban a ShoutOut-tal",
+    CreateAccount: "Fiók regisztrálása"
+  },
+  LoginPage: {
+    Login: "Belépés",
+    SignInToShoutOut: "Belépés a ShoutOut-ba",
+    ForgotPassword: "Elfelejtett jelszó",
+    Password: "Jelszó",
+    ConfirmPassword: "Jelszó megerősítése",
+    EmailAddress: "Email cím",
+    HiWelcomeBack: "Üdv, újra itt?"
+  },
+  ForgotPasswordPage: {
+    ResetPassword: "Jelszó visszaállítása",
+    ForgotYourPassword: "Elfelejtetted a jelszavad?",
+    PleaseEnterTheEmail: "Kérlek add meg a regisztrált email címed és egy linket fogunk küldeni a megadott címre, amivel vissza tudod állítani a jelszavad.",
+    ReturnToSignIn: "Vissza a belépéshez",
+    SendRequest: "Kérés küldése",
+    NewPassword: "Új jelszó",
+    RequestSentSuccessfully: "Kérés sikeresen elküldve!",
+    DontHaveACode: "Nem kaptál kódot?",
+    ResendCode: "Kód úraküldése",
+    UpdatePassword: "Jelszó frissítése",
+    PleaseEnterTheCodeInBelowBoxToVerifyYourEmail: "Kérlek add meg a kódot, hogy hitelesíteni tudjuk.",
+    WeHaveSentA6DigitConfirmationEmailToYourEmail: "Küldtünk egy 6 számjegyű kódot a megadott email címre.",
+    ChangePasswordSuccess: "Sikeresen megváltoztattad a jelszavad!"
   }
 };
 

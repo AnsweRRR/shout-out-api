@@ -45,18 +45,22 @@ const en = {
       DescriptionIsRequired: "Description is required",
       CostIsRequired: "Cost is required",
       AvatarIsRequired: "Avatar is required",
+      UserNameIsRequired: "User name is required",
       FirstNameIsRequired: "First name is required",
       LastNameIsRequired: "Last name is required",
       EmailIsRequired: "Email is required",
       EmailMustBeAValidEmailAddress: "Email must be a valid email address",
       RoleIsRequired: "Role is required",
       PasswordMustBeMinimum: "Password must be minimum",
+      PasswordIsRequired: "Password is required",
       OldPasswordIsRequired: "Old password is required",
       NewPasswordIsRequired: "New password is required",
       PasswordsMustMatch: "Passwords must match",
       NewPasswordMustBeDifferentThanOldPassword: "New password must be different than old password",
       PasswordMustBeAtLeast: "Password must be at least",
       Characters: "characters",
+      CodeIsRequired: "Code is required",
+      ConfirmPasswordIsRequired: "Confirm password is required"
     }
   },
   SideMenu: {
@@ -101,6 +105,36 @@ const en = {
   },
   Gif: {
     SearchForGif: "Search for gif..."
+  },
+  RegisterPage:{
+    AlreadyHaveAnCccount: "Already have an account?",
+    SignIn: "Sign in",
+    ManageTheJobMoreEffectivelyWithShoutOut: "Manage the job more effectively with ShoutOut",
+    CreateAccount: "Create account"
+  },
+  LoginPage: {
+    Login: "Login",
+    SignInToShoutOut: "Sign in to ShoutOut",
+    ForgotPassword: "Forgot password",
+    Password: "Password",
+    ConfirmPassword: "Confirm password",
+    EmailAddress: "Email address",
+    HiWelcomeBack: "Hi, Welcome back"
+  },
+  ForgotPasswordPage: {
+    ResetPassword: "Reset password",
+    ForgotYourPassword: "Forgot your password?",
+    PleaseEnterTheEmail: "Please enter the email address associated with your account and We will email you a link to reset your password.",
+    ReturnToSignIn: "Return to sign in",
+    SendRequest: "Send request",
+    NewPassword: "New password",
+    RequestSentSuccessfully: "Request sent successfully!",
+    DontHaveACode: "Don’t have a code?",
+    ResendCode: "Resend code",
+    UpdatePassword: "Update password",
+    PleaseEnterTheCodeInBelowBoxToVerifyYourEmail: "Please enter the code in below box to verify your email.",
+    WeHaveSentA6DigitConfirmationEmailToYourEmail: "We've sent a 6-digit confirmation email to your email.",
+    ChangePasswordSuccess: "Change password success!"
   }
 };
 

@@ -5,13 +5,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Stack, IconButton, InputAdornment, FormHelperText } from '@mui/material';
 import { LoadingButton } from '@mui/lab';import { resetPasswordAsync } from 'src/api/userClient';
+import { useLocales } from 'src/locales';
 import { ResetPasswordDto } from 'src/@types/user';
-import { PATH_APP, PATH_AUTH } from '../../routes/paths';
+import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/iconify';
 import { useSnackbar } from '../../components/snackbar';
 import FormProvider, { RHFTextField, RHFCodes } from '../../components/hook-form';
-
-// ----------------------------------------------------------------------
 
 type FormValuesProps = {
   code1: string;
@@ -27,28 +26,27 @@ type FormValuesProps = {
 
 export default function AuthNewPasswordForm() {
   const navigate = useNavigate();
-
+  const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
-
+  const minPasswordCharacters = 5;
   const [showPassword, setShowPassword] = useState(false);
 
-  const emailRecovery =
-    typeof window !== 'undefined' ? sessionStorage.getItem('email-recovery') : '';
+  const emailRecovery = typeof window !== 'undefined' ? sessionStorage.getItem('email-recovery') : '';
 
   const VerifyCodeSchema = Yup.object().shape({
-    code1: Yup.string().required('Code is required'),
-    code2: Yup.string().required('Code is required'),
-    code3: Yup.string().required('Code is required'),
-    code4: Yup.string().required('Code is required'),
-    code5: Yup.string().required('Code is required'),
-    code6: Yup.string().required('Code is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    code1: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    code2: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    code3: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    code4: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    code5: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    code6: Yup.string().required(`${translate('Maintenance.Validator.CodeIsRequired')}`),
+    email: Yup.string().required(`${translate('Maintenance.Validator.EmailIsRequired')}`).email(`${translate('Maintenance.Validator.EmailMustBeAValidEmailAddress')}`),
     password: Yup.string()
-      .min(5, 'Password must be at least 5 characters')
-      .required('Password is required'),
+      .min(minPasswordCharacters,  `${translate('Maintenance.Validator.PasswordMustBeAtLeast')} ${minPasswordCharacters} ${`${translate('Maintenance.Validator.Characters')}`}`)
+      .required(`${translate('Maintenance.Validator.PasswordIsRequired')}`),
     confirmPassword: Yup.string()
-      .required('Confirm password is required')
-      .oneOf([Yup.ref('password')], 'Passwords must match'),
+      .required(`${translate('Maintenance.Validator.ConfirmPasswordIsRequired')}`)
+      .oneOf([Yup.ref('password')], `${translate('Maintenance.Validator.PasswordsMustMatch')}`),
   });
 
   const defaultValues = {
@@ -84,7 +82,7 @@ export default function AuthNewPasswordForm() {
       }
       await resetPasswordAsync(resetPasswordDto);
       sessionStorage.removeItem('email-recovery');
-      enqueueSnackbar('Change password success!');
+      enqueueSnackbar(`${translate('ForgotPasswordPage.ChangePasswordSuccess')}`);
       navigate(PATH_AUTH.login);
     } catch (error) {
       console.error(error);
@@ -96,7 +94,7 @@ export default function AuthNewPasswordForm() {
       <Stack spacing={3}>
         <RHFTextField
           name="email"
-          label="Email"
+          label={`${translate('LoginPage.EmailAddress')}`}
           disabled={!!emailRecovery}
           InputLabelProps={{ shrink: true }}
         />
@@ -110,13 +108,13 @@ export default function AuthNewPasswordForm() {
           !!errors.code5 ||
           !!errors.code6) && (
           <FormHelperText error sx={{ px: 2 }}>
-            Code is required
+            {`${translate('Maintenance.Validator.CodeIsRequired')}`}
           </FormHelperText>
         )}
 
         <RHFTextField
           name="password"
-          label="Password"
+          label={`${translate('LoginPage.Password')}`}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -131,7 +129,7 @@ export default function AuthNewPasswordForm() {
 
         <RHFTextField
           name="confirmPassword"
-          label="Confirm New Password"
+          label={`${translate('Maintenance.ConfirmNewPassword')}`}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -152,7 +150,7 @@ export default function AuthNewPasswordForm() {
           loading={isSubmitting}
           sx={{ mt: 3 }}
         >
-          Update Password
+          {`${translate('ForgotPasswordPage.UpdatePassword')}`}
         </LoadingButton>
       </Stack>
     </FormProvider>

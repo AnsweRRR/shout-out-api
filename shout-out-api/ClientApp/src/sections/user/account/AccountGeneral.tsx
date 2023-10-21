@@ -34,9 +34,7 @@ export default function AccountGeneral() {
   const UpdateUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    userName: Yup.string().required('User name is required'),
-    // birthday: Yup.date().nullable().required('Birthday is required'),
-    // startAtCompany: Yup.date().nullable().required('Start at company is required'),
+    userName: Yup.string().required('User name is required')
   });
 
   const defaultValues = {

@@ -1,29 +1,29 @@
 import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link, Typography } from '@mui/material';
+import { useLocales } from 'src/locales';
 import { PATH_AUTH } from '../../routes/paths';
 import Iconify from '../../components/iconify';
 import AuthResetPasswordForm from '../../sections/auth/AuthResetPasswordForm';
 import { PasswordIcon } from '../../assets/icons';
 
-// ----------------------------------------------------------------------
-
 export default function ResetPasswordPage() {
+  const { translate } = useLocales();
+
   return (
     <>
       <Helmet>
-        <title> Reset Password | Minimal UI</title>
+        <title>{`${translate('ForgotPasswordPage.ResetPassword')}`}</title>
       </Helmet>
 
       <PasswordIcon sx={{ mb: 5, height: 96 }} />
 
       <Typography variant="h3" paragraph>
-        Forgot your password?
+        {`${translate('ForgotPasswordPage.ForgotYourPassword')}`}
       </Typography>
 
       <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-        Please enter the email address associated with your account and We will email you a link to
-        reset your password.
+        {`${translate('ForgotPasswordPage.PleaseEnterTheEmail')}`}
       </Typography>
 
       <AuthResetPasswordForm />
@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
         }}
       >
         <Iconify icon="eva:chevron-left-fill" width={16} />
-        Return to sign in
+        {`${translate('ForgotPasswordPage.ReturnToSignIn')}`}
       </Link>
     </>
   );

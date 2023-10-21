@@ -59,7 +59,7 @@ export default function UserTableRow({
             <Avatar alt={firstName + lastName} src={avatarUrl} />
 
             <Typography variant="subtitle2" noWrap>
-              {firstName + lastName}
+              {`${firstName} ${lastName}`}
             </Typography>
           </Stack>
         </TableCell>
