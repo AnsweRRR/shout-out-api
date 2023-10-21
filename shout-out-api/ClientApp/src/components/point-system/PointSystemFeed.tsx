@@ -8,6 +8,7 @@ import useLocales from "src/locales/useLocales";
 import Spinner from "../giphyGIF/Spinner";
 import PointEventCard from "./PointEventCard";
 import FeedPointGive from "./FeedPointGive";
+import Socials from "../social/Socials";
 
 
 export default function PointSystemFeed() {
@@ -58,6 +59,8 @@ export default function PointSystemFeed() {
                     )}
                 >
                     {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} />)}
+
+                    <Socials />
                 </InfiniteScroll>
             </Grid>
             <Grid item xs={12} md={2} />
