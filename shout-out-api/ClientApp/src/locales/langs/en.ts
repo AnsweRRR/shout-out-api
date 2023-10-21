@@ -26,6 +26,11 @@ const en = {
     EmailAddress: "Email address",
     Admin: "Admin",
     User: "User",
+    Birthday: "Birthday",
+    StartAtCompany: "Start at company",
+    OldPassword: "Old password",
+    NewPassword: "New password",
+    ConfirmNewPassword: "Confirm new password",
 
     UserListTableHead: {
       Name: "Name",
@@ -45,6 +50,13 @@ const en = {
       EmailIsRequired: "Email is required",
       EmailMustBeAValidEmailAddress: "Email must be a valid email address",
       RoleIsRequired: "Role is required",
+      PasswordMustBeMinimum: "Password must be minimum",
+      OldPasswordIsRequired: "Old password is required",
+      NewPasswordIsRequired: "New password is required",
+      PasswordsMustMatch: "Passwords must match",
+      NewPasswordMustBeDifferentThanOldPassword: "New password must be different than old password",
+      PasswordMustBeAtLeast: "Password must be at least",
+      Characters: "characters",
     }
   },
   SideMenu: {
@@ -57,7 +69,10 @@ const en = {
     List: "List",
     Create: "Create",
     Account: "Account",
-    Logout: "Logout"
+    Logout: "Logout",
+    General: "General",
+    Notifications: "Notifications",
+    ChangePassword: "Change password",
   },
   Header: {
     PointsToHave: 'Points to have',

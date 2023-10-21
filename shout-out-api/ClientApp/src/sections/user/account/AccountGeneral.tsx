@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { Box, Grid, Card, Stack, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { EditUserDto } from 'src/@types/user';
+import { useLocales } from 'src/locales';
 import { editOwnUserAccountAsync } from 'src/api/userClient';
 import { useAuthContext } from '../../../auth/useAuthContext';
 import { fData } from '../../../utils/formatNumber';
@@ -28,6 +29,7 @@ type FormValuesProps = {
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
+  const { translate } = useLocales();
 
   const UpdateUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -60,7 +62,6 @@ export default function AccountGeneral() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-
       const editUserDto: EditUserDto = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -71,7 +72,7 @@ export default function AccountGeneral() {
       };
       await editOwnUserAccountAsync(editUserDto, user?.accessToken);
 
-      enqueueSnackbar('Update success!');
+      enqueueSnackbar(`${translate('ApiCallResults.EditedSuccessfully')}`);
     } catch (error) {
       console.error(error);
     }
@@ -111,8 +112,8 @@ export default function AccountGeneral() {
                     color: 'text.secondary',
                   }}
                 >
-                  Allowed *.jpeg, *.jpg, *.png, *.gif
-                  <br /> max size of {fData(10000000)}
+                  {`${translate('Maintenance.Allowed')}`} *.jpeg, *.jpg, *.png, *.gif
+                  <br /> {`${translate('Maintenance.MaxSizeOf')}`} {fData(10000000)}
                 </Typography>
               }
             />
@@ -130,12 +131,12 @@ export default function AccountGeneral() {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="firstName" label="First name" />
-              <RHFTextField name="lastName" label="Last name" />
-              <RHFTextField name="userName" label="User name" />
+              <RHFTextField name="firstName" label={`${translate('Maintenance.FirstName')}`} />
+              <RHFTextField name="lastName" label={`${translate('Maintenance.LastName')}`} />
+              <RHFTextField name="userName" label={`${translate('Maintenance.UserName')}`} />
 
               <DatePicker
-                label="Birthday"
+                label={`${translate('Maintenance.Birthday')}`}
                 disabled={methods.watch('birthday') !== null}
                 value={methods.watch('birthday')}
                 onChange={(date) => setValue('birthday', date, { shouldValidate: true })}
@@ -143,19 +144,19 @@ export default function AccountGeneral() {
               />
 
               <DatePicker
-                label="Start at company"
+                label={`${translate('Maintenance.StartAtCompany')}`}
                 disabled={methods.watch('startAtCompany') !== null}
                 value={methods.watch('startAtCompany')}
                 onChange={(date) => setValue('startAtCompany', date, { shouldValidate: true })}
                 renderInput={(params) => <TextField {...params} />}
               />
 
-              <RHFTextField disabled name="email" label="Email Address" />
+              <RHFTextField disabled name="email" label={`${translate('Maintenance.EmailAddress')}`} />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                Save Changes
+                {`${translate('Maintenance.SaveChanges')}`}
               </LoadingButton>
             </Stack>
           </Card>

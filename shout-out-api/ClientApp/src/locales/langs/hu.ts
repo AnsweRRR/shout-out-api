@@ -26,6 +26,11 @@ const hu = {
     EmailAddress: "Email cím",
     Admin: "Adminisztrátor",
     User: "Felhasználó",
+    Birthday: "Születésnap",
+    StartAtCompany: "Mikor kezdtél",
+    OldPassword: "Régi jelszó",
+    NewPassword: "Új jelszó",
+    ConfirmNewPassword: "Új jelszó megerősítése",
 
     UserListTableHead: {
       Name: "Név",
@@ -45,6 +50,13 @@ const hu = {
       EmailIsRequired: "Email cím kötelező",
       EmailMustBeAValidEmailAddress: "Email címnek valósnak kell lennie",
       RoleIsRequired: "Szerepkör kötelező",
+      PasswordMustBeMinimum: "A jelszó legalább",
+      OldPasswordIsRequired: "Régi jelszó kötelező",
+      NewPasswordIsRequired: "Új jelszó kötelező",
+      PasswordsMustMatch: "A jelszavaknak egyezni kell",
+      NewPasswordMustBeDifferentThanOldPassword: "Az új jelszónak különböznie kell a régitől",
+      PasswordMustBeAtLeast: "A jelszónak legalább",
+      Characters: "karakternek kell lennie",
     }
   },
   SideMenu: {
@@ -57,7 +69,10 @@ const hu = {
     List: "Lista",
     Create: "Létrehoz",
     Account: "Fiók",
-    Logout: "Kijelentkezés"
+    Logout: "Kijelentkezés",
+    General: "Általános",
+    Notifications: "Értesítések",
+    ChangePassword: "Jelszó megváltoztatása",
   },
   Header: {
     PointsToHave: 'Pontjaid',
