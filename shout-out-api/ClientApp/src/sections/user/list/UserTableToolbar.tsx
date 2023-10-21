@@ -1,7 +1,6 @@
 import { Stack, InputAdornment, TextField, Button } from '@mui/material';
+import { useLocales } from 'src/locales';
 import Iconify from '../../../components/iconify';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   filterName: string;
@@ -16,6 +15,8 @@ export default function UserTableToolbar({
   onFilterName,
   onResetFilter,
 }: Props) {
+  const { translate } = useLocales();
+
   return (
     <Stack
       spacing={2}
@@ -30,7 +31,7 @@ export default function UserTableToolbar({
         fullWidth
         value={filterName}
         onChange={onFilterName}
-        placeholder="Search..."
+        placeholder={`${translate('Maintenance.Search')}`}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -47,7 +48,7 @@ export default function UserTableToolbar({
           onClick={onResetFilter}
           startIcon={<Iconify icon="eva:trash-2-outline" />}
         >
-          Clear
+          {`${translate('Maintenance.Clear')}`}
         </Button>
       )}
     </Stack>

@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import { deleteUsersAsync, getUsersAsync } from 'src/api/userClient';
+import { useLocales } from 'src/locales';
 import { PATH_APP } from '../../routes/paths';
 import { IUserAccountGeneral } from '../../@types/user';
 import Iconify from '../../components/iconify';
@@ -30,17 +31,6 @@ import {
   TablePaginationCustom,
 } from '../../components/table';
 import { UserTableToolbar, UserTableRow } from '../../sections/user/list';
-// ----------------------------------------------------------------------
-const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'userName', label: 'User name', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
-  { id: 'verified', label: 'Verified', align: 'center' },
-  { id: '' },
-];
-
-// ----------------------------------------------------------------------
 
 export default function UserListPage() {
   const {
@@ -49,12 +39,10 @@ export default function UserListPage() {
     orderBy,
     rowsPerPage,
     setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
-    //
     onSort,
     onChangePage,
     onChangeRowsPerPage,
@@ -62,10 +50,20 @@ export default function UserListPage() {
   const { user } = useAuthContext();
   const { themeStretch } = useSettingsContext();
   const navigate = useNavigate();
+  const { translate } = useLocales();
   const [tableData, setTableData] = useState<Array<IUserAccountGeneral>>([]);
   const [filterName, setFilterName] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
+
+  const TABLE_HEAD = [
+    { id: 'name', label: translate('Maintenance.UserListTableHead.Name'), align: 'left' },
+    { id: 'userName', label: translate('Maintenance.UserListTableHead.UserName'), align: 'left' },
+    { id: 'email', label: translate('Maintenance.UserListTableHead.Email'), align: 'left' },
+    { id: 'role', label: translate('Maintenance.UserListTableHead.Role'), align: 'left' },
+    { id: 'verified', label: translate('Maintenance.UserListTableHead.Verified'), align: 'center' },
+    { id: '' },
+  ];
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -153,16 +151,15 @@ export default function UserListPage() {
   return (
     <>
       <Helmet>
-        <title> User: List | Minimal UI</title>
+        <title>{`${translate('Maintenance.UserList')}`}</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="User List"
+          heading={`${translate('Maintenance.UserList')}`}
           links={[
-            { name: 'Dashboard', href: PATH_APP.root },
-            { name: 'User', href: PATH_APP.user.root },
-            { name: 'List' },
+            { name: `${translate('SideMenu.User')}`, href: PATH_APP.user.root },
+            { name: `${translate('SideMenu.List')}` },
           ]}
           action={
             <Button
@@ -171,7 +168,7 @@ export default function UserListPage() {
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              New User
+              {`${translate('Maintenance.UserList')}`}
             </Button>
           }
         />
@@ -195,7 +192,7 @@ export default function UserListPage() {
                 )
               }
               action={
-                <Tooltip title="Delete">
+                <Tooltip title={`${translate('Maintenance.Delete')}`}>
                   <IconButton color="primary" onClick={() => setOpenConfirm(true)}>
                     <Iconify icon="eva:trash-2-outline" />
                   </IconButton>

@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useAuthContext } from 'src/auth/useAuthContext';
+import { useLocales } from 'src/locales';
 import { IUserAccountGeneral, RolesToDisplay } from '../../../@types/user';
 import Iconify from '../../../components/iconify';
 import MenuPopover from '../../../components/menu-popover';
@@ -32,6 +33,7 @@ export default function UserTableRow({
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
   const { user } = useAuthContext();
+  const { translate } = useLocales();
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -114,7 +116,7 @@ export default function UserTableRow({
           sx={{ color: 'error.main' }}
         >
           <Iconify icon="eva:trash-2-outline" />
-          Delete
+          {`${translate('Maintenance.Delete')}`}
         </MenuItem>
 
         <MenuItem
@@ -124,18 +126,18 @@ export default function UserTableRow({
           }}
         >
           <Iconify icon="eva:edit-fill" />
-          Edit
+          {`${translate('Maintenance.Edit')}`}
         </MenuItem>
       </MenuPopover>
 
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title={`${translate('Maintenance.Delete')}`}
+        content={`${translate('Maintenance.AreYouSureWantToDelete')}`}
         action={
           <Button variant="contained" color="error" onClick={onDeleteRow}>
-            Delete
+            {`${translate('Maintenance.Delete')}`}
           </Button>
         }
       />

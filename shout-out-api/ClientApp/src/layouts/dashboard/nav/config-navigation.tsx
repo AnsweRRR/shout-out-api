@@ -45,7 +45,7 @@ const navConfig = [
         icon: ICONS.user,
         children: [
           { title: i18n.t('SideMenu.List'), path: PATH_APP.user.list },
-          { title: i18n.t('SideMenu.Create'), path: PATH_APP.user.new },
+          { title: i18n.t('SideMenu.CreateNewUser'), path: PATH_APP.user.new },
           { title: i18n.t('SideMenu.Account'), path: PATH_APP.user.account },
         ],
       }

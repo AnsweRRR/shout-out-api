@@ -1,34 +1,30 @@
 import { Helmet } from 'react-helmet-async';
 import { Container } from '@mui/material';
+import { useLocales } from 'src/locales';
 import { PATH_APP } from '../../routes/paths';
 import { useSettingsContext } from '../../components/settings';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import UserNewEditForm from '../../sections/user/UserNewEditForm';
 
-// ----------------------------------------------------------------------
-
 export default function UserCreatePage() {
   const { themeStretch } = useSettingsContext();
+  const { translate } = useLocales();
 
   return (
     <>
       <Helmet>
-        <title> User: Create a new user | Minimal UI</title>
+        <title>{`${translate('SideMenu.CreateNewUser')}`}</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Create a new user"
+          heading={`${translate('SideMenu.CreateNewUser')}`}
           links={[
             {
-              name: 'Dashboard',
-              href: PATH_APP.root,
-            },
-            {
-              name: 'User',
+              name: `${translate('SideMenu.User')}`,
               href: PATH_APP.user.list,
             },
-            { name: 'New user' },
+            { name: `${translate('SideMenu.CreateNewUser')}` },
           ]}
         />
         <UserNewEditForm />
