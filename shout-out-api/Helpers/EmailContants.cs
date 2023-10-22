@@ -21,5 +21,25 @@
         {
             return $"Code: {passwordResetToken}";
         }
+
+        public static string NEW_ITEM_CLAIM_EVENT_SUBJECT()
+        {
+            return "Item claimed in ShoutOut";
+        }
+
+        public static string NEW_ITEM_CLAIM_EVENT_BODY(string userName, string itemName)
+        {
+            return $"{userName} claimed a '{itemName}' item";
+        }
+
+        public static string NEW_ITEM_CREATED_SUBJECT()
+        {
+            return "New item is available in ShoutOut";
+        }
+
+        public static string NEW_ITEM_CREATED_BODY(string itemName)
+        {
+            return $"New item '{itemName}' is available in ShoutOut. Go check it quickly!";
+        }
     }
 }

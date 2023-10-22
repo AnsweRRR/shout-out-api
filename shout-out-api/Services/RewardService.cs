@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
+using shout_out_api.Dto.Email;
 using shout_out_api.Dto.Reward;
+using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Model;
 
@@ -10,11 +12,13 @@ namespace shout_out_api.Services
     {
         private readonly Context _db;
         private readonly FileConverter _fileConverter;
+        private readonly EmailService _emailService;
 
-        public RewardService(Context db, FileConverter fileConverter)
+        public RewardService(Context db, FileConverter fileConverter, EmailService emailService)
         {
             _db = db;
             _fileConverter = fileConverter;
+            _emailService = emailService;
         }
 
         public async Task<IList<RewardDto>> GetRewards()
@@ -51,6 +55,20 @@ namespace shout_out_api.Services
 
                 await _db.Rewards.AddAsync(newReward);
                 _db.SaveChanges();
+
+                var userEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue).Select(u => u.Email).ToList();
+
+                foreach(var userEmail in userEmails)
+                {
+                    EmailDto emailModel = new EmailDto()
+                    {
+                        ToEmailAddress = userEmail!,
+                        Subject = EmailContants.NEW_ITEM_CREATED_SUBJECT(),
+                        Body = EmailContants.NEW_ITEM_CREATED_BODY(newReward.Name)
+                    };
+
+                    _emailService.SendEmail(emailModel);
+                }
 
                 var rewardDto = newReward.ToRewardResultDto();
 
@@ -118,37 +136,58 @@ namespace shout_out_api.Services
 
         public async Task<int> BuyReward(int id, int buyerUserId)
         {
-            try
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                var reward = await _db.Rewards.SingleOrDefaultAsync(r => r.Id == id);
-
-                if (reward == null)
+                try
                 {
-                    throw new Exception("Reward not found");
+                    var reward = await _db.Rewards.SingleOrDefaultAsync(r => r.Id == id);
+
+                    if (reward == null)
+                    {
+                        throw new Exception("Reward not found");
+                    }
+
+                    var price = reward.Cost;
+
+                    var buyerUser = await _db.Users.SingleOrDefaultAsync(u => u.Id == buyerUserId);
+                    if (buyerUser == null)
+                    {
+                        throw new Exception("User not found");
+                    }
+
+                    if (price > buyerUser.PointToHave)
+                    {
+                        throw new Exception("Not enough balance");
+                    }
+
+                    var buyerUserNameToDisplay = !string.IsNullOrEmpty(buyerUser.UserName) ? buyerUser.UserName : buyerUser.FirstName + " " + buyerUser.LastName;
+
+                    buyerUser.PointToHave = buyerUser.PointToHave - price;
+                    _db.Update(buyerUser);
+                    _db.SaveChanges();
+
+                    var adminEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin).Select(u => u.Email).ToList();
+
+                    foreach (var adminEmail in adminEmails)
+                    {
+                        EmailDto emailModel = new EmailDto()
+                        {
+                            ToEmailAddress = adminEmail!,
+                            Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
+                            Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
+                        };
+
+                        _emailService.SendEmail(emailModel);
+                    }
+
+                    transaction.Commit();
+
+                    return buyerUser.PointToHave;
                 }
-
-                var price = reward.Cost;
-
-                var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == buyerUserId);
-                if (user == null)
+                catch (Exception ex)
                 {
-                    throw new Exception("User not found");
+                    throw;
                 }
-
-                if (price > user.PointToHave)
-                {
-                    throw new Exception("Not enough balance");
-                }
-                
-                user.PointToHave = user.PointToHave - price;
-                _db.Update(user);
-                _db.SaveChanges();
-
-                return user.PointToHave;
-            }
-            catch(Exception ex)
-            {
-                throw;
             }
         }
     }
