@@ -150,6 +150,8 @@ namespace shout_out_api.Services
             try
             {
                 DateTime now = DateTime.Now;
+                int birthDayPointAmount = 50;
+                int joinToCompanyPointAmount = 50;
 
                 List<User> users = await _db.Users.ToListAsync();
 
@@ -161,7 +163,7 @@ namespace shout_out_api.Services
                         {
                             PointHistory pointEvent = new PointHistory()
                             {
-                                Amount = 50,
+                                Amount = birthDayPointAmount,
                                 Description = "Happy birthday!",
                                 SenderId = null,
                                 EventDate = now,
@@ -181,6 +183,15 @@ namespace shout_out_api.Services
                             _db.PointHistory_ReceiverUsers.Add(receiverUser);
                             _db.SaveChanges();
 
+                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                            {
+                                PointAmount = birthDayPointAmount,
+                                EventType = NotificationEventType.GetPointsByBirthday,
+                                ReceiverUserId = user.Id
+                            };
+
+                            await _notificationService.CreateNotificationAsync(notificationItemDto);
+
                             transaction.Commit();
                         }
                     }
@@ -191,7 +202,7 @@ namespace shout_out_api.Services
                         {
                             PointHistory pointEvent = new PointHistory()
                             {
-                                Amount = 50,
+                                Amount = joinToCompanyPointAmount,
                                 Description = "Happy work anniversary!",
                                 SenderId = null,
                                 EventDate = now,
@@ -210,6 +221,15 @@ namespace shout_out_api.Services
 
                             _db.PointHistory_ReceiverUsers.Add(receiverUser);
                             _db.SaveChanges();
+
+                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                            {
+                                PointAmount = joinToCompanyPointAmount,
+                                EventType = NotificationEventType.GetPointsByJoinDate,
+                                ReceiverUserId = user.Id
+                            };
+
+                            await _notificationService.CreateNotificationAsync(notificationItemDto);
 
                             transaction.Commit();
                         }
