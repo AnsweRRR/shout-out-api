@@ -147,19 +147,19 @@ namespace shout_out_api.Services
 
         public async Task ScheduledTask()
         {
-            try
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                DateTime now = DateTime.Now;
-                int birthDayPointAmount = 50;
-                int joinToCompanyPointAmount = 50;
-
-                List<User> users = await _db.Users.ToListAsync();
-
-                foreach (var user in users)
+                try
                 {
-                    if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date)
+                    DateTime now = DateTime.Now;
+                    int birthDayPointAmount = 50;
+                    int joinToCompanyPointAmount = 50;
+
+                    List<User> users = await _db.Users.ToListAsync();
+
+                    foreach (var user in users)
                     {
-                        using (var transaction = _db.Database.BeginTransaction())
+                        if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date)
                         {
                             PointHistory pointEvent = new PointHistory()
                             {
@@ -191,14 +191,9 @@ namespace shout_out_api.Services
                             };
 
                             await _notificationService.CreateNotificationAsync(notificationItemDto);
-
-                            transaction.Commit();
                         }
-                    }
 
-                    if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
-                    {
-                        using (var transaction = _db.Database.BeginTransaction())
+                        if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
                         {
                             PointHistory pointEvent = new PointHistory()
                             {
@@ -230,23 +225,23 @@ namespace shout_out_api.Services
                             };
 
                             await _notificationService.CreateNotificationAsync(notificationItemDto);
+                        }
 
-                            transaction.Commit();
+                        if (now.Day == 1) //new month
+                        {
+                            user.PointsToGive = 100;
                         }
                     }
 
-                    if (now.Day == 1) //new month
-                    {
-                        user.PointsToGive = 100;
-                    }
-                }
+                    _db.Users.UpdateRange(users);
+                    _db.SaveChanges();
 
-                _db.Users.UpdateRange(users);
-                _db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw;
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
         }
 
