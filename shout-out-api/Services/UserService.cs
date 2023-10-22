@@ -77,7 +77,7 @@ namespace shout_out_api.Services
         {
             try
             {
-                var user = _db.Users.SingleOrDefault(u => u.Email == model.Email && (u.VerifiedAt == null || u.VerifiedAt == DateTime.MinValue));
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == model.Email && (u.VerifiedAt == null || u.VerifiedAt == DateTime.MinValue));
 
                 if(user == null)
                 {
@@ -115,7 +115,7 @@ namespace shout_out_api.Services
 
                     EmailDto emailModel = new EmailDto()
                     {
-                        ToEmailAddress = user!.Email,
+                        ToEmailAddress = user!.Email!,
                         Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
                         Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
                     };

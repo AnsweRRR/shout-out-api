@@ -27,4 +27,11 @@ export const _socials = [
       color: '#00AAEC',
       path: 'https://www.twitter.com/Tomika24_',
     },
+    {
+      value: 'github',
+      name: 'Github',
+      icon: 'eva:github-fill',
+      color: '#808080',
+      path: 'https://www.github.com/AnsweRRR',
+    },
 ];  
