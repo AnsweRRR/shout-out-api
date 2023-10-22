@@ -1,7 +1,14 @@
 export const _socials = [
     {
+      value: 'email',
+      name: 'Email',
+      icon: 'eva:email-fill',
+      color: '#E97451',
+      path: 'pogranyitamas99@gmail.com',
+    },
+    {
       value: 'facebook',
-      name: 'FaceBook',
+      name: 'Facebook',
       icon: 'eva:facebook-fill',
       color: '#1877F2',
       path: 'https://www.facebook.com/pogranyitamas99',
