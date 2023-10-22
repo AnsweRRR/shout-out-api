@@ -3,6 +3,7 @@ using shout_out_api.DataAccess;
 using shout_out_api.Dto.Notification;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
+using shout_out_api.Model;
 
 namespace shout_out_api.Services
 {
@@ -100,6 +101,35 @@ namespace shout_out_api.Services
                     }
 
                     _db.Notifications.UpdateRange(notifications);
+                    _db.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task CreateNotificationAsync(CreateNotificationItemDto notificationItemToCreate)
+        {
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var notificationToCreate = new Notification()
+                    {
+                        DateTime = DateTimeOffset.Now,
+                        PointAmount = notificationItemToCreate.PointAmount,
+                        EventType = (int)notificationItemToCreate.EventType,
+                        SenderUserId = notificationItemToCreate.SenderUserId,
+                        ReceiverUserId = notificationItemToCreate.ReceiverUserId,
+                        RewardId = notificationItemToCreate.RewardId,
+                        IsRead = false
+                    };
+
+                    await _db.Notifications.AddAsync(notificationToCreate);
                     _db.SaveChanges();
 
                     transaction.Commit();

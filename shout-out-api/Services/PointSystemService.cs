@@ -3,6 +3,7 @@ using GiphyApiWrapper.Models;
 using GiphyApiWrapper.Models.Parameters;
 using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
+using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
@@ -14,11 +15,13 @@ namespace shout_out_api.Services
     {
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
+        private readonly NotificationService _notificationService;
 
-        public PointSystemService(Context db, ConfigHelper configHelper)
+        public PointSystemService(Context db, ConfigHelper configHelper, NotificationService notificationService)
         {
             _db = db;
             _configHelper = configHelper;
+            _notificationService = notificationService;
         }
 
         public async Task<IList<FeedItem>> GetHistory(int take = 10, int offset = 0)
@@ -117,6 +120,16 @@ namespace shout_out_api.Services
                             };
 
                             pointHistory_ReceiverUser.Add(receiverUsers);
+
+                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                            {
+                                PointAmount = model.Amount,
+                                EventType = NotificationEventType.GetPointsByUser,
+                                ReceiverUserId = user.Id,
+                                SenderUserId = senderUserId
+                            };
+
+                            await _notificationService.CreateNotificationAsync(notificationItemDto);
                         }
                     }
 

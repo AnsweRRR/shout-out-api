@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
 using shout_out_api.Dto.Email;
+using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.Reward;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
@@ -13,12 +14,14 @@ namespace shout_out_api.Services
         private readonly Context _db;
         private readonly FileConverter _fileConverter;
         private readonly EmailService _emailService;
+        private readonly NotificationService _notificationService;
 
-        public RewardService(Context db, FileConverter fileConverter, EmailService emailService)
+        public RewardService(Context db, FileConverter fileConverter, EmailService emailService, NotificationService notificationService)
         {
             _db = db;
             _fileConverter = fileConverter;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         public async Task<IList<RewardDto>> GetRewards()
@@ -166,18 +169,30 @@ namespace shout_out_api.Services
                     _db.Update(buyerUser);
                     _db.SaveChanges();
 
-                    var adminEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin).Select(u => u.Email).ToList();
+                    var adminUsers = _db.Users
+                        .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin)
+                        .Select(u => new { u.Email, u.Id})
+                        .ToList();
 
-                    foreach (var adminEmail in adminEmails)
+                    foreach (var adminUser in adminUsers)
                     {
                         EmailDto emailModel = new EmailDto()
                         {
-                            ToEmailAddress = adminEmail!,
+                            ToEmailAddress = adminUser.Email!,
                             Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
                             Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
                         };
 
                         _emailService.SendEmail(emailModel);
+
+                        CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                        {
+                            EventType = NotificationEventType.RewardClaimed,
+                            ReceiverUserId = adminUser.Id,
+                            SenderUserId = buyerUserId
+                        };
+
+                        await _notificationService.CreateNotificationAsync(notificationItemDto);
                     }
 
                     transaction.Commit();
