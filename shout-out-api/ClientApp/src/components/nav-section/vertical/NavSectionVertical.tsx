@@ -1,11 +1,11 @@
 import { List, Stack } from '@mui/material';
 import { _socials } from 'src/assets/_socials';
 import Socials from 'src/components/social/Socials';
+import VersionInfo from 'src/components/versionInfo/VersionInfo';
 import { useLocales } from '../../../locales';
 import { NavSectionProps } from '../types';
 import { StyledSubheader } from './styles';
 import NavList from './NavList';
-
 
 export default function NavSectionVertical({ data, sx, ...other }: NavSectionProps) {
   const { translate } = useLocales();
@@ -36,6 +36,8 @@ export default function NavSectionVertical({ data, sx, ...other }: NavSectionPro
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
         <div style={{ position: 'absolute', bottom: 0 }}>
           <Socials />
+
+          <VersionInfo />
         </div>
       </div>
     </Stack>

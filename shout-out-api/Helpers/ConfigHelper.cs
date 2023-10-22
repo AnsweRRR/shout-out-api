@@ -114,6 +114,24 @@
                 };
             }
         }
+
+        public VersionConfig Version
+        {
+            get
+            {
+                string version = string.Empty;
+
+                if (!string.IsNullOrEmpty(_configuration["VersionNumber"]))
+                {
+                    version = _configuration["VersionNumber"];
+                }
+
+                return new VersionConfig
+                {
+                    VersionNumber = version
+                };
+            }
+        }
     }
 
     public class ConnectionStringConfig
@@ -147,5 +165,10 @@
     public class ClientAppConfig
     {
         public string BaseUrl { get; set; }
+    }
+
+    public class VersionConfig
+    {
+        public string VersionNumber { get; set; }
     }
 }

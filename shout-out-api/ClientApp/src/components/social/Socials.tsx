@@ -4,13 +4,12 @@ import Iconify from "../iconify";
 
 export default function Socials() {
     return (
-        <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1, mb: 3 }}>
+        <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt: 1 }}>
         {_socials.map((social) => (
-          <Tooltip title={social.name}>
+          <Tooltip key={social.name} title={social.name}>
             <IconButton
               href={social.value === 'email' ? `mailto:${social.path}` : social.path}
               target="_blank"
-              key={social.name}
               sx={{
                 color: social.color,
                 '&:hover': {
