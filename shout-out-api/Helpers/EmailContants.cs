@@ -41,5 +41,15 @@
         {
             return $"New item '{itemName}' is available in ShoutOut. Go check it quickly!";
         }
+
+        public static string GET_POINTS_SUBJECT()
+        {
+            return "You got some points in ShoutOut";
+        }
+
+        public static string GET_POINTS_BODY(string senderUserName, int pointAmount)
+        {
+            return $"You got {pointAmount} from {senderUserName}. Well done.";
+        }
     }
 }

@@ -1,5 +1,7 @@
-﻿using shout_out_api.Dto.Reward;
+﻿using shout_out_api.Dto.Notification;
+using shout_out_api.Dto.Reward;
 using shout_out_api.Dto.User;
+using shout_out_api.Enums;
 using shout_out_api.Model;
 
 namespace shout_out_api.Helpers
@@ -118,6 +120,65 @@ namespace shout_out_api.Helpers
             }
 
             return rewardList;
+        }
+
+        //-----
+
+        public static NotificationItemDto ToNotificationItemDto(this Notification entity)
+        {
+            NotificationItemDto notificationItemDto = new NotificationItemDto()
+            {
+                Id = entity.Id,
+                DateTime = entity.DateTime,
+                EventType = (NotificationEventType)entity.EventType,
+                IsRead = entity.IsRead,
+                PointAmount = entity.PointAmount,
+                RewardName = entity.RewardId.HasValue ? entity.Reward!.Name : null
+            };
+
+            if (entity.SenderUserId.HasValue)
+            {
+                notificationItemDto.SenderUserName = !string.IsNullOrEmpty(entity.SenderUser?.UserName)
+                    ? entity.SenderUser.UserName : entity.SenderUser?.FirstName + " " + entity.SenderUser?.LastName;
+            }
+            else
+            {
+                notificationItemDto.SenderUserName = null;
+            }
+
+            return notificationItemDto;
+        }
+
+        public static List<NotificationItemDto> ToNotificationItemsDto(this List<Notification> entities)
+        {
+            List<NotificationItemDto> notificationList = new List<NotificationItemDto>();
+
+            foreach (var entity in entities)
+            {
+                NotificationItemDto notificationItemDto = new NotificationItemDto()
+                {
+                    Id = entity.Id,
+                    DateTime = entity.DateTime,
+                    EventType = (NotificationEventType)entity.EventType,
+                    IsRead = entity.IsRead,
+                    PointAmount = entity.PointAmount,
+                    RewardName = entity.RewardId.HasValue ? entity.Reward!.Name : null
+                };
+
+                if (entity.SenderUserId.HasValue)
+                {
+                    notificationItemDto.SenderUserName = !string.IsNullOrEmpty(entity.SenderUser?.UserName)
+                        ? entity.SenderUser.UserName : entity.SenderUser?.FirstName + " " + entity.SenderUser?.LastName;
+                }
+                else
+                {
+                    notificationItemDto.SenderUserName = null;
+                }
+
+                notificationList.Add(notificationItemDto);
+            }
+
+            return notificationList;
         }
     }
 }

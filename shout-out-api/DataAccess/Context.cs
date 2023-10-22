@@ -12,6 +12,7 @@ namespace shout_out_api.DataAccess
         public DbSet<Reward> Rewards { set; get; }
         public DbSet<PointHistory> PointHistories { set; get; }
         public DbSet<PointHistory_ReceiverUser> PointHistory_ReceiverUsers { set; get; }
+        public DbSet<Notification> Notifications { set; get; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,7 +39,7 @@ namespace shout_out_api.DataAccess
                         Email = "admin@admin.hu",
                         FirstName = "admin",
                         LastName = "user",
-                        VerifiedAt = DateTime.UtcNow,
+                        VerifiedAt = new DateTime(1999, 09, 23, 12, 12, 12, 485, DateTimeKind.Utc),
                         UserName = "Admin User",
                         Role = Role.Admin,
                         PointsToGive = 100,

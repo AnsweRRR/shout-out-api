@@ -135,6 +135,15 @@ const en = {
     PleaseEnterTheCodeInBelowBoxToVerifyYourEmail: "Please enter the code in below box to verify your email.",
     WeHaveSentA6DigitConfirmationEmailToYourEmail: "We've sent a 6-digit confirmation email to your email.",
     ChangePasswordSuccess: "Change password success!"
+  },
+  NotificationPopover: {
+    ViewAll: "View all",
+    MarkAllAsRead: "Mark all as read",
+    Notifications: "Notifications",
+    YouGotPointsFromSomeone: "You got {{pointAmount}} points from {{senderUser}}",
+    HappyBirthday: "Happy birthday! You got {{pointAmount}} points",
+    ThankYouForYourService: "Thank you for your service! You got {{pointAmount}} points",
+    RewardClaimedBySomeone: "'{{reward}}' item claimed by {{claimerUser}}",
   }
 };
 

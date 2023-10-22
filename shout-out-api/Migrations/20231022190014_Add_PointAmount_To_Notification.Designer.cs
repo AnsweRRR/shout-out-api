@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using shout_out_api.DataAccess;
 
@@ -11,9 +12,11 @@ using shout_out_api.DataAccess;
 namespace shout_out_api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20231022190014_Add_PointAmount_To_Notification")]
+    partial class Add_PointAmount_To_Notification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,17 +48,12 @@ namespace shout_out_api.Migrations
                     b.Property<int>("ReceiverUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RewardId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("SenderUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ReceiverUserId");
-
-                    b.HasIndex("RewardId");
 
                     b.HasIndex("SenderUserId");
 
@@ -228,7 +226,7 @@ namespace shout_out_api.Migrations
                             PointsToGive = 100,
                             Role = 0,
                             UserName = "Admin User",
-                            VerifiedAt = new DateTime(1999, 9, 23, 12, 12, 12, 485, DateTimeKind.Utc)
+                            VerifiedAt = new DateTime(2023, 10, 22, 19, 0, 14, 418, DateTimeKind.Utc).AddTicks(7650)
                         });
                 });
 
@@ -240,17 +238,11 @@ namespace shout_out_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("shout_out_api.Model.Reward", "Reward")
-                        .WithMany()
-                        .HasForeignKey("RewardId");
-
                     b.HasOne("shout_out_api.Model.User", "SenderUser")
                         .WithMany()
                         .HasForeignKey("SenderUserId");
 
                     b.Navigation("ReceiverUser");
-
-                    b.Navigation("Reward");
 
                     b.Navigation("SenderUser");
                 });

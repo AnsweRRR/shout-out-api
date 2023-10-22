@@ -32,6 +32,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RewardService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<PointSystemService>();
+builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<FileConverter>();
 

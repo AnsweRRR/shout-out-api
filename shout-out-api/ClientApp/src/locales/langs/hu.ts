@@ -135,6 +135,15 @@ const hu = {
     PleaseEnterTheCodeInBelowBoxToVerifyYourEmail: "Kérlek add meg a kódot, hogy hitelesíteni tudjuk.",
     WeHaveSentA6DigitConfirmationEmailToYourEmail: "Küldtünk egy 6 számjegyű kódot a megadott email címre.",
     ChangePasswordSuccess: "Sikeresen megváltoztattad a jelszavad!"
+  },
+  NotificationPopover: {
+    ViewAll: "Összes megtekintése",
+    MarkAllAsRead: "Összes megjelölése olvasottként",
+    Notifications: "Értesítések",
+    YouGotPointsFromSomeone: "Kaptál {{pointAmount}} pontot {{senderUser}}-tól",
+    HappyBirthday: "Boldog születésnapot! Kaptál {{pointAmount}} pontot",
+    ThankYouForYourService: "Hálásak vagyunk a munkádért! Kaptál {{pointAmount}} pontot",
+    RewardClaimedBySomeone: "'{{reward}}' jutalom beváltásra került {{claimerUser}} által",
   }
 };
 

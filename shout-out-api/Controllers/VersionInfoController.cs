@@ -5,11 +5,11 @@ namespace shout_out_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VersionInfo: ControllerBase
+    public class VersionInfoController: ControllerBase
     {
         private readonly ConfigHelper _configHelper;
 
-        public VersionInfo(ConfigHelper configHelper)
+        public VersionInfoController(ConfigHelper configHelper)
         {
             _configHelper = configHelper;
         }
