@@ -114,25 +114,25 @@ export default function NotificationsPopover() {
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={(page: number) => setOffset(page * eventPerPage)}
-          hasMore={!isLoading && !isLastPage}
-          // useWindow={false}
-          initialLoad={false}
-          loader={(
-            <div key="loading">
-              {isLoading && <Spinner message={`${translate(`FeedPage.Loading`)}`} image={null} />}
-            </div>
-          )}
-        >
-            <List disablePadding>
-              {notifications.map((notification: any) => (
-                <NotificationItem key={notification.id} notification={notification} />
-              ))}
-            </List>
-        </InfiniteScroll>
+        
+        <List disablePadding>
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={(page: number) => setOffset(page * eventPerPage)}
+            hasMore={!isLoading && !isLastPage}
+            // useWindow={false}
+            initialLoad={false}
+            loader={(
+              <div key="loading">
+                {isLoading && <Spinner message={`${translate(`FeedPage.Loading`)}`} image={null} />}
+              </div>
+            )}
+          >
+            {notifications.map((notification: any) => (
+              <NotificationItem key={notification.id} notification={notification} />
+            ))}
+          </InfiniteScroll>
+        </List>
       </MenuPopover>
     </>
   );
@@ -177,6 +177,7 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
 
 function renderContent(notification: NotificationItemDto, translate: (text: any, options?: any) => TFunctionDetailedResult<object>) {
   let titleText = '';
+  const avatarImage = null; // avatarImage = <img alt={titleText} src="/assets/icons/notification/ic_mail.svg"
 
   switch (notification.eventType) {
     case EventTypes.GetPointsByUser:
@@ -196,28 +197,8 @@ function renderContent(notification: NotificationItemDto, translate: (text: any,
       break;
   }
 
-  const title = (
-    <Typography variant="subtitle2">
-      {titleText}
-      {/* <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
-      </Typography> */}
-    </Typography>
-  );
-  // if (notification.type === 'mail') {
-  //   return {
-  //     avatar: <img alt={titleText} src="/assets/icons/notification/ic_mail.svg" />,
-  //     title,
-  //   };
-  // }
-  // if (notification.type === 'chat_message') {
-  //   return {
-  //     avatar: <img alt={titleText} src="/assets/icons/notification/ic_chat.svg" />,
-  //     title,
-  //   };
-  // }
   return {
-    avatar: null,
-    title,
+    avatar: avatarImage,
+    title: <Typography variant="subtitle2">{titleText}</Typography>,
   };
 }
