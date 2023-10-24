@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using shout_out_api.DataAccess;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Services;
 
 namespace Worker
@@ -33,7 +34,8 @@ namespace Worker
                 });
 
                 services.AddScoped<ConfigHelper>();
-                services.AddScoped<PointSystemService>();
+                services.AddScoped<INotificationService, NotificationService>();
+                services.AddScoped<IPointSystemService, PointSystemService>();
                 services.AddHostedService<Worker>();
             });
     }

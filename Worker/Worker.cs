@@ -1,4 +1,4 @@
-using shout_out_api.Services;
+using shout_out_api.Interfaces;
 
 namespace Worker
 {
@@ -41,7 +41,7 @@ namespace Worker
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var pointSystemService = scope.ServiceProvider.GetRequiredService<PointSystemService>();
+                    var pointSystemService = scope.ServiceProvider.GetRequiredService<IPointSystemService>();
 
                     await pointSystemService.ScheduledTask();
                 }
