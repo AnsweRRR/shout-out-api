@@ -138,6 +138,7 @@ const en = {
   },
   NotificationPopover: {
     ViewAll: "View all",
+    MarkAsRead: "Mark as read",
     MarkAsUnread: "Mark as unread",
     MarkAllAsRead: "Mark all as read",
     Notifications: "Notifications",

@@ -19,7 +19,7 @@ import { TFunctionDetailedResult } from 'i18next';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import { useLocales } from 'src/locales';
-import { getNotificationsAsync, getAmountOfUnreadNotificationsAsync, markAllNotificationAsReadAsync, markNotificationAsUnReadAsync } from 'src/api/notificationClient';
+import { getNotificationsAsync, getAmountOfUnreadNotificationsAsync, markAllNotificationAsReadAsync, markNotificationAsUnReadAsync, markNotificationAsReadAsync } from 'src/api/notificationClient';
 import { EventTypes, NotificationItem as NotificationItemDto } from 'src/@types/notification';
 import Spinner from 'src/components/giphyGIF/Spinner';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -183,16 +183,25 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
     setAnchorEl(null);
   };
 
-  const handleMarkAsUnread = async () => {
+  const handleMarkAsReadOrUnread = async () => {
     setMenuOpen(false);
     setAnchorEl(null);
     setIsLoading(true);
     if (user) {
-      const result = await markNotificationAsUnReadAsync(notification.id, user?.accessToken);
-      if (result.status === 200) {
-        const { data } = result;
-        notification.isRead = data.isRead;
+      if (notification.isRead) {
+        const result = await markNotificationAsUnReadAsync(notification.id, user?.accessToken);
+        if (result.status === 200) {
+          const { data } = result;
+          notification.isRead = data.isRead;
+        }
+      } else{
+        const result = await markNotificationAsReadAsync(notification.id, user?.accessToken);
+        if (result.status === 200) {
+          const { data } = result;
+          notification.isRead = data.isRead;
+        }
       }
+      
       setIsLoading(false);
     }
   }
@@ -222,7 +231,7 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
           </Stack>
         }
       />
-      {notification.isRead === true && !isLoading &&
+      {!isLoading &&
         <IconButton onClick={handleMenuOpen}>
           <MoreHorizIcon />
         </IconButton>
@@ -238,10 +247,10 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
         <MenuItem
           onClick={(event) => {
             event.stopPropagation();
-            handleMarkAsUnread();
+            handleMarkAsReadOrUnread();
           }}
         >
-          {`${translate('NotificationPopover.MarkAsUnread')}`}
+          {notification.isRead ? `${translate('NotificationPopover.MarkAsUnread')}` : `${translate('NotificationPopover.MarkAsRead')}`}
         </MenuItem>
       </Menu>
     </ListItem>

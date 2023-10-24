@@ -138,6 +138,7 @@ const hu = {
   },
   NotificationPopover: {
     ViewAll: "Összes megtekintése",
+    MarkAsRead: "Megjelölés olvasottként",
     MarkAsUnread: "Megjelölés olvasatlanként",
     MarkAllAsRead: "Összes megjelölése olvasottként",
     Notifications: "Értesítések",
