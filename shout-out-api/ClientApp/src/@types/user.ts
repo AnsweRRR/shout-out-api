@@ -80,3 +80,14 @@ export type RegisterDto = {
   confirmPassword: string,
   token: string
 };
+
+// ----------------------------------------------------------------------
+
+export type UserDataToSelectDto = {
+  id: number,
+  userName: string | null,
+  firstName: string,
+  lastName: string,
+  email: string,
+  avatarUrl: string | null
+}

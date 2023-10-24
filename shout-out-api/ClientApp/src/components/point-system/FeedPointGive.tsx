@@ -3,6 +3,8 @@ import { Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typogra
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useLocales } from "src/locales";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
+import { useSelector } from "react-redux";
+import { AppState } from "src/redux/rootReducerTypes";
 import Iconify from "../iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 
@@ -15,6 +17,7 @@ export default function PointSystemFeed() {
     const [taggerAnchorEl, setTaggerAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
+    const { users } = useSelector((state: AppState) => state.usersState);
 
     const handleTaggerButtonClick = () => {
         if (textareaRef.current) {

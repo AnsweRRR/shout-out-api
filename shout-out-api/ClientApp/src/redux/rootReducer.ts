@@ -1,11 +1,7 @@
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
-
-// ----------------------------------------------------------------------
-
-export interface AppState {
-
-}
+import { AppState } from './rootReducerTypes';
+import usersReducer from './reducersAndActions/usersActionAndReducer';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +13,7 @@ export const rootPersistConfig = {
 };
 
 const rootReducer = combineReducers<AppState>({
-
+  usersState: usersReducer
 });
 
 export default rootReducer;

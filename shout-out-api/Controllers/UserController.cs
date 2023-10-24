@@ -146,7 +146,7 @@ namespace shout_out_api.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("users")]
         [Authorize]
         public async Task<IActionResult> GetUsers()
         {

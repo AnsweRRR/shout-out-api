@@ -54,8 +54,8 @@ const GiphyGIFSearchBox = (props: Props) => {
     );
 
     // Fetch Giphy Api on component mount and on search query change
-    const [firstRun, setFirstRun] = useState(true)
-    const isFirstRun = useRef(true)
+    const [firstRun, setFirstRun] = useState(true);
+    const isFirstRun = useRef(true);
     useEffect(() => {
         fetchImages(user?.accessToken, gifPerPage, 0, false, query);
 

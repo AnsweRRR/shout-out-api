@@ -51,7 +51,7 @@ export async function getUsersAsync(accessToken: string) {
             'Authorization': `Bearer ${accessToken}`
         };
 
-        const response = await axios.get(`/api/user`, { headers });
+        const response = await axios.get(`/api/user/users`, { headers });
         return response;
     }
     catch(error) {

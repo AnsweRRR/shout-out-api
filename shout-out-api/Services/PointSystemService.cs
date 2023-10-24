@@ -56,6 +56,7 @@ namespace shout_out_api.Services
                             UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
                         }).ToList()
                     })
+                    .OrderByDescending(fi => fi.EventDate)
                     .Skip(offset)
                     .Take(take)
                     .ToListAsync();

@@ -32,6 +32,7 @@ namespace shout_out_api.Services
                         SenderUserName = (n.SenderUserId.HasValue && n.SenderUser != null) ?
                             !string.IsNullOrEmpty(n.SenderUser.UserName) ? n.SenderUser.UserName : n.SenderUser.FirstName + " " + n.SenderUser.LastName : null
                     })
+                    .OrderByDescending(n => n.DateTime)
                     .Skip(offset)
                     .Take(take)
                     .ToListAsync();

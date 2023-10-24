@@ -17,9 +17,7 @@ export default function NavItem({
   ...other
 }: NavItemProps) {
   const { translate } = useLocales();
-
   const { title, path, icon, info, children, disabled, caption, roles } = item;
-
   const subItem = depth !== 1;
 
   const renderContent = (

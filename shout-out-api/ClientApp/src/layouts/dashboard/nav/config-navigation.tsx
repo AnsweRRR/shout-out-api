@@ -1,4 +1,3 @@
-import i18n from 'i18next';
 import { PATH_APP } from '../../../routes/paths';
 import SvgColor from '../../../components/svg-color';
 
@@ -26,27 +25,27 @@ const navConfig = [
     subheader: '',
     items: [
       {
-        title: i18n.t('SideMenu.Menu'),
+        title: 'SideMenu.Menu',
         path: PATH_APP.root,
         icon: ICONS.analytics,
         children: [
-          { title: i18n.t('SideMenu.Feed'), path: PATH_APP.feed },
-          { title: i18n.t('SideMenu.Reward'), path: PATH_APP.reward },
+          { title: 'SideMenu.Feed', path: PATH_APP.feed },
+          { title: 'SideMenu.Reward', path: PATH_APP.reward },
         ],
       }
     ]
   },
   {
-    subheader: i18n.t('SideMenu.Management'),
+    subheader: 'SideMenu.Management',
     items: [
       {
-        title: i18n.t('SideMenu.User'),
+        title: 'SideMenu.User',
         path: PATH_APP.user.root,
         icon: ICONS.user,
         children: [
-          { title: i18n.t('SideMenu.List'), path: PATH_APP.user.list },
-          { title: i18n.t('SideMenu.CreateNewUser'), path: PATH_APP.user.new },
-          { title: i18n.t('SideMenu.Account'), path: PATH_APP.user.account },
+          { title: 'SideMenu.List', path: PATH_APP.user.list },
+          { title: 'SideMenu.CreateNewUser', path: PATH_APP.user.new },
+          { title: 'SideMenu.Account', path: PATH_APP.user.account },
         ],
       }
     ],

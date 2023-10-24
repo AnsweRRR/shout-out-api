@@ -51,11 +51,6 @@ namespace shout_out_api.Helpers
                     LastName = entity.LastName,
                     Email = entity.Email,
                     Role = entity.Role,
-                    StartAtCompany = entity.StartAtCompany,
-                    Birthday = entity.Birthday,
-                    PointsToGive = entity.PointsToGive,
-                    PointToHave = entity.PointToHave,
-                    RefreshToken = entity.RefreshToken,
                     Verified = entity.VerifiedAt.HasValue
                 };
 

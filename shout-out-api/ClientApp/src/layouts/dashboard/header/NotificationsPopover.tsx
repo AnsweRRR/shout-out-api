@@ -20,9 +20,12 @@ import { useLocales } from 'src/locales';
 import { getNotificationsAsync, getAmountOfUnreadNotificationsAsync, markAllNotificationAsReadAsync } from 'src/api/notificationClient';
 import { EventTypes, NotificationItem as NotificationItemDto } from 'src/@types/notification';
 import Spinner from 'src/components/giphyGIF/Spinner';
+import CakeIcon from '@mui/icons-material/Cake';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import RedeemIcon from '@mui/icons-material/Redeem';
+import RequestPageIcon from '@mui/icons-material/RequestPage';
 import { fToNow } from '../../../utils/formatTime';
 import Iconify from '../../../components/iconify';
-import Scrollbar from '../../../components/scrollbar';
 import MenuPopover from '../../../components/menu-popover';
 import { IconButtonAnimate } from '../../../components/animate';
 
@@ -35,22 +38,30 @@ export default function NotificationsPopover() {
   const [isLastPage, setIsLastPage] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
   const eventPerPage = 10;
-  const [totalUnRead, setTotalUnRead] = useState<number>(notifications.filter((item: any) => item.isUnRead === true).length);
+  const [totalUnRead, setTotalUnRead] = useState<number>(notifications.filter((item: NotificationItemDto) => item.isRead === false).length);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
     setOpenPopover(event.currentTarget);
   };
 
   const handleClosePopover = () => {
-    setNotifications([]);
     setOpenPopover(null);
+    setNotifications([]);
+    setIsLastPage(false);
+    setIsLoading(false);
+    setOffset(0);
   };
 
   const handleMarkAllAsRead = async () => {
     if (user) {
       const result = await markAllNotificationAsReadAsync(user?.accessToken);
       if (result.status === 200) {
-        setOpenPopover(null);
+        const notificationItems = notifications.map((notification: NotificationItemDto) => {
+          notification.isRead = true;
+          return notification;
+        });
+        setNotifications(notificationItems);
+        setTotalUnRead(notificationItems.filter((item: NotificationItemDto) => item.isRead === false).length);
       }
     }
   };
@@ -58,6 +69,7 @@ export default function NotificationsPopover() {
   useEffect(() => {
     const getNotifications = async () => {
       if (user) {
+        setIsLoading(true);
         const result = await getNotificationsAsync(offset, eventPerPage, user?.accessToken);
         const items = result.data as Array<NotificationItemDto>;
         if (items.length < eventPerPage) {
@@ -67,6 +79,7 @@ export default function NotificationsPopover() {
           setIsLastPage(false);
         }
         setNotifications(prevState => [...prevState, ...items]);
+        setIsLoading(false);
       }
     }
 
@@ -98,7 +111,7 @@ export default function NotificationsPopover() {
         </Badge>
       </IconButtonAnimate>
 
-      <MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 360, p: 0, height: 500, overflow: 'auto' }}>
+      <MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 360, p: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">{`${translate('NotificationPopover.Notifications')}`}</Typography>
@@ -115,12 +128,19 @@ export default function NotificationsPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
         
-        <List disablePadding>
+        <List disablePadding style={{ overflowY: 'auto', height: '500px' }} >
           <InfiniteScroll
             pageStart={0}
-            loadMore={(page: number) => setOffset(page * eventPerPage)}
+            loadMore={(page: number) => {
+              if (openPopover !== null) {
+                setOffset(page * eventPerPage);
+              }
+              else {
+                setOffset(0);
+              }
+            }}
             hasMore={!isLoading && !isLastPage}
-            // useWindow={false}
+            useWindow={false}
             initialLoad={false}
             loader={(
               <div key="loading">
@@ -128,7 +148,7 @@ export default function NotificationsPopover() {
               </div>
             )}
           >
-            {notifications.map((notification: any) => (
+            {notifications.map((notification: NotificationItemDto) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </InfiniteScroll>
@@ -150,7 +170,7 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
         py: 1.5,
         px: 2.5,
         mt: '1px',
-        ...(!notification.isRead && {
+        ...(notification?.isRead === false && {
           bgcolor: 'action.selected',
         }),
       }}
@@ -175,22 +195,26 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
 
 // ----------------------------------------------------------------------
 
-function renderContent(notification: NotificationItemDto, translate: (text: any, options?: any) => TFunctionDetailedResult<object>) {
+function renderContent(notification: NotificationItemDto, translate: (text: string, options?: any) => TFunctionDetailedResult<object>) {
   let titleText = '';
-  const avatarImage = null; // avatarImage = <img alt={titleText} src="/assets/icons/notification/ic_mail.svg"
+  let avatarImage = null;
 
   switch (notification.eventType) {
     case EventTypes.GetPointsByUser:
       titleText = `${translate('NotificationPopover.YouGotPointsFromSomeone', {pointAmount: notification.pointAmount, senderUser: notification.senderUserName})}`;
+      avatarImage = <RedeemIcon color='primary' />
       break;
     case EventTypes.GetPointsByBirthday:
       titleText = `${translate('NotificationPopover.HappyBirthday', {pointAmount: notification.pointAmount})}`;
+      avatarImage = <CakeIcon color='primary' />
       break;
     case EventTypes.GetPointsByJoinDate:
       titleText = `${translate('NotificationPopover.ThankYouForYourService', {pointAmount: notification.pointAmount})}`;
+      avatarImage = <MilitaryTechIcon color='primary' />
       break;
     case EventTypes.RewardClaimed:
       titleText = `${translate('NotificationPopover.RewardClaimedBySomeone', {reward: notification.rewardName, claimerUser: notification.senderUserName})}`;
+      avatarImage = <RequestPageIcon color='primary' />
       break;
     default:
       titleText = '';
