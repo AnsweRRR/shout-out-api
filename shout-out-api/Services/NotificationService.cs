@@ -153,7 +153,7 @@ namespace shout_out_api.Services
                 {
                     var notificationToCreate = new Notification()
                     {
-                        DateTime = DateTimeOffset.Now,
+                        DateTime = DateTime.Now,
                         PointAmount = notificationItemToCreate.PointAmount,
                         EventType = (int)notificationItemToCreate.EventType,
                         SenderUserId = notificationItemToCreate.SenderUserId,

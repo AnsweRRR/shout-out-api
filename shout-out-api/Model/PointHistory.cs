@@ -12,7 +12,7 @@ namespace shout_out_api.Model
 
         [ForeignKey("SenderId")]
         public User? SenderUser { get; set; }
-        public DateTimeOffset EventDate { get; set; }
+        public DateTime EventDate { get; set; }
         public string? Description { get; set; }
         public PointEventType EventType { get; set; }
         public string? GiphyGifUrl { get; set; }

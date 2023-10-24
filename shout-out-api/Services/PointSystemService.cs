@@ -76,7 +76,7 @@ namespace shout_out_api.Services
             {
                 try
                 {
-                    DateTimeOffset now = DateTimeOffset.UtcNow;
+                    DateTime now = DateTime.Now;
 
                     var senderUser = await _db.Users.SingleOrDefaultAsync(u => u.Id == senderUserId);
 

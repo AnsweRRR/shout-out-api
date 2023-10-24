@@ -9,7 +9,7 @@ namespace shout_out_api.Dto.PointSystem
         public int? SenderId { get; set; }
         public string? SenderName { get; set; }
         public string? SenderAvatar { get; set; }
-        public DateTimeOffset EventDate { get; set; }
+        public DateTime EventDate { get; set; }
         public string? Description { get; set; }
         public PointEventType EventType { get; set; }
         public string? GiphyGif { get; set; }

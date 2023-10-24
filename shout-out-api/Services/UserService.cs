@@ -151,7 +151,7 @@ namespace shout_out_api.Services
         {
             try
             {
-                DateTime now = DateTime.UtcNow;
+                DateTime now = DateTime.Now;
 
                 var user = await _db.Users.SingleOrDefaultAsync(u => u.VerificationToken == model.Token);
                 if (user == null)
@@ -382,7 +382,7 @@ namespace shout_out_api.Services
                 int sixDigitCode = random.Next(100000, 1000000);
 
                 user.PasswordResetToken = sixDigitCode.ToString("D6");
-                user.PasswordResetTokenExpires = DateTime.UtcNow.AddDays(1);
+                user.PasswordResetTokenExpires = DateTime.Now.AddDays(1);
 
                 _db.Users.Update(user);
                 _db.SaveChanges();
@@ -420,7 +420,7 @@ namespace shout_out_api.Services
                     throw new Exception("User not found");
                 }
 
-                if (user.PasswordResetTokenExpires < DateTime.UtcNow)
+                if (user.PasswordResetTokenExpires < DateTime.Now)
                 {
                     throw new Exception("Reset password token expired");
                 }

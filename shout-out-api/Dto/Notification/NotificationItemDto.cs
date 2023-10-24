@@ -7,7 +7,7 @@ namespace shout_out_api.Dto.Notification
         public int Id { get; set; }
         public string? SenderUserName { get; set; }
         public NotificationEventType EventType { get; set; }
-        public DateTimeOffset DateTime { get; set; }
+        public DateTime DateTime { get; set; }
         public bool IsRead { get; set; }
         public int? PointAmount { get; set; }
         public string? RewardName { get; set; }
