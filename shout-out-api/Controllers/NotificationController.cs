@@ -48,6 +48,22 @@ namespace shout_out_api.Controllers
             return Ok(result);
         }
 
+        [HttpPost("mark-as-unread")]
+        [Authorize]
+        public async Task<IActionResult> MarkAsUnRead([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _notificationService.MarkAsUnRead(id, int.Parse(userId));
+
+            return Ok(result);
+        }
+
         [HttpPost("mark-as-read")]
         [Authorize]
         public async Task<IActionResult> MarkAsRead([FromQuery] int id)

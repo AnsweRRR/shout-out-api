@@ -11,15 +11,18 @@ import {
   Typography,
   ListItemText,
   ListItemAvatar,
-  ListItemButton,
+  ListItem,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { TFunctionDetailedResult } from 'i18next';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import { useLocales } from 'src/locales';
-import { getNotificationsAsync, getAmountOfUnreadNotificationsAsync, markAllNotificationAsReadAsync } from 'src/api/notificationClient';
+import { getNotificationsAsync, getAmountOfUnreadNotificationsAsync, markAllNotificationAsReadAsync, markNotificationAsUnReadAsync } from 'src/api/notificationClient';
 import { EventTypes, NotificationItem as NotificationItemDto } from 'src/@types/notification';
 import Spinner from 'src/components/giphyGIF/Spinner';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CakeIcon from '@mui/icons-material/Cake';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import RedeemIcon from '@mui/icons-material/Redeem';
@@ -162,10 +165,40 @@ export default function NotificationsPopover() {
 
 function NotificationItem({ notification }: { notification: NotificationItemDto }) {
   const { translate } = useLocales();
+  const { user } = useAuthContext();
   const { avatar, title } = renderContent(notification, translate);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleMenuOpen = (event: any) => {
+    event.stopPropagation()
+    setMenuOpen(true);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = (event: any) => {
+    event.stopPropagation()
+    setMenuOpen(false);
+    setAnchorEl(null);
+  };
+
+  const handleMarkAsUnread = async () => {
+    setMenuOpen(false);
+    setAnchorEl(null);
+    setIsLoading(true);
+    if (user) {
+      const result = await markNotificationAsUnReadAsync(notification.id, user?.accessToken);
+      if (result.status === 200) {
+        const { data } = result;
+        notification.isRead = data.isRead;
+      }
+      setIsLoading(false);
+    }
+  }
 
   return (
-    <ListItemButton
+    <ListItem
       sx={{
         py: 1.5,
         px: 2.5,
@@ -189,7 +222,29 @@ function NotificationItem({ notification }: { notification: NotificationItemDto 
           </Stack>
         }
       />
-    </ListItemButton>
+      {notification.isRead === true && !isLoading &&
+        <IconButton onClick={handleMenuOpen}>
+          <MoreHorizIcon />
+        </IconButton>
+      }
+      
+      <Menu
+        anchorEl={anchorEl}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MenuItem
+          onClick={(event) => {
+            event.stopPropagation();
+            handleMarkAsUnread();
+          }}
+        >
+          {`${translate('NotificationPopover.MarkAsUnread')}`}
+        </MenuItem>
+      </Menu>
+    </ListItem>
   );
 }
 

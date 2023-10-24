@@ -138,6 +138,7 @@ const hu = {
   },
   NotificationPopover: {
     ViewAll: "Összes megtekintése",
+    MarkAsUnread: "Megjelölés olvasatlanként",
     MarkAllAsRead: "Összes megjelölése olvasottként",
     Notifications: "Értesítések",
     YouGotPointsFromSomeone: "Kaptál {{pointAmount}} pontot {{senderUser}}-tól",

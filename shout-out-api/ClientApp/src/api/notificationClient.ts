@@ -35,17 +35,28 @@ export async function getAmountOfUnreadNotificationsAsync(accessToken: string) {
     }
 }
 
+export async function markNotificationAsUnReadAsync(notificationId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.post(`/api/notification/mark-as-unread?id=${notificationId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function markNotificationAsReadAsync(notificationId: number, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
 
-        const params = {
-            id: notificationId
-        };
-
-        const response = await axios.post(`/api/notification/mark-as-read`, params, { headers });
+        const response = await axios.post(`/api/notification/mark-as-read?id=${notificationId}`, { headers });
         return response;
     }
     catch(error) {

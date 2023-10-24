@@ -62,6 +62,37 @@ namespace shout_out_api.Services
             }
         }
 
+        public async Task<NotificationItemDto> MarkAsUnRead(int id, int userId)
+        {
+            try
+            {
+                var notification = await _db.Notifications
+                    .Include(n => n.SenderUser)
+                    .Include(n => n.ReceiverUser)
+                    .Include(n => n.Reward)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (notification == null)
+                {
+                    throw new Exception("Notification not found!");
+                }
+
+                if (notification.ReceiverUserId == userId)
+                {
+                    notification.IsRead = false;
+
+                    _db.Notifications.Update(notification);
+                    _db.SaveChanges();
+                }
+
+                return notification.ToNotificationItemDto();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<NotificationItemDto> MarkAsRead(int id, int userId)
         {
             try

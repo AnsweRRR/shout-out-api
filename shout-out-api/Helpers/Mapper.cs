@@ -128,10 +128,10 @@ namespace shout_out_api.Helpers
                 EventType = (NotificationEventType)entity.EventType,
                 IsRead = entity.IsRead,
                 PointAmount = entity.PointAmount,
-                RewardName = entity.RewardId.HasValue ? entity.Reward!.Name : null
+                RewardName = entity.Reward != null ? entity.Reward.Name : null
             };
 
-            if (entity.SenderUserId.HasValue)
+            if (entity.SenderUser != null)
             {
                 notificationItemDto.SenderUserName = !string.IsNullOrEmpty(entity.SenderUser?.UserName)
                     ? entity.SenderUser.UserName : entity.SenderUser?.FirstName + " " + entity.SenderUser?.LastName;
