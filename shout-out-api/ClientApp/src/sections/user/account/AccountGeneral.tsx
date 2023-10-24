@@ -135,7 +135,7 @@ export default function AccountGeneral() {
 
               <DatePicker
                 label={`${translate('Maintenance.Birthday')}`}
-                disabled={methods.watch('birthday') !== null}
+                disabled={user?.birthday !== null}
                 value={methods.watch('birthday')}
                 onChange={(date) => setValue('birthday', date, { shouldValidate: true })}
                 renderInput={(params) => <TextField {...params} />}
@@ -143,7 +143,7 @@ export default function AccountGeneral() {
 
               <DatePicker
                 label={`${translate('Maintenance.StartAtCompany')}`}
-                disabled={methods.watch('startAtCompany') !== null}
+                disabled={user?.startAtCompany !== null}
                 value={methods.watch('startAtCompany')}
                 onChange={(date) => setValue('startAtCompany', date, { shouldValidate: true })}
                 renderInput={(params) => <TextField {...params} />}
