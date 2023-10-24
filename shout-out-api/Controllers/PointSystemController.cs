@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Interfaces;
 using shout_out_api.Services;
 using System.Security.Claims;
 
@@ -10,8 +11,8 @@ namespace shout_out_api.Controllers
     [ApiController]
     public class PointSystemController: ControllerBase
     {
-        private readonly PointSystemService _pointSystemService;
-        public PointSystemController(PointSystemService pointSystemService)
+        private readonly IPointSystemService _pointSystemService;
+        public PointSystemController(IPointSystemService pointSystemService)
         {
             _pointSystemService = pointSystemService;
         }

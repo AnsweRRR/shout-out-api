@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.Reward;
+using shout_out_api.Interfaces;
 using shout_out_api.Services;
 using System.Security.Claims;
 
@@ -10,9 +11,9 @@ namespace shout_out_api.Controllers
     [ApiController]
     public class RewardController: ControllerBase
     {
-        private readonly RewardService _rewardService;
+        private readonly IRewardService _rewardService;
 
-        public RewardController(RewardService rewardService)
+        public RewardController(IRewardService rewardService)
         {
             _rewardService = rewardService;
         }

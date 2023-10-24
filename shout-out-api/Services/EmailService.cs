@@ -4,10 +4,11 @@ using MimeKit;
 using MimeKit.Text;
 using shout_out_api.Helpers;
 using shout_out_api.Dto.Email;
+using shout_out_api.Interfaces;
 
 namespace shout_out_api.Services
 {
-    public class EmailService
+    public class EmailService: IEmailService
     {
         private readonly ConfigHelper _configHelper;
         public EmailService(ConfigHelper configHelper)

@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using shout_out_api.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,13 +29,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:Default").Value!));
 
 builder.Services.AddScoped<ConfigHelper>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<RewardService>();
-builder.Services.AddScoped<TokenService>();
-builder.Services.AddScoped<PointSystemService>();
-builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<FileConverter>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRewardService, RewardService>();
+builder.Services.AddScoped<IPointSystemService, PointSystemService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddSwaggerGen(options =>
 {

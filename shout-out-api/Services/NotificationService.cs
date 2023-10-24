@@ -3,11 +3,12 @@ using shout_out_api.DataAccess;
 using shout_out_api.Dto.Notification;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Model;
 
 namespace shout_out_api.Services
 {
-    public class NotificationService
+    public class NotificationService: INotificationService
     {
         private readonly Context _db;
         public NotificationService(Context db)

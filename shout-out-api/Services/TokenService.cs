@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace shout_out_api.Services
 {
-    public class TokenService
+    public class TokenService: ITokenService
     {
         private readonly ConfigHelper _configHelper;
         public TokenService(ConfigHelper configHelper)

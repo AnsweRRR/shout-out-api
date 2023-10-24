@@ -5,18 +5,19 @@ using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.Reward;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Model;
 
 namespace shout_out_api.Services
 {
-    public class RewardService
+    public class RewardService: IRewardService
     {
         private readonly Context _db;
         private readonly FileConverter _fileConverter;
-        private readonly EmailService _emailService;
-        private readonly NotificationService _notificationService;
+        private readonly IEmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public RewardService(Context db, FileConverter fileConverter, EmailService emailService, NotificationService notificationService)
+        public RewardService(Context db, FileConverter fileConverter, IEmailService emailService, INotificationService notificationService)
         {
             _db = db;
             _fileConverter = fileConverter;

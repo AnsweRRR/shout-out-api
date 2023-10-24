@@ -7,17 +7,18 @@ using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Model;
 
 namespace shout_out_api.Services
 {
-    public class PointSystemService
+    public class PointSystemService: IPointSystemService
     {
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
-        public PointSystemService(Context db, ConfigHelper configHelper, NotificationService notificationService)
+        public PointSystemService(Context db, ConfigHelper configHelper, INotificationService notificationService)
         {
             _db = db;
             _configHelper = configHelper;

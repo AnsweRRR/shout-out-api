@@ -5,6 +5,7 @@ using shout_out_api.Dto.Email;
 using shout_out_api.Dto.User;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
+using shout_out_api.Interfaces;
 using shout_out_api.Model;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,17 @@ using System.Security.Cryptography;
 
 namespace shout_out_api.Services
 {
-    public class UserService
+    public class UserService: IUserService
     {
         private static readonly Random random = new Random();
 
-        private readonly TokenService _tokenService;
-        private readonly EmailService _emailService;
+        private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
         private readonly FileConverter _fileConverter;
 
-        public UserService(TokenService tokenService, EmailService emailService, Context db, ConfigHelper configHelper, FileConverter fileConverter)
+        public UserService(ITokenService tokenService, IEmailService emailService, Context db, ConfigHelper configHelper, FileConverter fileConverter)
         {
             _tokenService = tokenService;
             _emailService = emailService;
@@ -350,7 +351,7 @@ namespace shout_out_api.Services
         {
             try
             {
-                var user = _db.Users.SingleOrDefault(u => u.Id == int.Parse(userId));
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == int.Parse(userId));
 
                 if (user == null)
                 {

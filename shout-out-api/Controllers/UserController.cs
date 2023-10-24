@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.User;
+using shout_out_api.Interfaces;
 using shout_out_api.Services;
 using System.Security.Claims;
 
@@ -10,9 +11,9 @@ namespace shout_out_api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(UserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
