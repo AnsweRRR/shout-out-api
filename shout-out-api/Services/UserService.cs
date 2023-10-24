@@ -170,7 +170,7 @@ namespace shout_out_api.Services
                 }
 
                 //user.Avatar = model.Avatar;
-                //user.UserName = model.UserName;
+                user.UserName = model.UserName;
                 //user.Birthday = model.Birthday;
                 //user.StartAtCompany = model.StartAtCompany;
                 user.VerifiedAt = now;
