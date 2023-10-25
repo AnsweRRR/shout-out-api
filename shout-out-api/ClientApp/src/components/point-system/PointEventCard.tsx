@@ -13,7 +13,7 @@ export default function PointSystemFeed({ event }: Props) {
                 <Grid container>
                     <Grid item xs={8} md={8}>
                         <Stack direction="row" alignItems="center" spacing={2}>
-                        <Tooltip title={event.senderName}>
+                        <Tooltip title={event.senderId !== null ? event.senderName : 'ShoutOut'}>
                             <Avatar
                                 alt={event.senderName!}
                                 src={event.senderAvatar!}

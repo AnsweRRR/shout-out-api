@@ -70,8 +70,8 @@ export type EditUserDto = {
   userName?: string | null,
   avatar?: CustomFile | string | null,
   role?: Roles,
-  birthday?: Date | null,
-  startAtCompany?: Date | null
+  birthday?: Date | string | null,
+  startAtCompany?: Date | string | null
 };
 
 export type RegisterDto = {

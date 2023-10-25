@@ -157,7 +157,7 @@ namespace shout_out_api.Services
                     int birthDayPointAmount = 50;
                     int joinToCompanyPointAmount = 50;
 
-                    List<User> users = await _db.Users.ToListAsync();
+                    List<User> users = await _db.Users.Where(u => u.VerifiedAt.HasValue && (u.Birthday.HasValue || u.StartAtCompany.HasValue)).ToListAsync();
 
                     foreach (var user in users)
                     {

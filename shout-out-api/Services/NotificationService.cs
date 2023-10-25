@@ -147,30 +147,25 @@ namespace shout_out_api.Services
 
         public async Task CreateNotificationAsync(CreateNotificationItemDto notificationItemToCreate)
         {
-            using (var transaction = _db.Database.BeginTransaction())
+            try
             {
-                try
+                var notificationToCreate = new Notification()
                 {
-                    var notificationToCreate = new Notification()
-                    {
-                        DateTime = DateTime.Now,
-                        PointAmount = notificationItemToCreate.PointAmount,
-                        EventType = (int)notificationItemToCreate.EventType,
-                        SenderUserId = notificationItemToCreate.SenderUserId,
-                        ReceiverUserId = notificationItemToCreate.ReceiverUserId,
-                        RewardId = notificationItemToCreate.RewardId,
-                        IsRead = false
-                    };
+                    DateTime = DateTime.Now,
+                    PointAmount = notificationItemToCreate.PointAmount,
+                    EventType = (int)notificationItemToCreate.EventType,
+                    SenderUserId = notificationItemToCreate.SenderUserId,
+                    ReceiverUserId = notificationItemToCreate.ReceiverUserId,
+                    RewardId = notificationItemToCreate.RewardId,
+                    IsRead = false
+                };
 
-                    await _db.Notifications.AddAsync(notificationToCreate);
-                    _db.SaveChanges();
-
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                _db.Notifications.Add(notificationToCreate);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

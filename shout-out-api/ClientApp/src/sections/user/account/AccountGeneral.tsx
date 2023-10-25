@@ -65,8 +65,8 @@ export default function AccountGeneral() {
         lastName: data.lastName,
         userName: data.userName,
         avatar: data.avatar,
-        birthday: data.birthday,
-        startAtCompany: data.startAtCompany
+        birthday: data.birthday !== null && data.birthday !== undefined ? new Date(data.birthday).toDateString() : null,
+        startAtCompany: data.startAtCompany !== null && data.startAtCompany !== undefined ? new Date(data.startAtCompany).toDateString() : null
       };
       await editOwnUserAccountAsync(editUserDto, user?.accessToken);
 
