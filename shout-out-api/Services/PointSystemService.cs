@@ -185,14 +185,18 @@ namespace shout_out_api.Services
                             _db.PointHistory_ReceiverUsers.Add(receiverUser);
                             _db.SaveChanges();
 
-                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                            var notificationToCreate = new Notification()
                             {
-                                PointAmount = birthDayPointAmount,
-                                EventType = NotificationEventType.GetPointsByBirthday,
-                                ReceiverUserId = user.Id
+                                DateTime = now,
+                                PointAmount = joinToCompanyPointAmount,
+                                EventType = (int)NotificationEventType.GetPointsByBirthday,
+                                ReceiverUser = user
                             };
 
-                            await _notificationService.CreateNotificationAsync(notificationItemDto);
+                            user.PointToHave += birthDayPointAmount;
+
+                            _db.Notifications.Add(notificationToCreate);
+                            _db.SaveChanges();
                         }
 
                         if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
@@ -219,14 +223,18 @@ namespace shout_out_api.Services
                             _db.PointHistory_ReceiverUsers.Add(receiverUser);
                             _db.SaveChanges();
 
-                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                            var notificationToCreate = new Notification()
                             {
+                                DateTime = now,
                                 PointAmount = joinToCompanyPointAmount,
-                                EventType = NotificationEventType.GetPointsByJoinDate,
-                                ReceiverUserId = user.Id
+                                EventType = (int)NotificationEventType.GetPointsByJoinDate,
+                                ReceiverUser = user
                             };
 
-                            await _notificationService.CreateNotificationAsync(notificationItemDto);
+                            user.PointToHave += joinToCompanyPointAmount;
+
+                            _db.Notifications.Add(notificationToCreate);
+                            _db.SaveChanges();
                         }
 
                         if (now.Day == 1) //new month
