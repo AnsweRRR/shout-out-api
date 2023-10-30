@@ -8,7 +8,6 @@ import { HEADER } from '../../config-global';
 import Logo from '../../components/logo';
 import navConfig from './nav/config-navigation';
 import NavMobile from './nav/mobile';
-import NavDesktop from './nav/desktop';
 
 export default function Header() {
   const carouselRef = useRef(null);
@@ -44,8 +43,6 @@ export default function Header() {
           <Logo />
 
           <Box sx={{ flexGrow: 1 }} />
-
-          {isDesktop && <NavDesktop isOffset={isOffset} data={navConfig} />}
 
           {!isDesktop && <NavMobile isOffset={isOffset} data={navConfig} />}
         </Container>
