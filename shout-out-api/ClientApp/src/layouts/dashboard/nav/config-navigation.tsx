@@ -1,3 +1,4 @@
+import { Roles } from 'src/@types/user';
 import { PATH_APP } from '../../../routes/paths';
 import SvgColor from '../../../components/svg-color';
 
@@ -29,8 +30,8 @@ const navConfig = [
         path: PATH_APP.root,
         icon: ICONS.analytics,
         children: [
-          { title: 'SideMenu.Feed', path: PATH_APP.feed },
-          { title: 'SideMenu.Reward', path: PATH_APP.reward },
+          { title: 'SideMenu.Feed', path: PATH_APP.feed},
+          { title: 'SideMenu.Reward', path: PATH_APP.reward, roles: [Roles.Admin] },
         ],
       }
     ]
@@ -42,9 +43,10 @@ const navConfig = [
         title: 'SideMenu.User',
         path: PATH_APP.user.root,
         icon: ICONS.user,
+        roles: [Roles.Admin],
         children: [
-          { title: 'SideMenu.List', path: PATH_APP.user.list },
-          { title: 'SideMenu.CreateNewUser', path: PATH_APP.user.new },
+          { title: 'SideMenu.List', path: PATH_APP.user.list, roles: [Roles.Admin] },
+          { title: 'SideMenu.CreateNewUser', path: PATH_APP.user.new, roles: [Roles.Admin] },
           { title: 'SideMenu.Account', path: PATH_APP.user.account },
         ],
       }

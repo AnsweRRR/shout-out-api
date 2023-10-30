@@ -1,12 +1,13 @@
 import { m } from 'framer-motion';
 import { Container, Typography } from '@mui/material';
+import { Roles } from 'src/@types/user';
 import { MotionContainer, varBounce } from '../components/animate';
 import { ForbiddenIllustration } from '../assets/illustrations';
 import { useAuthContext } from './useAuthContext';
 
 type RoleBasedGuardProp = {
   hasContent?: boolean;
-  roles?: string[];
+  roles?: Array<Roles>;
   children: React.ReactNode;
 };
 

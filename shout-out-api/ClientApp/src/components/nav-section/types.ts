@@ -1,4 +1,5 @@
 import { StackProps, ListItemButtonProps } from '@mui/material';
+import { Roles } from 'src/@types/user';
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ export type NavListProps = {
   info?: React.ReactElement;
   caption?: string;
   disabled?: boolean;
-  roles?: string[];
+  roles?: Array<Roles>;
   children?: any;
 };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import { Stack, Fade, Portal } from '@mui/material';
 import useActiveLink from '../../../../hooks/useActiveLink';
 import { NavItemProps } from '../types';
@@ -78,6 +79,7 @@ type NavSubListProps = {
 
 function NavSubList({ items, isDashboard, subheader, onClose }: NavSubListProps) {
   const { pathname } = useLocation();
+  const { user } = useAuthContext();
 
   const isActive = (path: string) => pathname === path;
 

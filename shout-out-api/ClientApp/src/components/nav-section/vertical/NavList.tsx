@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import { Collapse } from '@mui/material';
 import useActiveLink from '../../../hooks/useActiveLink';
 import { NavListProps } from '../types';
@@ -49,15 +50,18 @@ type NavListSubProps = {
 };
 
 function NavSubList({ data, depth }: NavListSubProps) {
+  const { user } = useAuthContext();
+
   return (
     <>
       {data.map((list) => (
-        <NavList
-          key={list.title + list.path}
-          data={list}
-          depth={depth + 1}
-          hasChild={!!list.children}
-        />
+        (list.roles && list.roles?.includes(user?.role) || list.roles === undefined) &&
+          <NavList
+            key={list.title + list.path}
+            data={list}
+            depth={depth + 1}
+            hasChild={!!list.children}
+          />
       ))}
     </>
   );
