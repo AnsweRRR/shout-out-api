@@ -1,6 +1,7 @@
-import { Avatar, Box, Card, Chip, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Card, Chip, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
 import { FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
+import { CustomAvatar } from "../custom-avatar";
 
 type Props = {
     event: FeedItem;
@@ -14,9 +15,10 @@ export default function PointSystemFeed({ event }: Props) {
                     <Grid item xs={8} md={8}>
                         <Stack direction="row" alignItems="center" spacing={2}>
                         <Tooltip title={event.senderId !== null ? event.senderName : 'ShoutOut'}>
-                            <Avatar
-                                alt={event.senderName!}
+                            <CustomAvatar
                                 src={event.senderAvatar!}
+                                alt={event.senderName!}
+                                name={event.senderName!}
                                 sx={{ width: 48, height: 48 }}
                             />
                         </Tooltip>
@@ -34,9 +36,10 @@ export default function PointSystemFeed({ event }: Props) {
                                 }}
                             >
                                 <Tooltip title={receiverUser.userName} >
-                                    <Avatar
-                                        alt={receiverUser.userName}
+                                    <CustomAvatar
                                         src={receiverUser.userAvatar!}
+                                        alt={receiverUser.userName}
+                                        name={receiverUser.userName}
                                         sx={{ width: 48, height: 48 }}
                                     />
                                 </Tooltip>
