@@ -78,7 +78,14 @@ export default function PointSystemFeed(props: Props) {
 
     const handleTaggerButtonClick = () => {
         if (textareaRef.current) {
-            textareaRef.current.value += '@';
+            setInputData(prevState => `${prevState} @`);
+            textareaRef.current.focus();
+        }
+    };
+
+    const handlePlusButtonClick = () => {
+        if (textareaRef.current) {
+            setInputData(prevState => `${prevState} +`);
             textareaRef.current.focus();
         }
     };
@@ -90,6 +97,13 @@ export default function PointSystemFeed(props: Props) {
     };
 
     const onMentionChange = (event: any) => {
+        const newInputValue = event.target.value;
+        const plusCount = (newInputValue.match(/\+/g) || []).length;
+
+        if (plusCount > 1) {
+            return;
+        }
+
         setInputData(event.target.value);
     };
 
@@ -117,7 +131,7 @@ export default function PointSystemFeed(props: Props) {
         // Send button enable/disable
         if (enteredHashTags && enteredHashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
             setIsSendEnabled(true);
-        } else{
+        } else {
             setIsSendEnabled(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,6 +164,7 @@ export default function PointSystemFeed(props: Props) {
                                     </Button>
 
                                     <Button
+                                        onClick={handlePlusButtonClick}
                                         variant="contained"
                                         color="primary"
                                         style={{
@@ -188,6 +203,7 @@ export default function PointSystemFeed(props: Props) {
                     <div className="direction-input-wrapper">
                         <div className="input-wrapper">
                             <MentionsInput
+                                inputRef={textareaRef}
                                 className="direction-input"
                                 onChange={(e) => onMentionChange(e)}
                                 value={inputData}
