@@ -85,22 +85,24 @@ namespace shout_out_api.Services
                         throw new Exception("Unathorized user");
                     }
 
-                    if (senderUser.PointsToGive < (model.ReceiverUsers.Count() * model.Amount))
+                    var distinctedReceiverUsers = model.ReceiverUsers.Distinct().ToList();
+
+                    if (senderUser.PointsToGive < (distinctedReceiverUsers.Count() * model.Amount))
                     {
                         throw new Exception("Operation not allowed. You do not have enough points!");
                     }
 
-                    senderUser.PointsToGive = senderUser.PointsToGive - (model.ReceiverUsers.Count() * model.Amount);
+                    senderUser.PointsToGive = senderUser.PointsToGive - (distinctedReceiverUsers.Count() * model.Amount);
 
                     _db.Users.Update(senderUser);
                     _db.SaveChanges();
 
-                    if (model.ReceiverUsers.Contains(senderUserId))
+                    if (distinctedReceiverUsers.Contains(senderUserId))
                     {
                         throw new Exception("Operation not allowed. You can not give points to yourself!");
                     }
 
-                    List<User> users = await _db.Users.Where(u => model.ReceiverUsers.Contains(u.Id)).ToListAsync();
+                    List<User> users = await _db.Users.Where(u => distinctedReceiverUsers.Contains(u.Id)).ToListAsync();
 
                     if (users == null || !users.Any())
                     {

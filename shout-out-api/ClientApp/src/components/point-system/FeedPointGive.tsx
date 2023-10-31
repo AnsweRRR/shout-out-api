@@ -215,7 +215,7 @@ export default function PointSystemFeed(props: Props) {
                                 <Mention
                                     className="temp"
                                     trigger="@"
-                                    data={users}
+                                    data={users.filter(possibleUser => !taggedUsers?.includes(possibleUser.id.toString()))}
                                     markup="@[__display__](__id__)"
                                     renderSuggestion={( suggestion: ExtendedSuggestionDataItem ) => 
                                         <Stack direction="row" alignItems="center" spacing={2}>
