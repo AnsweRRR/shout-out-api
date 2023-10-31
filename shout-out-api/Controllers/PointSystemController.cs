@@ -37,9 +37,9 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
+            var result = await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("giphy")]

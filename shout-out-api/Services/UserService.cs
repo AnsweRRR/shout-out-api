@@ -278,7 +278,7 @@ namespace shout_out_api.Services
         {
             try
             {
-                var users = await _db.Users.ToListAsync();
+                var users = await _db.Users.Where(u => u.VerifiedAt.HasValue && u.VerifiedAt != DateTime.MinValue).ToListAsync();
 
                 var userResultDtoList = users.ToUsersResultDto();
 

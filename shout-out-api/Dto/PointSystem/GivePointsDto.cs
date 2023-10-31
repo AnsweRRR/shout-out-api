@@ -12,5 +12,7 @@ namespace shout_out_api.Dto.PointSystem
 
         [Required]
         public List<int> ReceiverUsers { get; set; } = new List<int>();
+
+        public string? GiphyGifUrl { get; set; }
     }
 }

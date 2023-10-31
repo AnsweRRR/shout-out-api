@@ -70,7 +70,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task GivePoints(int senderUserId, GivePointsDto model)
+        public async Task<int> GivePoints(int senderUserId, GivePointsDto model)
         {
             using (var transaction = _db.Database.BeginTransaction())
             {
@@ -100,6 +100,7 @@ namespace shout_out_api.Services
                     PointHistory pointEvent = new PointHistory()
                     {
                         Amount = model.Amount,
+                        GiphyGifUrl = model.GiphyGifUrl,
                         Description = model.Description,
                         SenderId = senderUserId,
                         EventDate = now,
@@ -139,6 +140,8 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
 
                     transaction.Commit();
+
+                    return senderUser.PointsToGive;
                 }
                 catch (Exception ex)
                 {

@@ -11,6 +11,7 @@ namespace shout_out_api.Dto.User
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? Avatar { get; set; }
+        public string? Display { get; set; }
         public int PointsToGive { get; set; }
         public int PointToHave { get; set; }
         public DateTime? Birthday { get; set; }

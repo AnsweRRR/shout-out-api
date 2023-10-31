@@ -247,3 +247,88 @@ export const GiphyGIFPoweredByStyles = `
     width: 100%;
   }
 `;
+
+export const MentionsInputStyles = `
+  .direction-input-wrapper {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    position: relative;
+    .input-wrapper {
+      padding: 16px 8px;
+      height: 100%;
+    }
+
+    textarea {
+      overflow: auto !important;
+      border: none;
+      appearance: none;
+      box-shadow: none;
+      width: 100%;
+      transition: all 0.2s ease;
+      padding: 0;
+      margin: 0;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  .direction-input {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    height: 150px;
+    overflow: visible;
+
+    .direction-input__input {
+      border: none;
+      overflow: auto !important;
+      outline: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      resize: none;
+      color: grey;
+    }
+
+    .direction-input__suggestions {
+      flex: 1;
+      max-height: 200px;
+      max-width: 200px;
+      margin-bottom: 40px !important;
+      display: flex !important;
+      top: 0 !important;
+      color: grey !important;
+      background-color: white !important;
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.16);
+      border-radius: 8px;
+
+      .direction-input__suggestions__list {
+        min-width: 200px;
+        max-height: 350px;
+        width: 100%;
+        overflow: auto;
+        border-radius: 8px;
+      }
+
+      .direction-input__suggestions__item {
+        padding: 16px 16px;
+        :first-child {
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
+        }
+
+        :last-child {
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+        }
+      }
+
+      .direction-input__suggestions__item--focused {
+        color: white;
+        background-color: #00AB55;
+      }
+    }
+  }
+`;

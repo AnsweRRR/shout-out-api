@@ -17,6 +17,7 @@ namespace shout_out_api.Helpers
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 Email = entity.Email,
+                Display = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : entity.FirstName + " " + entity.LastName,
                 Role = entity.Role,
                 StartAtCompany = entity.StartAtCompany,
                 Birthday = entity.Birthday,
@@ -50,6 +51,7 @@ namespace shout_out_api.Helpers
                     FirstName = entity.FirstName,
                     LastName = entity.LastName,
                     Email = entity.Email,
+                    Display = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : entity.FirstName + " " + entity.LastName,
                     Role = entity.Role,
                     Verified = entity.VerifiedAt.HasValue
                 };
