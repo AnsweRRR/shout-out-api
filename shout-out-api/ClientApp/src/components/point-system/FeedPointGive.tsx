@@ -16,12 +16,11 @@ import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 import { useSnackbar } from "../snackbar";
 
 interface Props {
-    feedItems: FeedItem[];
     setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
 }
 
 export default function PointSystemFeed(props: Props) {
-    const { feedItems, setFeedItems } = props;
+    const { setFeedItems } = props;
     const { user, updatePointToGive } = useAuthContext();
     const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
@@ -116,7 +115,7 @@ export default function PointSystemFeed(props: Props) {
         }
 
         // Send button enable/disable
-        if (hashTags && hashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
+        if (enteredHashTags && enteredHashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
             setIsSendEnabled(true);
         } else{
             setIsSendEnabled(false);

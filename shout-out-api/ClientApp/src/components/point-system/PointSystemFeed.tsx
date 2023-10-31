@@ -44,7 +44,7 @@ export default function PointSystemFeed() {
         <Grid container spacing={3}>
             <Grid item xs={12} md={2} />
             <Grid item xs={12} md={7}>
-                <FeedPointGive feedItems={feedItems} setFeedItems={setFeedItems} />
+                <FeedPointGive setFeedItems={setFeedItems} />
 
                 <InfiniteScroll
                     pageStart={0}

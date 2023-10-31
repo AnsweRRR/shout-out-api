@@ -295,7 +295,7 @@ export const MentionsInputStyles = `
     .direction-input__suggestions {
       flex: 1;
       max-height: 200px;
-      max-width: 200px;
+      max-width: 400px;
       margin-bottom: 40px !important;
       display: flex !important;
       top: 0 !important;
