@@ -70,7 +70,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task GivePoints(int senderUserId, GivePointsDto model)
+        public async Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model)
         {
             using (var transaction = _db.Database.BeginTransaction())
             {
@@ -85,10 +85,20 @@ namespace shout_out_api.Services
                         throw new Exception("Unathorized user");
                     }
 
+                    if (senderUser.PointsToGive < (model.ReceiverUsers.Count() * model.Amount))
+                    {
+                        throw new Exception("Operation not allowed. You do not have enough points!");
+                    }
+
                     senderUser.PointsToGive = senderUser.PointsToGive - (model.ReceiverUsers.Count() * model.Amount);
 
                     _db.Users.Update(senderUser);
                     _db.SaveChanges();
+
+                    if (model.ReceiverUsers.Contains(senderUserId))
+                    {
+                        throw new Exception("Operation not allowed. You can not give points to yourself!");
+                    }
 
                     List<User> users = await _db.Users.Where(u => model.ReceiverUsers.Contains(u.Id)).ToListAsync();
 
@@ -97,10 +107,13 @@ namespace shout_out_api.Services
                         throw new Exception("No users found");
                     }
 
+                    string? description = model.HashTags.Any() ? string.Join(" ", model.HashTags) : null;
+
                     PointHistory pointEvent = new PointHistory()
                     {
                         Amount = model.Amount,
-                        Description = model.Description,
+                        GiphyGifUrl = model.GiphyGifUrl,
+                        Description = description,
                         SenderId = senderUserId,
                         EventDate = now,
                         EventType = PointEventType.UserEvent
@@ -113,32 +126,56 @@ namespace shout_out_api.Services
 
                     foreach (User user in users)
                     {
-                        if (user.Id != senderUserId)
+                        PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
                         {
-                            PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
-                            {
-                                User = user,
-                                PointHistory = pointEvent
-                            };
+                            User = user,
+                            PointHistory = pointEvent
+                        };
 
-                            pointHistory_ReceiverUser.Add(receiverUsers);
+                        pointHistory_ReceiverUser.Add(receiverUsers);
 
-                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
-                            {
-                                PointAmount = model.Amount,
-                                EventType = NotificationEventType.GetPointsByUser,
-                                ReceiverUserId = user.Id,
-                                SenderUserId = senderUserId
-                            };
+                        CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                        {
+                            PointAmount = model.Amount,
+                            EventType = NotificationEventType.GetPointsByUser,
+                            ReceiverUserId = user.Id,
+                            SenderUserId = senderUserId
+                        };
 
-                            await _notificationService.CreateNotificationAsync(notificationItemDto);
-                        }
+                        await _notificationService.CreateNotificationAsync(notificationItemDto);
                     }
 
                     _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
                     _db.SaveChanges();
 
+                    GivePointsResultDto givePointsResultDto = new GivePointsResultDto()
+                    {
+                        Id = pointEvent.Id,
+                        Amount = pointEvent.Amount,
+                        Description = pointEvent.Description,
+                        SenderId = pointEvent.SenderId,
+                        SenderName = !string.IsNullOrEmpty(pointEvent.SenderUser.UserName)
+                            ? pointEvent.SenderUser.UserName
+                            : pointEvent.SenderUser.FirstName + " " + pointEvent.SenderUser.LastName,
+                        SenderAvatar = pointEvent.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(pointEvent.SenderUser.Avatar)}" : null,
+                        EventDate = pointEvent.EventDate,
+                        EventType = pointEvent.EventType,
+                        GiphyGif = pointEvent.GiphyGifUrl,
+                        PointsToGiveAfterSend = senderUser.PointsToGive,
+                        ReceiverUsers = users.Select(ru => new ReceiverUsers()
+                        {
+                            UserId = ru.Id,
+                            UserName = !string.IsNullOrEmpty(ru.UserName)
+                                ? ru.UserName
+                                : ru.FirstName + " " + ru.LastName,
+                            UserAvatar = ru.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(ru.Avatar)}" : null,
+                        }).ToList()
+                    };
+
                     transaction.Commit();
+
+                    return givePointsResultDto;
                 }
                 catch (Exception ex)
                 {

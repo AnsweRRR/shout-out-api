@@ -10,7 +10,8 @@ enum Types {
   LOGIN = 'LOGIN',
   REGISTER = 'REGISTER',
   LOGOUT = 'LOGOUT',
-  UPDATE_POINTS_TO_HAVE = "UPDATE_POINTS_TO_HAVE"
+  UPDATE_POINTS_TO_HAVE = "UPDATE_POINTS_TO_HAVE",
+  UPDATE_POINTS_TO_GIVE = "UPDATE_POINTS_TO_GIVE",
 }
 
 type Payload = {
@@ -26,6 +27,9 @@ type Payload = {
   };
   [Types.LOGOUT]: undefined;
   [Types.UPDATE_POINTS_TO_HAVE]: {
+    user: AuthUserType;
+  };
+  [Types.UPDATE_POINTS_TO_GIVE]: {
     user: AuthUserType;
   };
 };
@@ -196,6 +200,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
   }, [state.user, dispatch]);
 
+  const updatePointToGive = useCallback((pointsToGiveAfterSend: number) => {
+    const updatedUser = {
+      ...state.user,
+      pointsToGive: pointsToGiveAfterSend,
+    };
+  
+    dispatch({
+      type: Types.UPDATE_POINTS_TO_HAVE,
+      payload: {
+        user: updatedUser,
+      },
+    });
+  }, [state.user, dispatch]);
+
   const memoizedValue = useMemo(
     () => ({
       isInitialized: state.isInitialized,
@@ -205,9 +223,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       register,
       logout,
-      updatePointToHave
+      updatePointToHave,
+      updatePointToGive
     }),
-    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register, updatePointToHave]
+    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register, updatePointToHave, updatePointToGive]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

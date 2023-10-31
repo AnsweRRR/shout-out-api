@@ -1,27 +1,91 @@
-import { useRef, useState } from "react";
-import { Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typography } from "@mui/material";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { MentionsInput, Mention } from "react-mentions";
+import { Avatar, Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
+import { useStyle } from 'src/hooks/useStyle';
 import { useLocales } from "src/locales";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
 import { useSelector } from "react-redux";
 import { AppState } from "src/redux/rootReducerTypes";
+import { MentionsInputStyles } from "src/utils/cssStyles";
+import { FeedItem, SendPointsDto } from "src/@types/feed";
+import { ExtendedSuggestionDataItem } from "src/@types/user";
+import { givePointsAsync } from "src/api/feedClient";
 import Iconify from "../iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
+import { useSnackbar } from "../snackbar";
 
-export default function PointSystemFeed() {
-    const { user } = useAuthContext();
+interface Props {
+    setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
+}
+
+export default function PointSystemFeed(props: Props) {
+    const { setFeedItems } = props;
+    const { user, updatePointToGive } = useAuthContext();
     const { translate } = useLocales();
+    const { enqueueSnackbar } = useSnackbar();
+    useStyle('MentionsInput', MentionsInputStyles);
     const MAX_POINTS_TO_GIVE = 100;
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [isSendEnabled, setIsSendEnabled] = useState(false);
-    const [taggerAnchorEl, setTaggerAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
+    const [taggedUsers, setTaggedUsers] = useState<Array<string> | null | undefined>([]);
+    const [pointAmountToGive, setPointAmountToGive] = useState<number | null>(null);
+    const [hashTags, setHashTags] = useState<Array<string> | null>(null);
     const { users } = useSelector((state: AppState) => state.usersState);
+    const [inputData, setInputData] = useState('');
+
+    const handleSendPoints = async () => {
+        const userIds = taggedUsers?.map(userId => userId as unknown as number);
+
+        if (hashTags && hashTags.length > 0 && pointAmountToGive && userIds && user?.pointsToGive > (userIds.length * pointAmountToGive)) {
+            const payload: SendPointsDto = {
+                hashTags,
+                amount: pointAmountToGive,
+                receiverUsers: userIds,
+                giphyGifUrl: selectedGiphyUrl
+            }
+            
+            const result = await givePointsAsync(payload, user?.accessToken);
+            if (result.status === 200) {
+                enqueueSnackbar(`${translate('ApiCallResults.SentSuccessfully')}`, { variant: 'success' });
+                setTaggedUsers([]);
+                setInputData('');
+                setSelectedGiphyUrl(null);
+                const { amount, description, eventDate, eventType, giphyGif, id, pointsToGiveAfterSend, receiverUsers, senderAvatar, senderId, senderName } = result.data;
+                const newlyCreateFeedItem: FeedItem = {
+                    id,
+                    amount,
+                    senderId,
+                    senderName,
+                    senderAvatar,
+                    eventDate,
+                    description,
+                    eventType,
+                    giphyGif,
+                    receiverUsers
+                }
+                setFeedItems(prevState => [newlyCreateFeedItem, ...prevState, ]);
+                updatePointToGive(pointsToGiveAfterSend);
+            } else {
+                enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
+            }
+        } else {
+            enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
+        }
+    };
 
     const handleTaggerButtonClick = () => {
         if (textareaRef.current) {
-            textareaRef.current.value += '@';
+            setInputData(prevState => `${prevState} @`);
+            textareaRef.current.focus();
+        }
+    };
+
+    const handlePlusButtonClick = () => {
+        if (textareaRef.current) {
+            setInputData(prevState => `${prevState} +`);
             textareaRef.current.focus();
         }
     };
@@ -31,6 +95,47 @@ export default function PointSystemFeed() {
         setSelectedGiphyUrl(selectedGif.images.fixedHeight.url);
         setGifAnchorEl(null);
     };
+
+    const onMentionChange = (event: any) => {
+        const newInputValue = event.target.value;
+        const plusCount = (newInputValue.match(/\+/g) || []).length;
+
+        if (plusCount > 1) {
+            return;
+        }
+
+        setInputData(event.target.value);
+    };
+
+    useEffect(() => {
+        const words = inputData.split(" ");
+
+        // Tagged users
+        const pattern = /[^(]+(?=\))/g;
+        const selectedUsers = inputData.match(pattern);
+        setTaggedUsers(selectedUsers);
+
+        // Hashtags
+        const enteredHashTags = words.filter(word => word.startsWith('#'));
+        setHashTags(enteredHashTags);
+
+        // Point amount to give
+        const enteredPointToGive = words.find(word => word.startsWith('+'));
+        const parsedEnteredPointToGive = enteredPointToGive ? parseInt(enteredPointToGive, 10) : null;
+        if (enteredPointToGive) {
+            setPointAmountToGive(enteredPointToGive as unknown as number);
+        } else {
+            setPointAmountToGive(null);
+        }
+
+        // Send button enable/disable
+        if (enteredHashTags && enteredHashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
+            setIsSendEnabled(true);
+        } else {
+            setIsSendEnabled(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inputData]);
 
     return (
         <>
@@ -59,6 +164,7 @@ export default function PointSystemFeed() {
                                     </Button>
 
                                     <Button
+                                        onClick={handlePlusButtonClick}
                                         variant="contained"
                                         color="primary"
                                         style={{
@@ -94,16 +200,32 @@ export default function PointSystemFeed() {
                 </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    <TextField
-                        variant="standard"
-                        placeholder={`${translate('FeedPage.PlaceHolderExample')}`}
-                        multiline
-                        minRows={3}
-                        maxRows={6}
-                        sx={{ width: '100%', border: 'none' }}
-                        InputProps={{ disableUnderline: true }}
-                        inputRef={textareaRef}
-                    />
+                    <div className="direction-input-wrapper">
+                        <div className="input-wrapper">
+                            <MentionsInput
+                                inputRef={textareaRef}
+                                className="direction-input"
+                                onChange={(e) => onMentionChange(e)}
+                                value={inputData}
+                                placeholder={`${translate('FeedPage.PlaceHolderExample')}`}
+                            >
+                                <Mention
+                                    className="temp"
+                                    trigger="@"
+                                    data={users}
+                                    markup="@[__display__](__id__)"
+                                    renderSuggestion={( suggestion: ExtendedSuggestionDataItem ) => 
+                                        <Stack direction="row" alignItems="center" spacing={2}>
+                                            <Avatar alt={suggestion.display} src={suggestion.avatar} />
+                                            <Typography variant="subtitle2" noWrap>
+                                                {suggestion.display}
+                                            </Typography>
+                                        </Stack>
+                                    }
+                                />
+                            </MentionsInput>
+                        </div>
+                    </div>
                 </Stack>
 
                 {selectedGiphyUrl &&
@@ -142,23 +264,11 @@ export default function PointSystemFeed() {
                         <Iconify icon="material-symbols:gif" width={40} />
                     </IconButton>
 
-                    <Button disabled={!isSendEnabled} type="submit" variant="contained">
+                    <Button disabled={!isSendEnabled} type="submit" variant="contained" onClick={handleSendPoints}>
                         {`${translate('FeedPage.Send')}`}
                     </Button>
                 </Stack>
             </Card>
-
-            <Popover
-                open={Boolean(taggerAnchorEl)}
-                onClose={() => setTaggerAnchorEl(null)}
-                anchorEl={taggerAnchorEl}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-            >
-                <Typography sx={{ p: 2 }}>Ide kerül majd a user lista.</Typography>
-            </Popover>
 
             <Popover
                 open={Boolean(gifAnchorEl)}

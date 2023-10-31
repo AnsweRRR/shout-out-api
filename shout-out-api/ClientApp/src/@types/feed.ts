@@ -22,4 +22,11 @@ export type ReceiverUser = {
     userAvatar: string | null
 }
 
+export type SendPointsDto = {
+    hashTags: Array<string>,
+    amount: number,
+    receiverUsers: Array<number>,
+    giphyGifUrl?: string | null
+}
+
 export type ImageRenditionFileType = 'gif' | 'webp';
