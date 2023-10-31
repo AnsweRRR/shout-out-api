@@ -31,7 +31,7 @@ const navConfig = [
         icon: ICONS.analytics,
         children: [
           { title: 'SideMenu.Feed', path: PATH_APP.feed},
-          { title: 'SideMenu.Reward', path: PATH_APP.reward, roles: [Roles.Admin] },
+          { title: 'SideMenu.Reward', path: PATH_APP.reward },
         ],
       }
     ]
