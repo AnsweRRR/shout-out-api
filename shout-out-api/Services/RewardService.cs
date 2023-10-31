@@ -172,7 +172,6 @@ namespace shout_out_api.Services
 
                     var adminUsers = _db.Users
                         .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin)
-                        .Select(u => new { u.Email, u.Id})
                         .ToList();
 
                     foreach (var adminUser in adminUsers)
@@ -190,10 +189,23 @@ namespace shout_out_api.Services
                         {
                             EventType = NotificationEventType.RewardClaimed,
                             ReceiverUserId = adminUser.Id,
-                            SenderUserId = buyerUserId
+                            SenderUserId = buyerUserId,
+                            RewardId = reward.Id
                         };
 
-                        await _notificationService.CreateNotificationAsync(notificationItemDto);
+                        var notificationToCreate = new Notification()
+                        {
+                            DateTime = DateTime.Now,
+                            PointAmount = notificationItemDto.PointAmount,
+                            EventType = (int)notificationItemDto.EventType,
+                            SenderUserId = notificationItemDto.SenderUserId,
+                            ReceiverUser = adminUser,
+                            RewardId = notificationItemDto.RewardId,
+                            IsRead = false
+                        };
+
+                        _db.Notifications.Add(notificationToCreate);
+                        _db.SaveChanges();
                     }
 
                     transaction.Commit();
