@@ -32,7 +32,7 @@ export default function PointSystemFeed(props: Props) {
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
     const [taggedUsers, setTaggedUsers] = useState<Array<string> | null | undefined>([]);
-    const [pointAmountToGive, setPointAmountToGive] = useState<number | null>(10);
+    const [pointAmountToGive, setPointAmountToGive] = useState<number | null>(null);
     const [hashTags, setHashTags] = useState<Array<string> | null>(null);
     const { users } = useSelector((state: AppState) => state.usersState);
     const [inputData, setInputData] = useState('');
@@ -95,15 +95,28 @@ export default function PointSystemFeed(props: Props) {
     };
 
     useEffect(() => {
+        const words = inputData.split(" ");
+
+        // Tagged users
         const pattern = /[^(]+(?=\))/g;
         const selectedUsers = inputData.match(pattern);
         setTaggedUsers(selectedUsers);
 
-        const words = inputData.split(" ");
+        // Hashtags
         const enteredHashTags = words.filter(word => word.startsWith('#'));
         setHashTags(enteredHashTags);
 
-        if (hashTags && hashTags.length > 0 && pointAmountToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * pointAmountToGive)) {
+        // Point amount to give
+        const enteredPointToGive = words.find(word => word.startsWith('+'));
+        const parsedEnteredPointToGive = enteredPointToGive ? parseInt(enteredPointToGive, 10) : null;
+        if (enteredPointToGive) {
+            setPointAmountToGive(enteredPointToGive as unknown as number);
+        } else {
+            setPointAmountToGive(null);
+        }
+
+        // Send button enable/disable
+        if (hashTags && hashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
             setIsSendEnabled(true);
         } else{
             setIsSendEnabled(false);
