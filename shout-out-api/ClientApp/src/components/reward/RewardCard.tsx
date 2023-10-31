@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Avatar, Divider, Typography, Stack, Button } from '@mui/material';
+import { useAuthContext } from 'src/auth/useAuthContext';
+import { Roles } from 'src/@types/user';
 import { Reward } from 'src/@types/reward';
 import { useLocales } from "src/locales";
 import { fShortenNumber } from '../../utils/formatNumber';
@@ -35,6 +37,8 @@ type Props = {
 
 export default function RewardCard({ reward, cover, userPoints, handleClaimButtonClick, handleDeleteButtonClick, handleEditButtonClick }: Props) {
   const { id, name, description, cost, avatar } = reward;
+  const { user } = useAuthContext();
+  const currentRole = user?.role;
   const { translate } = useLocales();
   const FILLCOLOR = '#b9f6ca';
   const [percentage, setPercentage] = useState(0);
@@ -59,31 +63,35 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
   return (
     <>
       <Card sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            zIndex: 20,
-          }}
-        >
-          <Button variant="text" onClick={() => setOpenEditorDialog(true)} >
-            <Iconify icon="eva:edit-fill" />
-          </Button>
-        </Box>
+        {currentRole === Roles.Admin &&
+          <>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '16px',
+                left: '16px',
+                zIndex: 20,
+              }}
+            >
+              <Button variant="text" onClick={() => setOpenEditorDialog(true)} >
+                <Iconify icon="eva:edit-fill" />
+              </Button>
+            </Box>
 
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            zIndex: 20,
-          }}
-        >
-          <Button variant="text" sx={{ color: 'error.main' }} onClick={() => setOpenDeleteDialog(true)} >
-            <Iconify icon="eva:trash-2-outline" />
-          </Button>
-        </Box>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                zIndex: 20,
+              }}
+              >
+              <Button variant="text" sx={{ color: 'error.main' }} onClick={() => setOpenDeleteDialog(true)} >
+                <Iconify icon="eva:trash-2-outline" />
+              </Button>
+            </Box>
+          </>
+        }
 
         <Box sx={{ position: 'relative' }}>
           <SvgColor
