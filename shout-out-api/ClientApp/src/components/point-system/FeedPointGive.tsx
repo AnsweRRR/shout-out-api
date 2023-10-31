@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { MentionsInput, Mention } from "react-mentions";
-import { Avatar, Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Grid, IconButton, Popover, Stack, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useStyle } from 'src/hooks/useStyle';
 import { useLocales } from "src/locales";
@@ -85,13 +85,16 @@ export default function PointSystemFeed(props: Props) {
 
     const handlePlusButtonClick = () => {
         if (textareaRef.current) {
+            const plusCount = (inputData.match(/\+/g) || []).length;
+            if (plusCount !== 0) {
+                return;
+            }
             setInputData(prevState => `${prevState} +`);
             textareaRef.current.focus();
         }
     };
 
     const handleSelectGif = (selectedGif: any) => {
-        console.log(selectedGif);
         setSelectedGiphyUrl(selectedGif.images.fixedHeight.url);
         setGifAnchorEl(null);
     };
