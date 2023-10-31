@@ -151,7 +151,14 @@ namespace shout_out_api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.GetUsers();
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var users = await _userService.GetUsers(int.Parse(userId));
 
             return Ok(users);
         }

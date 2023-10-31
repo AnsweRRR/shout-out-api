@@ -12,7 +12,7 @@ import Socials from "../social/Socials";
 
 
 export default function PointSystemFeed() {
-    const { user } = useAuthContext();
+    const { user, updatePointToGive } = useAuthContext();
     const { translate } = useLocales();
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -38,13 +38,13 @@ export default function PointSystemFeed() {
         }
 
         getPointHistory();
-    }, [user, offset]);
+    }, [user, offset, updatePointToGive]);
 
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={2} />
             <Grid item xs={12} md={7}>
-                <FeedPointGive />
+                <FeedPointGive feedItems={feedItems} setFeedItems={setFeedItems} />
 
                 <InfiniteScroll
                     pageStart={0}

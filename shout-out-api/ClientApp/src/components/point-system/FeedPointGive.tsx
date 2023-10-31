@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { MentionsInput, Mention } from "react-mentions";
 import { Avatar, Box, Button, Card, Grid, IconButton, Popover, Stack, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
@@ -8,15 +8,20 @@ import { CloseIcon } from "src/theme/overrides/CustomIcons";
 import { useSelector } from "react-redux";
 import { AppState } from "src/redux/rootReducerTypes";
 import { MentionsInputStyles } from "src/utils/cssStyles";
-import { SendPointsDto } from "src/@types/feed";
+import { FeedItem, SendPointsDto } from "src/@types/feed";
 import { ExtendedSuggestionDataItem } from "src/@types/user";
 import { givePointsAsync } from "src/api/feedClient";
 import Iconify from "../iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 import { useSnackbar } from "../snackbar";
 
+interface Props {
+    feedItems: FeedItem[];
+    setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
+}
 
-export default function PointSystemFeed() {
+export default function PointSystemFeed(props: Props) {
+    const { feedItems, setFeedItems } = props;
     const { user, updatePointToGive } = useAuthContext();
     const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
@@ -46,8 +51,22 @@ export default function PointSystemFeed() {
                 enqueueSnackbar(`${translate('ApiCallResults.SentSuccessfully')}`, { variant: 'success' });
                 setTaggedUsers([]);
                 setInputData('');
-                const userPointsToGiveLeftAfterSend = result.data;
-                updatePointToGive(userPointsToGiveLeftAfterSend);
+                setSelectedGiphyUrl(null);
+                const { amount, description, eventDate, eventType, giphyGif, id, pointsToGiveAfterSend, receiverUsers, senderAvatar, senderId, senderName } = result.data;
+                const newlyCreateFeedItem: FeedItem = {
+                    id,
+                    amount,
+                    senderId,
+                    senderName,
+                    senderAvatar,
+                    eventDate,
+                    description,
+                    eventType,
+                    giphyGif,
+                    receiverUsers
+                }
+                setFeedItems(prevState => [newlyCreateFeedItem, ...prevState, ]);
+                updatePointToGive(pointsToGiveAfterSend);
             } else {
                 enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }

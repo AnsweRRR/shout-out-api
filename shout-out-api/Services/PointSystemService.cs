@@ -70,7 +70,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<int> GivePoints(int senderUserId, GivePointsDto model)
+        public async Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model)
         {
             using (var transaction = _db.Database.BeginTransaction())
             {
@@ -89,6 +89,11 @@ namespace shout_out_api.Services
 
                     _db.Users.Update(senderUser);
                     _db.SaveChanges();
+
+                    if (model.ReceiverUsers.Contains(senderUserId))
+                    {
+                        throw new Exception("Operation not allowed. You can not give points to yourself!");
+                    }
 
                     List<User> users = await _db.Users.Where(u => model.ReceiverUsers.Contains(u.Id)).ToListAsync();
 
@@ -139,9 +144,34 @@ namespace shout_out_api.Services
                     _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
                     _db.SaveChanges();
 
+                    GivePointsResultDto givePointsResultDto = new GivePointsResultDto()
+                    {
+                        Id = pointEvent.Id,
+                        Amount = pointEvent.Amount,
+                        Description = pointEvent.Description,
+                        SenderId = pointEvent.SenderId,
+                        SenderName = !string.IsNullOrEmpty(pointEvent.SenderUser.UserName)
+                            ? pointEvent.SenderUser.UserName
+                            : pointEvent.SenderUser.FirstName + " " + pointEvent.SenderUser.LastName,
+                        SenderAvatar = pointEvent.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(pointEvent.SenderUser.Avatar)}" : null,
+                        EventDate = pointEvent.EventDate,
+                        EventType = pointEvent.EventType,
+                        GiphyGif = pointEvent.GiphyGifUrl,
+                        PointsToGiveAfterSend = senderUser.PointsToGive,
+                        ReceiverUsers = users.Select(ru => new ReceiverUsers()
+                        {
+                            UserId = ru.Id,
+                            UserName = !string.IsNullOrEmpty(ru.UserName)
+                                ? ru.UserName
+                                : ru.FirstName + " " + ru.LastName,
+                            UserAvatar = ru.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(ru.Avatar)}" : null,
+                        }).ToList()
+                    };
+
                     transaction.Commit();
 
-                    return senderUser.PointsToGive;
+                    return givePointsResultDto;
                 }
                 catch (Exception ex)
                 {
