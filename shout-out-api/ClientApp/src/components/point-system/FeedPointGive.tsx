@@ -32,16 +32,18 @@ export default function PointSystemFeed(props: Props) {
     const [gifAnchorEl, setGifAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [selectedGiphyUrl, setSelectedGiphyUrl] = useState<string | null>(null);
     const [taggedUsers, setTaggedUsers] = useState<Array<string> | null | undefined>([]);
+    const [pointAmountToGive, setPointAmountToGive] = useState<number | null>(10);
+    const [hashTags, setHashTags] = useState<Array<string> | null>(null);
     const { users } = useSelector((state: AppState) => state.usersState);
     const [inputData, setInputData] = useState('');
 
     const handleSendPoints = async () => {
         const userIds = taggedUsers?.map(userId => userId as unknown as number);
 
-        if (userIds) {
+        if (hashTags && hashTags.length > 0 && pointAmountToGive && userIds && user?.pointsToGive > (userIds.length * pointAmountToGive)) {
             const payload: SendPointsDto = {
-                description: 'teszt',
-                amount: 10,
+                hashTags,
+                amount: pointAmountToGive,
                 receiverUsers: userIds,
                 giphyGifUrl: selectedGiphyUrl
             }
@@ -70,6 +72,8 @@ export default function PointSystemFeed(props: Props) {
             } else {
                 enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
+        } else {
+            enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
         }
     };
 
@@ -95,7 +99,11 @@ export default function PointSystemFeed(props: Props) {
         const selectedUsers = inputData.match(pattern);
         setTaggedUsers(selectedUsers);
 
-        if (selectedUsers) {
+        const words = inputData.split(" ");
+        const enteredHashTags = words.filter(word => word.startsWith('#'));
+        setHashTags(enteredHashTags);
+
+        if (hashTags && hashTags.length > 0 && pointAmountToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * pointAmountToGive)) {
             setIsSendEnabled(true);
         } else{
             setIsSendEnabled(false);

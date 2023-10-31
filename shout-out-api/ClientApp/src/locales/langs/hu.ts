@@ -84,7 +84,7 @@ const hu = {
   },
   FeedPage: {
     Send: "Elküldöm",
-    PlaceHolderExample: "@felhasználónév +10 hozzászólás...",
+    PlaceHolderExample: "@felhasználónév #ok +10 hozzászólás...",
     Loading: "Töltés..."
   },
   RewardCard: {

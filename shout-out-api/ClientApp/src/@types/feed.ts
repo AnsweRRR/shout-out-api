@@ -23,7 +23,7 @@ export type ReceiverUser = {
 }
 
 export type SendPointsDto = {
-    description: string,
+    hashTags: Array<string>,
     amount: number,
     receiverUsers: Array<number>,
     giphyGifUrl?: string | null

@@ -84,7 +84,7 @@ const en = {
   },
   FeedPage: {
     Send: "Send",
-    PlaceHolderExample: "@nickname +10 comment...",
+    PlaceHolderExample: "@nickname #reason +10 comment...",
     Loading: "Loading..."
   },
   RewardCard: {

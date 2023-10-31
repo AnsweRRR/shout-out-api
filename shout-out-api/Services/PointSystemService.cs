@@ -85,6 +85,11 @@ namespace shout_out_api.Services
                         throw new Exception("Unathorized user");
                     }
 
+                    if (senderUser.PointsToGive < (model.ReceiverUsers.Count() * model.Amount))
+                    {
+                        throw new Exception("Operation not allowed. You do not have enough points!");
+                    }
+
                     senderUser.PointsToGive = senderUser.PointsToGive - (model.ReceiverUsers.Count() * model.Amount);
 
                     _db.Users.Update(senderUser);
@@ -102,11 +107,13 @@ namespace shout_out_api.Services
                         throw new Exception("No users found");
                     }
 
+                    string? description = model.HashTags.Any() ? string.Join(" ", model.HashTags) : null;
+
                     PointHistory pointEvent = new PointHistory()
                     {
                         Amount = model.Amount,
                         GiphyGifUrl = model.GiphyGifUrl,
-                        Description = model.Description,
+                        Description = description,
                         SenderId = senderUserId,
                         EventDate = now,
                         EventType = PointEventType.UserEvent
@@ -119,26 +126,23 @@ namespace shout_out_api.Services
 
                     foreach (User user in users)
                     {
-                        if (user.Id != senderUserId)
+                        PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
                         {
-                            PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
-                            {
-                                User = user,
-                                PointHistory = pointEvent
-                            };
+                            User = user,
+                            PointHistory = pointEvent
+                        };
 
-                            pointHistory_ReceiverUser.Add(receiverUsers);
+                        pointHistory_ReceiverUser.Add(receiverUsers);
 
-                            CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
-                            {
-                                PointAmount = model.Amount,
-                                EventType = NotificationEventType.GetPointsByUser,
-                                ReceiverUserId = user.Id,
-                                SenderUserId = senderUserId
-                            };
+                        CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
+                        {
+                            PointAmount = model.Amount,
+                            EventType = NotificationEventType.GetPointsByUser,
+                            ReceiverUserId = user.Id,
+                            SenderUserId = senderUserId
+                        };
 
-                            await _notificationService.CreateNotificationAsync(notificationItemDto);
-                        }
+                        await _notificationService.CreateNotificationAsync(notificationItemDto);
                     }
 
                     _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
