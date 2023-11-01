@@ -81,7 +81,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         src={receiverUser.userAvatar!}
                                         alt={receiverUser.userName}
                                         name={receiverUser.userName}
-                                        sx={{ width: 48, height: 48 }}
+                                        sx={{ width: 48, height: 48, ":hover": { zIndex: 1, height: 52, width: 52} }}
                                     />
                                 </Tooltip>
                             </Box>
