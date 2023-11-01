@@ -5,15 +5,17 @@ import { getPointsHistoryAsync } from "src/api/feedClient";
 import { FeedItem } from "src/@types/feed";
 import InfiniteScroll from "react-infinite-scroller";
 import useLocales from "src/locales/useLocales";
+import useResponsive from "src/hooks/useResponsive";
 import Spinner from "../giphyGIF/Spinner";
 import PointEventCard from "./PointEventCard";
 import FeedPointGive from "./FeedPointGive";
 import Socials from "../social/Socials";
-
+import PopularRewards from "./PopularRewards";
 
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
     const { translate } = useLocales();
+    const isDesktop = useResponsive('up', 'lg');
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
@@ -63,7 +65,9 @@ export default function PointSystemFeed() {
                     <Socials />
                 </InfiniteScroll>
             </Grid>
-            <Grid item xs={12} md={2} />
+            <Grid item xs={12} md={2}>
+                {/* {isDesktop && <PopularRewards />} */}
+            </Grid>
         </Grid>
     );
 }

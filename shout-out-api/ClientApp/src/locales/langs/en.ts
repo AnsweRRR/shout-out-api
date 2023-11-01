@@ -85,7 +85,8 @@ const en = {
   FeedPage: {
     Send: "Send",
     PlaceHolderExample: "@nickname #reason +10 comment...",
-    Loading: "Loading..."
+    Loading: "Loading...",
+    PopularRewards: "Popular rewards"
   },
   RewardCard: {
     Cost: "Cost",

@@ -6,7 +6,7 @@ import axios from "src/utils/axios";
 export default function VersionInfo() {
     const [versionInfo, setVersionInfo] = useState<string>('');
 
-    async function getRewardsAsync() {
+    async function getVersionInfoAsync() {
         try {
             const response = await axios.get(`/api/versionInfo`);
             return response;
@@ -19,7 +19,7 @@ export default function VersionInfo() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await getRewardsAsync();
+            const result = await getVersionInfoAsync();
             const { data } = result;
             setVersionInfo(data)
         }

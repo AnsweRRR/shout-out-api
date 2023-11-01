@@ -76,7 +76,7 @@ const hu = {
     Logout: "Kijelentkezés",
     General: "Általános",
     Notifications: "Értesítések",
-    ChangePassword: "Jelszó megváltoztatása",
+    ChangePassword: "Jelszó megváltoztatása"
   },
   Header: {
     PointsToHave: 'Pontjaid',
@@ -85,7 +85,8 @@ const hu = {
   FeedPage: {
     Send: "Elküldöm",
     PlaceHolderExample: "@felhasználónév #ok +10 hozzászólás...",
-    Loading: "Töltés..."
+    Loading: "Töltés...",
+    PopularRewards: "Legnépszerűbb jutalmak"
   },
   RewardCard: {
     Cost: "Érték",

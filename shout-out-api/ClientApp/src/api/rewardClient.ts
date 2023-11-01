@@ -15,6 +15,20 @@ export async function getRewardsAsync(accessToken: string) {
     }
 }
 
+export async function getMostPopularRewardsAsync(accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.get(`/api/reward/mostpopularrewards`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function createRewardAsync(newRewardDto: Reward, accessToken: string) {
     try {
         const headers = {
