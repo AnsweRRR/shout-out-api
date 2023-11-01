@@ -1,6 +1,8 @@
-﻿namespace shout_out_api.Model
+﻿using shout_out_api.Model.Interfaces;
+
+namespace shout_out_api.Model
 {
-    public class Notification
+    public class Notification : IEntity
     {
         public int Id { get; set; }
         public int? SenderUserId { get; set; }
