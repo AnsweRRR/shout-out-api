@@ -30,7 +30,7 @@ namespace shout_out_api.Services
             try
             {
                 List<FeedItem> feedItems = await _db.PointHistories
-                    .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUsers = phru })
+                    .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUser = phru })
                     .GroupBy(fi => fi.PointHistory.Id)
                     .Select(group => new FeedItem()
                     {
@@ -50,11 +50,11 @@ namespace shout_out_api.Services
                             : null,
                         ReceiverUsers = group.Select(fi => new ReceiverUsers()
                         {
-                            UserId = fi.ReceiverUsers.Id,
-                            UserName = !string.IsNullOrEmpty(fi.ReceiverUsers.User.UserName)
-                                ? fi.ReceiverUsers.User.UserName
-                                : fi.ReceiverUsers.User.FirstName + " " + fi.ReceiverUsers.User.LastName,
-                            UserAvatar = fi.ReceiverUsers.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUsers.User.Avatar)}" : null,
+                            UserId = fi.ReceiverUser.Id,
+                            UserName = !string.IsNullOrEmpty(fi.ReceiverUser.User.UserName)
+                                ? fi.ReceiverUser.User.UserName
+                                : fi.ReceiverUser.User.FirstName + " " + fi.ReceiverUser.User.LastName,
+                            UserAvatar = fi.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUser.User.Avatar)}" : null,
                         }).ToList()
                     })
                     .OrderByDescending(fi => fi.EventDate)
