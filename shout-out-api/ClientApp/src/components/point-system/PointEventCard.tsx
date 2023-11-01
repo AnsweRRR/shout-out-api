@@ -56,12 +56,16 @@ export default function PointSystemFeed({ event }: Props) {
                 </Grid>
             </Stack>
 
-            <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 3}}>
+            <Stack direction="column" alignItems="flex-start" spacing={1} sx={{ marginTop: 3 }}>
                 <Typography>{event.senderName}</Typography>
                 <Typography style={{ margin: 0 }}>🎉</Typography>
-                {event.receiverUsers.map((receiverUser: ReceiverUser) => 
-                    <Typography style={{ marginLeft: 0 }} key={receiverUser.userId}>&nbsp;{`@${receiverUser.userName}`}</Typography>
-                )}
+                <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%' }}>
+                    {event.receiverUsers.map((receiverUser: ReceiverUser) => (
+                    <Typography style={{ marginLeft: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} key={receiverUser.userId}>
+                        &nbsp;{`@${receiverUser.userName}`}
+                    </Typography>
+                    ))}
+                </div>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} sx={{ marginTop: 1}}>
