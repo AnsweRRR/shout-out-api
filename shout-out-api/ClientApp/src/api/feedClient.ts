@@ -34,6 +34,34 @@ export async function givePointsAsync(dto: any, accessToken: string) {
     }
 }
 
+export async function likeAsync(feedItemId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.patch(`/api/pointSystem/like?id=${feedItemId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function dislikeAsync(feedItemId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.patch(`/api/pointSystem/dislike?id=${feedItemId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function getGiphyGifsAsync(accessToken: string, limit: number, offset: number, filterName?: string | null) {
     try {
         const headers = {

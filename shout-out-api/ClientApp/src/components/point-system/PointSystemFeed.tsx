@@ -60,7 +60,7 @@ export default function PointSystemFeed() {
                         </div>
                     )}
                 >
-                    {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} />)}
+                    {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} feedItems={feedItems} setFeedItems={setFeedItems} />)}
 
                     <Socials />
                 </InfiniteScroll>

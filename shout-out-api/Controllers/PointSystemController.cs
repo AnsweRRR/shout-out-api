@@ -21,7 +21,14 @@ namespace shout_out_api.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int take, int offset)
         {
-            var result = await _pointSystemService.GetHistory(take, offset);
+            string? currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (currentUserId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), take, offset);
 
             return Ok(result);
         }
@@ -40,6 +47,38 @@ namespace shout_out_api.Controllers
             var result = await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
 
             return Ok(result);
+        }
+
+        [HttpPatch("like")]
+        [Authorize]
+        public async Task<IActionResult> Like([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.Like(int.Parse(userId), id);
+
+            return Ok();
+        }
+
+        [HttpPatch("dislike")]
+        [Authorize]
+        public async Task<IActionResult> Dislike([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.Dislike(int.Parse(userId), id);
+
+            return Ok();
         }
 
         [HttpGet("giphy")]

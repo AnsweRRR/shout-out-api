@@ -8,12 +8,20 @@ export type FeedItem = {
     description: string | null,
     eventType: EventType,
     giphyGif: string | null,
-    receiverUsers: Array<ReceiverUser>
+    receiverUsers: Array<ReceiverUser>,
+    likes?: Array<Like>,
+    isLikedByCurrentUser?: boolean
 }
 
 export enum EventType {
     UserEvent = 0,
     SystemEvent = 1
+}
+
+export type Like = {
+    id: number,
+    likedById: number,
+    likedByName: string
 }
 
 export type ReceiverUser = {

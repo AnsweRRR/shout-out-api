@@ -86,7 +86,8 @@ const hu = {
     Send: "Elküldöm",
     PlaceHolderExample: "@felhasználónév #ok +10 hozzászólás...",
     Loading: "Töltés...",
-    PopularRewards: "Legnépszerűbb jutalmak"
+    PopularRewards: "Legnépszerűbb jutalmak",
+    Like: "Tetszik"
   },
   RewardCard: {
     Cost: "Érték",

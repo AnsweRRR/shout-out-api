@@ -1,13 +1,54 @@
-import { Box, Card, Chip, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
+import { Dispatch, SetStateAction } from "react";
+import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
+import useLocales from "src/locales/useLocales";
+import { dislikeAsync, likeAsync } from "src/api/feedClient";
+import { useAuthContext } from "src/auth/useAuthContext";
 import { CustomAvatar } from "../custom-avatar";
+import Iconify from "../iconify/Iconify";
 
 type Props = {
     event: FeedItem;
+    feedItems: FeedItem[];
+    setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
 };
 
-export default function PointSystemFeed({ event }: Props) {
+export default function PointSystemFeed({ event, feedItems, setFeedItems }: Props) {
+    const { user } = useAuthContext();
+    const { translate } = useLocales();
+
+    const handleLikeDislikeClicked = async () => {
+        if (event.isLikedByCurrentUser) {
+            const result = await dislikeAsync(event.id, user?.accessToken);
+            if (result.status === 200) {
+                const updatedData = feedItems.map((item) => {
+                    if (item.id === event.id) {
+                        return { ...item, isLikedByCurrentUser: false };
+                    }
+                    return item;
+                });
+
+                setFeedItems(updatedData);
+            }
+        } else {
+            const result = await likeAsync(event.id, user?.accessToken);
+            if (result.status === 200) {
+                const updatedData = feedItems.map((item) => {
+                    if (item.id === event.id) {
+                        return { ...item, isLikedByCurrentUser: true };
+                    }
+                    return item;
+                });
+
+                setFeedItems(updatedData);
+            }
+        }
+    };
+
+    const likedByNames = event.likes?.map(like => like.likedByName);
+    const resultString = likedByNames ? likedByNames.join(", ") : '';
+
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
@@ -80,7 +121,19 @@ export default function PointSystemFeed({ event }: Props) {
                 </Stack>
             }
 
-            <Divider />
+            <Divider sx={{ marginBottom: 2 }} />
+
+            <Tooltip title={resultString}>
+                <IconButton
+                    size="small"
+                    color="inherit"
+                    onClick={handleLikeDislikeClicked}
+                    sx={ event.isLikedByCurrentUser ? { color: 'red' } : { color: 'text.secondary' }}
+                >
+                    <Iconify icon="eva:heart-fill" width={24} />
+                    <Typography>{`${translate('FeedPage.Like')}`}</Typography>
+                </IconButton>
+            </Tooltip>
         </Card>
     );
 }

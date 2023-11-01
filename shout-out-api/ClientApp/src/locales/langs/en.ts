@@ -86,7 +86,8 @@ const en = {
     Send: "Send",
     PlaceHolderExample: "@nickname #reason +10 comment...",
     Loading: "Loading...",
-    PopularRewards: "Popular rewards"
+    PopularRewards: "Popular rewards",
+    Like: "Like"
   },
   RewardCard: {
     Cost: "Cost",

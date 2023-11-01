@@ -25,37 +25,48 @@ namespace shout_out_api.Services
             _notificationService = notificationService;
         }
 
-        public async Task<IList<FeedItem>> GetHistory(int take = 10, int offset = 0)
+        public async Task<IList<FeedItem>> GetHistory(int userId, int take = 10, int offset = 0)
         {
             try
             {
                 List<FeedItem> feedItems = await _db.PointHistories
                     .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUser = phru })
-                    .GroupBy(fi => fi.PointHistory.Id)
+                    .GroupJoin(_db.Likes, phrul => phrul.PointHistory.Id, like => like.PointHistoryId, (phrul, likes) => new { phrul, Likes = likes })
+                    .SelectMany(result => result.Likes.DefaultIfEmpty(), (result, like) => new { result.phrul, Like = like })
+                    .GroupBy(fi => fi.phrul.PointHistory.Id)
                     .Select(group => new FeedItem()
                     {
                         Id = group.Key,
-                        Amount = group.First().PointHistory.Amount,
-                        SenderId = group.First().PointHistory.SenderId,
-                        SenderName = !string.IsNullOrEmpty(group.First().PointHistory.SenderUser.UserName)
-                            ? group.First().PointHistory.SenderUser.UserName
-                            : group.First().PointHistory.SenderUser.FirstName + " " + group.First().PointHistory.SenderUser.LastName,
-                        SenderAvatar = group.First().PointHistory.SenderUser.Avatar != null
-                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().PointHistory.SenderUser.Avatar)}" : null,
-                        EventDate = group.First().PointHistory.EventDate,
-                        Description = group.First().PointHistory.Description,
-                        EventType = group.First().PointHistory.EventType,
-                        GiphyGif = !string.IsNullOrEmpty(group.First().PointHistory.GiphyGifUrl)
-                            ? group.First().PointHistory.GiphyGifUrl
+                        Amount = group.First().phrul.PointHistory.Amount,
+                        SenderId = group.First().phrul.PointHistory.SenderId,
+                        SenderName = !string.IsNullOrEmpty(group.First().phrul.PointHistory.SenderUser.UserName)
+                            ? group.First().phrul.PointHistory.SenderUser.UserName
+                            : group.First().phrul.PointHistory.SenderUser.FirstName + " " + group.First().phrul.PointHistory.SenderUser.LastName,
+                        SenderAvatar = group.First().phrul.PointHistory.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().phrul.PointHistory.SenderUser.Avatar)}" : null,
+                        EventDate = group.First().phrul.PointHistory.EventDate,
+                        Description = group.First().phrul.PointHistory.Description,
+                        EventType = group.First().phrul.PointHistory.EventType,
+                        GiphyGif = !string.IsNullOrEmpty(group.First().phrul.PointHistory.GiphyGifUrl)
+                            ? group.First().phrul.PointHistory.GiphyGifUrl
                             : null,
-                        ReceiverUsers = group.Select(fi => new ReceiverUsers()
+                        ReceiverUsers = group.Where(fi => fi.phrul.ReceiverUser != null).Select(fi => new ReceiverUsers()
                         {
-                            UserId = fi.ReceiverUser.Id,
-                            UserName = !string.IsNullOrEmpty(fi.ReceiverUser.User.UserName)
-                                ? fi.ReceiverUser.User.UserName
-                                : fi.ReceiverUser.User.FirstName + " " + fi.ReceiverUser.User.LastName,
-                            UserAvatar = fi.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.ReceiverUser.User.Avatar)}" : null,
-                        }).ToList()
+                            UserId = fi.phrul.ReceiverUser.Id,
+                            UserName = !string.IsNullOrEmpty(fi.phrul.ReceiverUser.User.UserName)
+                                ? fi.phrul.ReceiverUser.User.UserName
+                                : fi.phrul.ReceiverUser.User.FirstName + " " + fi.phrul.ReceiverUser.User.LastName,
+                            UserAvatar = fi.phrul.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.phrul.ReceiverUser.User.Avatar)}" : null,
+                        }).ToList(),
+                        Likes = group.Where(fi => fi.Like != null).Select(fi => new LikeDto()
+                        {
+                            Id = fi.Like!.Id,
+                            LikedById = fi.Like.UserId,
+                            LikedByName = !string.IsNullOrEmpty(fi.Like.User.UserName)
+                                ? fi.Like.User.UserName
+                                : fi.Like.User.FirstName + " " + fi.Like.User.LastName
+                        }).ToList(),
+                        IsLikedByCurrentUser = group.Where(n => n.Like != null).Any(n => n.Like!.User.Id == userId)
                     })
                     .OrderByDescending(fi => fi.EventDate)
                     .Skip(offset)
@@ -195,6 +206,61 @@ namespace shout_out_api.Services
                 {
                     throw;
                 }
+            }
+        }
+
+        public async Task Like(int userId, int feedItemId)
+        {
+            try
+            {
+                var feedItem = await _db.PointHistories.FirstOrDefaultAsync(fi => fi.Id == feedItemId);
+
+                if (feedItem == null)
+                {
+                    throw new Exception("This feedItem is not exist");
+                }
+
+                bool isLikeAlreadyExist = await _db.Likes.AnyAsync(l => l.PointHistoryId == feedItemId && l.UserId == userId);
+
+                if (isLikeAlreadyExist)
+                {
+                    throw new Exception("You already liked this post.");
+                }
+
+                var user = await _db.Users.FirstAsync(u => u.Id == userId);
+
+                var like = new Like()
+                {
+                    PointHistory = feedItem,
+                    User = user
+                };
+
+                _db.Likes.Add(like);
+                _db.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task Dislike(int userId, int feedItemId)
+        {
+            try
+            {
+                var like = await _db.Likes.FirstOrDefaultAsync(fi => fi.PointHistoryId == feedItemId && fi.UserId == userId);
+
+                if (like == null)
+                {
+                    throw new Exception("You did not like this post before.");
+                }
+
+                _db.Likes.Remove(like);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
