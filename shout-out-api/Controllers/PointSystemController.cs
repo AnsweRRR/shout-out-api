@@ -82,7 +82,7 @@ namespace shout_out_api.Controllers
 
         [HttpPost("addcomment")]
         [Authorize]
-        public async Task<IActionResult> AddComment(CommentDto model)
+        public async Task<IActionResult> AddComment([FromForm] CommentDto model)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -98,7 +98,7 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("editcomment")]
         [Authorize]
-        public async Task<IActionResult> EditComment([FromQuery] int id, CommentDto model)
+        public async Task<IActionResult> EditComment([FromQuery] int id, [FromForm] CommentDto model)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
