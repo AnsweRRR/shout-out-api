@@ -62,6 +62,48 @@ export async function dislikeAsync(feedItemId: number, accessToken: string) {
     }
 }
 
+export async function addCommentAsync(comment: Comment, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.post(`/api/pointSystem/addcomment`, comment, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function editCommentAsync(commentId: number, comment: Comment, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.patch(`/api/pointSystem/editcomment?id=${commentId}`, comment, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function deleteCommentAsync(commentId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.delete(`/api/pointSystem/deletecomment?id=${commentId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function getGiphyGifsAsync(accessToken: string, limit: number, offset: number, filterName?: string | null) {
     try {
         const headers = {

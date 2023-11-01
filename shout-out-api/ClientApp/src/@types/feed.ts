@@ -18,6 +18,17 @@ export enum EventType {
     SystemEvent = 1
 }
 
+export type Comment = {
+    id?: number,
+    text: string,
+    giphyGifUrl?: string | null,
+    senderId?: number,
+    senderName?: string,
+    senderAvatar?: string | null,
+    createDate?: Date,
+    editDate?: Date | null
+}
+
 export type Like = {
     id: number,
     likedById: number,

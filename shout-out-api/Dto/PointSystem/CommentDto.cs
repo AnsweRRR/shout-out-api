@@ -9,5 +9,7 @@
         public string? SenderName { get; set; }
         public string? SenderAvatar { get; set; }
         public int PointHistoryId { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime? EditDate { get; set; }
     }
 }
