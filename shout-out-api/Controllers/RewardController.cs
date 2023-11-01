@@ -71,7 +71,7 @@ namespace shout_out_api.Controllers
         }
 
         [HttpGet("mostpopularrewards")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetMostPopularRewards()
         {
             var result = await _rewardService.GetMostPopularRewards();
