@@ -6,7 +6,7 @@ import { Box, Stack, Dialog, Button, DialogTitle, DialogContent, DialogActions, 
 import { LoadingButton } from '@mui/lab';
 import { useLocales } from "src/locales";
 import { fData } from 'src/utils/formatNumber';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { CustomFile } from '../upload';
 import FormProvider, { RHFTextField, RHFUploadAvatar } from '../hook-form';
 
@@ -23,9 +23,10 @@ type Props = {
     open: boolean;
     onClose: VoidFunction;
     onCreateReward: (reward: Reward) => void;
+    isLoading: boolean;
 };
 
-export default function CreateRewardCardDialog({ open, onClose, onCreateReward }: Props) {
+export default function CreateRewardCardDialog({ open, onClose, onCreateReward, isLoading }: Props) {
     const { translate } = useLocales();
 
     const NewRewardSchema = Yup.object().shape({
@@ -84,7 +85,7 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
                 <DialogTitle>{`${translate('Maintenance.CreateNewReward')}`}</DialogTitle>
 
                 <DialogContent dividers>
-                    <Stack spacing={3}>
+                    <Stack spacing={3} sx={{ marginTop: '20px' }}>
                         <Box
                             rowGap={3}
                             columnGap={2}
@@ -125,7 +126,7 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward }
                 </DialogContent>
 
                 <DialogActions>
-                    <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                    <LoadingButton type="submit" variant="contained" disabled={isLoading} loading={isSubmitting}>
                         {`${translate('Maintenance.Create')}`}
                     </LoadingButton>
 

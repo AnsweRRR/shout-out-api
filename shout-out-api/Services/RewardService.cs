@@ -7,6 +7,7 @@ using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
+using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -60,7 +61,7 @@ namespace shout_out_api.Services
                 await _db.Rewards.AddAsync(newReward);
                 _db.SaveChanges();
 
-                var userEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue).Select(u => u.Email).ToList();
+                var userEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.VerifiedAt != DateTime.MinValue).Select(u => u.Email).ToList();
 
                 foreach(var userEmail in userEmails)
                 {
@@ -123,6 +124,9 @@ namespace shout_out_api.Services
             try
             {
                 var reward = await _db.Rewards.SingleOrDefaultAsync(r => r.Id == id);
+
+                var relatedNotification = await _db.Notifications.Where(n => n.RewardId == id).ExecuteDeleteAsync();
+                _db.SaveChanges();
 
                 if (reward == null)
                 {
@@ -217,6 +221,51 @@ namespace shout_out_api.Services
                     throw;
                 }
             }
+        }
+
+        public async Task<List<RewardDto>> GetMostPopularRewards()
+        {
+            DateTime now = DateTime.Now;
+
+            var mostPopularRewards = await _db.Notifications
+                .Where(n =>
+                    n.EventType == (int)NotificationEventType.RewardClaimed &&
+                    n.RewardId.HasValue &&
+                    n.DateTime >= now.AddMonths(-1))
+                .GroupBy(n => n.RewardId)
+                .Select(group => new
+                {
+                    Entity = group.First().Reward,
+                    Count = group.Count()
+                })
+                .OrderByDescending(n => n.Count)
+                .Take(5)
+                .ToListAsync();
+
+            List<RewardDto> rewardsDto = new List<RewardDto>();
+
+            foreach(var reward in mostPopularRewards)
+            {
+                var rewardDto = new RewardDto()
+                {
+                    Id = reward.Entity.Id,
+                    Description = reward.Entity.Description,
+                    Name = reward.Entity.Name,
+                    Cost = reward.Entity.Cost,
+                };
+
+                if (reward.Entity.Avatar != null)
+                {
+                    var imageBase64string = Convert.ToBase64String(reward.Entity.Avatar);
+                    var fileTpye = "jpg";
+                    var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                    rewardDto.Avatar = source;
+                }
+
+                rewardsDto.Add(rewardDto);
+            }
+
+            return rewardsDto;
         }
     }
 }

@@ -69,5 +69,14 @@ namespace shout_out_api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("mostpopularrewards")]
+        //[Authorize]
+        public async Task<IActionResult> GetMostPopularRewards()
+        {
+            var result = await _rewardService.GetMostPopularRewards();
+
+            return Ok(result);
+        }
     }
 }

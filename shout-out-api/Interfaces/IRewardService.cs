@@ -9,5 +9,6 @@ namespace shout_out_api.Interfaces
         Task<RewardDto> EditReward(int id, RewardCreateEditDto model);
         Task DeleteReward(int id);
         Task<int> BuyReward(int id, int buyerUserId);
+        Task<List<RewardDto>> GetMostPopularRewards();
     }
 }

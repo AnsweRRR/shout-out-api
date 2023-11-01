@@ -35,9 +35,11 @@ export default function CreateRewardCard({ setRewards, cover }: Props) {
     const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const onCreateReward = async (reward: Reward) => {
         if (user) {
+            setIsLoading(true);
             const result = await createRewardAsync(reward, user.accessToken);
             if (result.status === 200 || result.status === 201) {
                 setIsDialogOpen(false);
@@ -46,6 +48,7 @@ export default function CreateRewardCard({ setRewards, cover }: Props) {
             } else{
                 enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
             }
+            setIsLoading(false);
         }
     }
 
@@ -86,6 +89,7 @@ export default function CreateRewardCard({ setRewards, cover }: Props) {
                 open={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
                 onCreateReward={onCreateReward}
+                isLoading={isLoading}
             />
         </>
     );
