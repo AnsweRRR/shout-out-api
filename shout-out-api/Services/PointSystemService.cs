@@ -264,6 +264,84 @@ namespace shout_out_api.Services
             }
         }
 
+        public async Task AddComment(int userId, CommentDto model)
+        {
+            try
+            {
+                var user = await _db.Users.FirstAsync(u => u.Id == userId);
+
+                var commentToCreate = new Comment()
+                {
+                    Text = model.Text,
+                    GiphyGifUrl = model.GiphyGifUrl,
+                    PointHistoryId = model.PointHistoryId,
+                    CreateDate = DateTime.Now,
+                    User = user
+                };
+
+                _db.Comments.Add(commentToCreate);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task EditComment(int userId, int commentId, CommentDto model)
+        {
+            try
+            {
+                var comment = await _db.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+                if (comment == null)
+                {
+                    throw new Exception("Comment is not found");
+                }
+
+                if (comment.UserId != userId)
+                {
+                    throw new Exception("You can not edit someone else's comment.");
+                }
+
+                comment.EditDate = DateTime.Now;
+                comment.Text = model.Text;
+                comment.GiphyGifUrl = model.GiphyGifUrl;
+
+                _db.Comments.Update(comment);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteComment(int userId, int commentId)
+        {
+            try
+            {
+                var comment = await _db.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+                if (comment == null)
+                {
+                    throw new Exception("Comment is not found");
+                }
+
+                if (comment.UserId != userId)
+                {
+                    throw new Exception("You can not delete someone else's comment.");
+                }
+
+                _db.Comments.Remove(comment);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task ScheduledTask()
         {
             using (var transaction = _db.Database.BeginTransaction())

@@ -9,6 +9,9 @@ namespace shout_out_api.Interfaces
         Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model);
         Task Like(int userId, int feedItemId);
         Task Dislike(int userId, int feedItemId);
+        Task AddComment(int userId, CommentDto model);
+        Task EditComment(int userId, int id, CommentDto model);
+        Task DeleteComment(int userId, int id);
         Task ScheduledTask();
         Task<RootObject> GetGiphyGifs(int limit, int offset, string? filterName = null);
     }

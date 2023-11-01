@@ -81,6 +81,54 @@ namespace shout_out_api.Controllers
             return Ok();
         }
 
+        [HttpPost("addcomment")]
+        [Authorize]
+        public async Task<IActionResult> AddComment(CommentDto model)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.AddComment(int.Parse(userId), model);
+
+            return Ok();
+        }
+
+        [HttpPatch("editcomment")]
+        [Authorize]
+        public async Task<IActionResult> EditComment([FromQuery] int id, CommentDto model)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.EditComment(int.Parse(userId), id, model);
+
+            return Ok();
+        }
+
+        [HttpDelete("deletecomment")]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.DeleteComment(int.Parse(userId), id);
+
+            return Ok();
+        }
+
         [HttpGet("giphy")]
         [Authorize]
         public async Task<IActionResult> GetGiphyGifs(int limit, int offset, string? filterName = null)

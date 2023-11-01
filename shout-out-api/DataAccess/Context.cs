@@ -14,6 +14,7 @@ namespace shout_out_api.DataAccess
         public DbSet<PointHistory_ReceiverUser> PointHistory_ReceiverUsers { set; get; }
         public DbSet<Notification> Notifications { set; get; }
         public DbSet<Like> Likes { set; get; }
+        public DbSet<Comment> Comments { set; get; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
