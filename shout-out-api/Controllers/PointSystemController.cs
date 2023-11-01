@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Interfaces;
-using shout_out_api.Services;
 using System.Security.Claims;
 
 namespace shout_out_api.Controllers
