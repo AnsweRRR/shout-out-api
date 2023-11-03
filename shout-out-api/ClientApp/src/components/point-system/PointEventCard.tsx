@@ -18,6 +18,9 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const { user } = useAuthContext();
     const { translate } = useLocales();
 
+    const likedByNames = event.likes?.map(like => like.likedByName);
+    const resultString = likedByNames ? likedByNames.join(", ") : '';
+
     const handleLikeDislikeClicked = async () => {
         if (event.isLikedByCurrentUser) {
             const result = await dislikeAsync(event.id, user?.accessToken);
@@ -46,8 +49,9 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         }
     };
 
-    const likedByNames = event.likes?.map(like => like.likedByName);
-    const resultString = likedByNames ? likedByNames.join(", ") : '';
+    const handleCommentClicked = () => {
+        console.log('Comment btn. clicked');
+    }
 
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
@@ -121,19 +125,37 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                 </Stack>
             }
 
-            <Divider sx={{ marginBottom: 2 }} />
+            <Divider sx={{ marginBottom: 1 }} />
 
-            <Tooltip title={resultString}>
+            <Stack direction="row" alignItems="center" style={{  marginBottom: 10 }}>
+                <Tooltip title={resultString}>
+                    <IconButton
+                        size="small"
+                        color="inherit"
+                        onClick={handleLikeDislikeClicked}
+                        sx={ event.isLikedByCurrentUser ? { color: 'red' } : { color: 'text.secondary' }}
+                    >
+                        <Iconify icon="eva:heart-fill" width={24} />
+                        <Typography>{`${translate('FeedPage.Like')}`}</Typography>
+                    </IconButton>
+                </Tooltip>
+
                 <IconButton
-                    size="small"
-                    color="inherit"
-                    onClick={handleLikeDislikeClicked}
-                    sx={ event.isLikedByCurrentUser ? { color: 'red' } : { color: 'text.secondary' }}
-                >
-                    <Iconify icon="eva:heart-fill" width={24} />
-                    <Typography>{`${translate('FeedPage.Like')}`}</Typography>
+                        size="small"
+                        color="inherit"
+                        onClick={handleCommentClicked}
+                        sx={ event.isLikedByCurrentUser ? { color: 'red' } : { color: 'text.secondary' }}
+                    >
+                        <Iconify icon="eva:message-circle-fill" width={24} />
+                        <Typography>{`${translate('FeedPage.Comment')}`}</Typography>
                 </IconButton>
-            </Tooltip>
+            </Stack>
+
+            <Divider sx={{ marginBottom: 1 }} />
+
+            <Stack direction="row" alignItems="center" style={{  marginBottom: 10 }}>
+                Teszt
+            </Stack>
         </Card>
     );
 }

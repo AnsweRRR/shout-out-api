@@ -87,7 +87,8 @@ const en = {
     PlaceHolderExample: "@nickname #reason +10 comment...",
     Loading: "Loading...",
     PopularRewards: "Popular rewards",
-    Like: "Like"
+    Like: "Like",
+    Comment: "Comment"
   },
   RewardCard: {
     Cost: "Cost",
