@@ -164,6 +164,53 @@ namespace shout_out_api.Services
                     .Take(take)
                     .ToListAsync();
 
+                List<CommentDto> commentList = new List<CommentDto>()
+                {
+                    new CommentDto()
+                    {
+                        Id = 1,
+                        Text = "Ez az első comment...",
+                        GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now,
+                        PointHistoryId = 52,
+                        EditDate = null,
+                        SenderAvatar = null
+                    },
+                    new CommentDto()
+                    {
+                        Id = 2,
+                        Text = "Ez a második comment...",
+                        GiphyGif = null,
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now.AddDays(1),
+                        PointHistoryId = 52,
+                        EditDate = null,
+                        SenderAvatar = null
+                    },
+                    new CommentDto()
+                    {
+                        Id = 3,
+                        Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta nulla id odio mollis, vitae vehicula metus ullamcorper. Duis sit amet libero pretium, consequat risus ut, efficitur augue. Mauris iaculis neque lorem, et scelerisque ipsum laoreet at. Maecenas at ante nulla. Suspendisse in lacus augue. Duis ornare ullamcorper vulputate. Vestibulum nulla purus, mattis eget nunc sed, lobortis aliquet neque. Donec et enim cursus tellus vulputate ultricies. Donec varius ex ac nunc imperdiet dictum. Morbi non nunc accumsan, mattis sapien in, eleifend nulla. Duis purus mauris, ultrices id mauris at, finibus molestie nisi. Maecenas diam purus, rutrum quis suscipit mattis, imperdiet sed felis.",
+                        GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now.AddDays(2),
+                        PointHistoryId = 52,
+                        EditDate = DateTime.Now.AddDays(5),
+                        SenderAvatar = null
+                    },
+                };
+
+                var targetItem = feedItems.FirstOrDefault(x => x.Id == 52);
+
+                if (targetItem != null)
+                {
+                    targetItem.Comments.AddRange(commentList);
+                }
+
                 return feedItems;
             }
             catch (Exception ex)
@@ -364,7 +411,7 @@ namespace shout_out_api.Services
                 var commentToCreate = new Comment()
                 {
                     Text = model.Text,
-                    GiphyGifUrl = model.GiphyGifUrl,
+                    GiphyGifUrl = model.GiphyGif,
                     PointHistoryId = model.PointHistoryId,
                     CreateDate = DateTime.Now,
                     User = user
@@ -399,7 +446,7 @@ namespace shout_out_api.Services
 
                 comment.EditDate = DateTime.Now;
                 comment.Text = model.Text!;
-                comment.GiphyGifUrl = model.GiphyGifUrl;
+                comment.GiphyGifUrl = model.GiphyGif;
 
                 _db.Comments.Update(comment);
                 _db.SaveChanges();

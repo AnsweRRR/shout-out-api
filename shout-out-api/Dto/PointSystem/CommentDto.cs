@@ -4,7 +4,7 @@
     {
         public int? Id { get; set; }
         public string? Text { get; set; }
-        public string? GiphyGifUrl { get; set; }
+        public string? GiphyGif { get; set; }
         public int SenderId { get; set; }
         public string? SenderName { get; set; }
         public string? SenderAvatar { get; set; }

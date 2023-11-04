@@ -88,7 +88,9 @@ const en = {
     Loading: "Loading...",
     PopularRewards: "Popular rewards",
     Like: "Like",
-    Comment: "Comment"
+    Comment: "Comment",
+    Comments: "Comments",
+    Edited: "Edited"
   },
   RewardCard: {
     Cost: "Cost",

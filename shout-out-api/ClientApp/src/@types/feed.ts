@@ -10,6 +10,7 @@ export type FeedItem = {
     giphyGif: string | null,
     receiverUsers: Array<ReceiverUser>,
     likes?: Array<Like>,
+    comments?: Array<CommentDto>,
     isLikedByCurrentUser?: boolean
 }
 
@@ -22,7 +23,7 @@ export type CommentDto = {
     id?: number,
     pointHistoryId?: number,
     text: string,
-    giphyGifUrl?: string | null,
+    giphyGif?: string | undefined |null,
     senderId?: number,
     senderName?: string,
     senderAvatar?: string | null,

@@ -88,7 +88,9 @@ const hu = {
     Loading: "Töltés...",
     PopularRewards: "Legnépszerűbb jutalmak",
     Like: "Tetszik",
-    Comment: "Hozzászólás"
+    Comment: "Hozzászólás",
+    Comments: "Hozzászólások",
+    Edited: 'Szerkesztve'
   },
   RewardCard: {
     Cost: "Érték",
