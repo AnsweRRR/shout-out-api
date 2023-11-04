@@ -82,7 +82,7 @@ namespace shout_out_api.Controllers
 
         [HttpPost("addcomment")]
         [Authorize]
-        public async Task<IActionResult> AddComment([FromForm] CommentDto model)
+        public async Task<IActionResult> AddComment([FromBody] CommentDto model)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -91,9 +91,9 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.AddComment(int.Parse(userId), model);
+            var result = await _pointSystemService.AddComment(int.Parse(userId), model);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPatch("editcomment")]
@@ -107,9 +107,9 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.EditComment(int.Parse(userId), id, model);
+            var result = await _pointSystemService.EditComment(int.Parse(userId), id, model);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpDelete("deletecomment")]

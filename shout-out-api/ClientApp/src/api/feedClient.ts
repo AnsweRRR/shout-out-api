@@ -1,3 +1,4 @@
+import { CommentDto } from 'src/@types/feed';
 import axios from 'src/utils/axios';
 
 export async function getPointsHistoryAsync(offset: number, take: number, accessToken: string) {
@@ -62,12 +63,12 @@ export async function dislikeAsync(feedItemId: number, accessToken: string) {
     }
 }
 
-export async function addCommentAsync(comment: Comment, accessToken: string) {
+export async function addCommentAsync(model: CommentDto, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.post(`/api/pointSystem/addcomment`, comment, { headers });
+        const response = await axios.post(`/api/pointSystem/addcomment`, model, { headers });
         return response;
     }
     catch(error) {
@@ -76,7 +77,7 @@ export async function addCommentAsync(comment: Comment, accessToken: string) {
     }
 }
 
-export async function editCommentAsync(commentId: number, comment: Comment, accessToken: string) {
+export async function editCommentAsync(commentId: number, comment: CommentDto, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`

@@ -18,8 +18,9 @@ export enum EventType {
     SystemEvent = 1
 }
 
-export type Comment = {
+export type CommentDto = {
     id?: number,
+    pointHistoryId?: number,
     text: string,
     giphyGifUrl?: string | null,
     senderId?: number,

@@ -85,7 +85,7 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
                 }
 
-                return notification.ToNotificationItemDto();
+                return notification.ToNotificationItemResultDto();
             }
             catch (Exception ex)
             {
@@ -112,7 +112,7 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
                 }
 
-                return notification.ToNotificationItemDto();
+                return notification.ToNotificationItemResultDto();
             }
             catch (Exception ex)
             {

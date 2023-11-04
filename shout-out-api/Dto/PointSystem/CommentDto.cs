@@ -3,7 +3,7 @@
     public class CommentDto
     {
         public int? Id { get; set; }
-        public string Text { get; set; } = null!;
+        public string? Text { get; set; }
         public string? GiphyGifUrl { get; set; }
         public int SenderId { get; set; }
         public string? SenderName { get; set; }

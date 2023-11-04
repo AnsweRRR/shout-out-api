@@ -27,6 +27,97 @@ namespace shout_out_api.Services
 
         public async Task<IList<FeedItem>> GetHistory(int userId, int take = 10, int offset = 0)
         {
+            //try
+            //{
+            //    var feedItems = await _db.PointHistories
+            //    .GroupJoin(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phruGroup) => new { ph, phruGroup })
+            //    .SelectMany(result => result.phruGroup.DefaultIfEmpty(), (result, phru) => new { result.ph, phru })
+            //    .GroupJoin(_db.Likes, result => result.ph.Id, like => like.PointHistoryId, (result, likeGroup) => new { result.ph, result.phru, likeGroup })
+            //    .SelectMany(result => result.likeGroup.DefaultIfEmpty(), (result, like) => new { result.ph, result.phru, like })
+            //    .GroupJoin(_db.Comments, result => result.ph.Id, comment => comment.PointHistoryId, (result, commentGroup) => new { result.ph, result.phru, result.like, commentGroup })
+            //    .SelectMany(result => result.commentGroup.DefaultIfEmpty(), (result, comment) => new { result.ph, result.phru, result.like, comment })
+            //    .GroupBy(result => result.ph.Id)
+            //    .Select(group => new FeedItem
+            //    {
+            //        Id = group.Key,
+            //        Amount = group.First().ph.Amount,
+            //        SenderId = group.First().ph.SenderId,
+            //        SenderName = !string.IsNullOrEmpty(group.First().ph.SenderUser.UserName)
+            //            ? group.First().ph.SenderUser.UserName
+            //            : group.First().ph.SenderUser.FirstName + " " + group.First().ph.SenderUser.LastName,
+            //        SenderAvatar = group.First().ph.SenderUser.Avatar != null
+            //            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().ph.SenderUser.Avatar)}"
+            //            : null,
+            //        EventDate = group.First().ph.EventDate,
+            //        Description = group.First().ph.Description,
+            //        EventType = group.First().ph.EventType,
+            //        GiphyGif = !string.IsNullOrEmpty(group.First().ph.GiphyGifUrl)
+            //            ? group.First().ph.GiphyGifUrl
+            //            : null,
+            //        IsLikedByCurrentUser = group.Where(result => result.like != null).Any(n => n.like!.User.Id == userId),
+
+            //        ReceiverUsers = group
+            //            .Where(result => result.phru != null)
+            //            .Select(result => new ReceiverUsers
+            //            {
+            //                UserId = result.phru.UserId,
+            //                UserName = !string.IsNullOrEmpty(result.phru.User.UserName)
+            //                    ? result.phru.User.UserName
+            //                    : result.phru.User.FirstName + " " + result.phru.User.LastName,
+            //                UserAvatar = result.phru.User.Avatar != null
+            //                    ? $"data:image/jpg;base64,{Convert.ToBase64String(result.phru.User.Avatar)}" 
+            //                    : null,
+            //            })
+            //            .ToList(),
+
+            //        Likes = group
+            //            .Where(result => result.like != null)
+            //            .Select(result => new LikeDto
+            //            {
+            //                Id = result.like!.Id,
+            //                LikedById = result.like.UserId,
+            //                LikedByName = !string.IsNullOrEmpty(result.like.User.UserName)
+            //                    ? result.like.User.UserName
+            //                    : result.like.User.FirstName + " " + result.like.User.LastName
+            //            })
+            //            .ToList(),
+
+            //        Comments = group
+            //            .Where(result => result.comment != null)
+            //            .Select(result => new CommentDto
+            //            {
+            //                Id = result.comment!.Id,
+            //                Text = result.comment.Text,
+            //                GiphyGifUrl = result.comment.GiphyGifUrl,
+            //                PointHistoryId = result.comment.PointHistoryId,
+            //                CreateDate = result.comment.CreateDate,
+            //                EditDate = result.comment.EditDate,
+            //                SenderId = result.comment.UserId,
+            //                SenderAvatar = result.comment.User.Avatar != null
+            //                    ? $"data:image/jpg;base64,{Convert.ToBase64String(result.comment.User.Avatar)}"
+            //                    : null,
+            //                SenderName = !string.IsNullOrEmpty(result.comment.User.UserName)
+            //                    ? result.comment.User.UserName
+            //                    : result.comment.User.FirstName + " " + result.comment.User.LastName
+            //            })
+            //            .ToList()
+            //    })
+            //    .ToListAsync();
+
+            //    var sortedFeedItems = feedItems
+            //        .AsEnumerable()
+            //        .OrderByDescending(fi => fi.EventDate)
+            //        .Skip(offset)
+            //        .Take(take)
+            //        .ToList();
+
+            //    return sortedFeedItems;
+            //}
+            //catch(Exception ex)
+            //{
+            //    throw;
+            //}
+
             try
             {
                 List<FeedItem> feedItems = await _db.PointHistories
@@ -75,7 +166,7 @@ namespace shout_out_api.Services
 
                 return feedItems;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -264,7 +355,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task AddComment(int userId, CommentDto model)
+        public async Task<CommentDto> AddComment(int userId, CommentDto model)
         {
             try
             {
@@ -281,6 +372,8 @@ namespace shout_out_api.Services
 
                 _db.Comments.Add(commentToCreate);
                 _db.SaveChanges();
+
+                return commentToCreate.ToCommentResultDto();
             }
             catch (Exception ex)
             {
@@ -288,7 +381,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task EditComment(int userId, int commentId, CommentDto model)
+        public async Task<CommentDto> EditComment(int userId, int commentId, CommentDto model)
         {
             try
             {
@@ -305,11 +398,13 @@ namespace shout_out_api.Services
                 }
 
                 comment.EditDate = DateTime.Now;
-                comment.Text = model.Text;
+                comment.Text = model.Text!;
                 comment.GiphyGifUrl = model.GiphyGifUrl;
 
                 _db.Comments.Update(comment);
                 _db.SaveChanges();
+
+                return comment.ToCommentResultDto();
             }
             catch (Exception ex)
             {

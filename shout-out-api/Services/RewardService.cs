@@ -31,7 +31,7 @@ namespace shout_out_api.Services
             try
             {
                 List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync();
-                List<RewardDto> rewardsDto = rewards.ToRewardResultDto();
+                List<RewardDto> rewardsDto = rewards.ToRewardsResultDto();
 
                 return rewardsDto;
             }

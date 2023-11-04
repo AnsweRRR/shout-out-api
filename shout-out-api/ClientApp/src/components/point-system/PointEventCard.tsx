@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
-import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import { FeedItem, ReceiverUser } from "src/@types/feed";
+import { Dispatch, SetStateAction, useState, useRef } from "react";
+import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, Button } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
+import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
 import useLocales from "src/locales/useLocales";
-import { dislikeAsync, likeAsync } from "src/api/feedClient";
+import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync } from "src/api/feedClient";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { CustomAvatar } from "../custom-avatar";
 import Iconify from "../iconify/Iconify";
@@ -17,6 +18,16 @@ type Props = {
 export default function PointSystemFeed({ event, feedItems, setFeedItems }: Props) {
     const { user } = useAuthContext();
     const { translate } = useLocales();
+    const commentRef = useRef();
+
+    const initialCommentState = {
+        pointHistoryId: event.id,
+        text: '',
+        giphyGifUrl: null
+    }
+
+    const [commentToSend, setCommentToSend] = useState<CommentDto>(initialCommentState);
+    const [isCommentInputVisible, setIsCommentInputVisible] = useState<boolean>(false);
 
     const likedByNames = event.likes?.map(like => like.likedByName);
     const resultString = likedByNames ? likedByNames.join(", ") : '';
@@ -50,7 +61,21 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     };
 
     const handleCommentClicked = () => {
-        console.log('Comment btn. clicked');
+        if (!isCommentInputVisible) {
+            setIsCommentInputVisible(true);
+        } else {
+            setIsCommentInputVisible(false);
+        }
+    }
+
+    const handleSendComment = async () => {
+        if (commentToSend.text) {
+            const result = await addCommentAsync(commentToSend ,user?.accessToken);
+            if (result.status === 200) {
+                console.log('Siker');
+                setCommentToSend(initialCommentState);
+            }
+        }
     }
 
     return (
@@ -144,7 +169,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                         size="small"
                         color="inherit"
                         onClick={handleCommentClicked}
-                        sx={ event.isLikedByCurrentUser ? { color: 'red' } : { color: 'text.secondary' }}
+                        sx={{ color: 'text.secondary' }}
                     >
                         <Iconify icon="eva:message-circle-fill" width={24} />
                         <Typography>{`${translate('FeedPage.Comment')}`}</Typography>
@@ -153,9 +178,28 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
             <Divider sx={{ marginBottom: 1 }} />
 
-            <Stack direction="row" alignItems="center" style={{  marginBottom: 10 }}>
-                Teszt
-            </Stack>
+            {isCommentInputVisible && 
+                <Stack direction="row" alignItems="flex-end" style={{ marginBottom: 10 }}>
+                    <TextField
+                        value={commentToSend.text}
+                        onChange={e => setCommentToSend(comment => ({
+                            ...comment,
+                            text: e.target.value
+                        }))}
+                        inputRef={commentRef}
+                        variant="standard"
+                        placeholder={`${translate('FeedPage.Comment')}...`}
+                        multiline
+                        minRows={1}
+                        maxRows={10}
+                        sx={{ width: '100%', padding: 1 }}
+                        InputProps={{ disableUnderline: true }}
+                    />
+                    <IconButton disabled={commentToSend.text === null || commentToSend.text === undefined || commentToSend.text === ''} onClick={handleSendComment}>
+                        <SendIcon />
+                    </IconButton>
+                </Stack>            
+            }
         </Card>
     );
 }
