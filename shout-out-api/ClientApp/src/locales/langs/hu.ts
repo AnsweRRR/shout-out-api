@@ -90,7 +90,8 @@ const hu = {
     Like: "Tetszik",
     Comment: "Hozzászólás",
     Comments: "Hozzászólások",
-    Edited: 'Szerkesztve'
+    Edited: 'Szerkesztve',
+    MoreComments: "Több hozzászólás"
   },
   RewardCard: {
     Cost: "Érték",

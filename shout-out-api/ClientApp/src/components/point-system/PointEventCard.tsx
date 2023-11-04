@@ -18,6 +18,8 @@ type Props = {
     setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
 };
 
+const DISPLAY_COMMENTS_TAKE = 3;
+
 export default function PointSystemFeed({ event, feedItems, setFeedItems }: Props) {
     const { user } = useAuthContext();
     const { translate } = useLocales();
@@ -34,7 +36,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const [commentToSend, setCommentToSend] = useState<CommentDto>(initialCommentState);
     const [isCommentInputVisible, setIsCommentInputVisible] = useState<boolean>(false);
     const [isCommentAreaVisible, setIsCommentAreaVisible] = useState<boolean>(true);
-    const [displayCommentsCount, setDisplayCommentsCount] = useState<number>(5);
+    const [displayCommentsCount, setDisplayCommentsCount] = useState<number>(DISPLAY_COMMENTS_TAKE);
 
     const likedByNames = event.likes?.map(like => like.likedByName);
     const resultString = likedByNames ? likedByNames.join(", ") : '';
@@ -102,6 +104,13 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         } else {
             setIsCommentAreaVisible(false);
         }
+    }
+
+    const handleShowMoreComments = () => {
+        setDisplayCommentsCount(prevState => {
+            const commentCountToDisplay = prevState + DISPLAY_COMMENTS_TAKE;
+            return commentCountToDisplay;
+        });
     }
 
     const handleSelectGif = (selectedGif: any) => {
@@ -219,6 +228,16 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
             </Stack>
 
             <Divider />
+
+            {comments.length > displayCommentsCount && (
+                <Stack>
+                    <IconButton onClick={handleShowMoreComments} style={{ backgroundColor: 'transparent' }}>
+                        <Typography>
+                            {`${translate('FeedPage.MoreComments')}...`}
+                        </Typography>
+                    </IconButton>
+                </Stack>
+            )}
 
             {isCommentAreaVisible && comments && comments?.length > 0 && (
                 <List disablePadding>

@@ -90,7 +90,8 @@ const en = {
     Like: "Like",
     Comment: "Comment",
     Comments: "Comments",
-    Edited: "Edited"
+    Edited: "Edited",
+    MoreComments: "More comments"
   },
   RewardCard: {
     Cost: "Cost",
