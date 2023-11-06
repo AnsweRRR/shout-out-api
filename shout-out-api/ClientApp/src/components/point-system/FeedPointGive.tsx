@@ -132,7 +132,7 @@ export default function PointSystemFeed(props: Props) {
         }
 
         // Send button enable/disable
-        if (enteredHashTags && enteredHashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive > (selectedUsers.length * parsedEnteredPointToGive)) {
+        if (enteredHashTags && enteredHashTags.length > 0 && parsedEnteredPointToGive && selectedUsers && user?.pointsToGive >= (selectedUsers.length * parsedEnteredPointToGive)) {
             setIsSendEnabled(true);
         } else {
             setIsSendEnabled(false);

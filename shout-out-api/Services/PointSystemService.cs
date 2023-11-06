@@ -164,6 +164,7 @@ namespace shout_out_api.Services
                     .Take(take)
                     .ToListAsync();
 
+                // Mock...
                 List<CommentDto> commentList = new List<CommentDto>()
                 {
                     new CommentDto()
@@ -173,7 +174,7 @@ namespace shout_out_api.Services
                         GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
                         SenderId = 1,
                         SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now,
+                        CreateDate = DateTime.Now.AddDays(-5),
                         PointHistoryId = 52,
                         EditDate = null,
                         SenderAvatar = null
@@ -185,7 +186,7 @@ namespace shout_out_api.Services
                         GiphyGif = null,
                         SenderId = 1,
                         SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(1),
+                        CreateDate = DateTime.Now.AddDays(-4),
                         PointHistoryId = 52,
                         EditDate = null,
                         SenderAvatar = null
@@ -197,9 +198,45 @@ namespace shout_out_api.Services
                         GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
                         SenderId = 1,
                         SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(2),
+                        CreateDate = DateTime.Now.AddDays(-3),
                         PointHistoryId = 52,
-                        EditDate = DateTime.Now.AddDays(5),
+                        // EditDate = DateTime.Now.AddDays(5),
+                        SenderAvatar = null
+                    },
+                    new CommentDto()
+                    {
+                        Id = 4,
+                        Text = "Ez a negyedik comment...",
+                        GiphyGif = null,
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now.AddDays(-2),
+                        PointHistoryId = 52,
+                        EditDate = null,
+                        SenderAvatar = null
+                    },
+                    new CommentDto()
+                    {
+                        Id = 5,
+                        Text = "Ez az ötödik comment...",
+                        GiphyGif = null,
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now.AddDays(-1),
+                        PointHistoryId = 52,
+                        EditDate = null,
+                        SenderAvatar = null
+                    },
+                    new CommentDto()
+                    {
+                        Id = 6,
+                        Text = "Ez a hatodik comment...",
+                        GiphyGif = null,
+                        SenderId = 1,
+                        SenderName = "1. Valaki",
+                        CreateDate = DateTime.Now.AddDays(0),
+                        PointHistoryId = 52,
+                        EditDate = null,
                         SenderAvatar = null
                     },
                 };
@@ -209,6 +246,8 @@ namespace shout_out_api.Services
                 if (targetItem != null)
                 {
                     targetItem.Comments.AddRange(commentList);
+                    //targetItem.Comments.OrderByDescending(c => c.CreateDate);
+                    targetItem.Comments = targetItem.Comments.OrderByDescending(c => c.CreateDate).ToList();
                 }
 
                 return feedItems;

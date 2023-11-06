@@ -83,7 +83,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
             const { data } = result;
             if (result.status === 200) {
                 setCommentToSend(initialCommentState);
-                setComments(prevState => [...prevState, data]);
+                setComments(prevState => [data, ...prevState]);
             }
         }
     }
@@ -241,7 +241,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
             {isCommentAreaVisible && comments && comments?.length > 0 && (
                 <List disablePadding>
-                    {comments.slice(0, displayCommentsCount).map(comment => {
+                    {comments.slice(0, displayCommentsCount).sort((a, b) => new Date(a.createDate!).getTime() - new Date(b.createDate!).getTime()).map(comment => {
                         console.log(comment)
 
                         return (
