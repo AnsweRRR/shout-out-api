@@ -12,6 +12,6 @@ namespace shout_out_api.Model
         public int UserId { get; set; }
         public User User { get; set; } = new User();
         public int PointHistoryId { get; set; }
-        public PointHistory PointHistory { get; set; } = new PointHistory();
+        public PointHistory PointHistory { get; set; } = null!;
     }
 }

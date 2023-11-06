@@ -9,7 +9,7 @@ namespace shout_out_api.Model
         public User? SenderUser { get; set; }
         public int EventType { get; set; }
         public int ReceiverUserId { get; set; }
-        public User ReceiverUser { get; set; } = new User();
+        public User ReceiverUser { get; set; } = null!;
         public DateTime DateTime { get; set; }
         public bool IsRead { get; set; }
         public int? PointAmount { get; set; }
