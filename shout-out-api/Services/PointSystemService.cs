@@ -124,131 +124,63 @@ namespace shout_out_api.Services
                     .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUser = phru })
                     .GroupJoin(_db.Likes, phrul => phrul.PointHistory.Id, like => like.PointHistoryId, (phrul, likes) => new { phrul, Likes = likes })
                     .SelectMany(result => result.Likes.DefaultIfEmpty(), (result, like) => new { result.phrul, Like = like })
-                    .GroupBy(fi => fi.phrul.PointHistory.Id)
+                    .GroupJoin(_db.Comments, phrul => phrul.phrul.PointHistory.Id, comment => comment.PointHistoryId, (phrul, comments) => new { phrul, Comments = comments })
+                    .SelectMany(result => result.Comments.DefaultIfEmpty(), (result, comment) => new { result.phrul, Comment = comment })
+                    .GroupBy(fi => fi.phrul.phrul.PointHistory.Id)
                     .Select(group => new FeedItem()
                     {
                         Id = group.Key,
-                        Amount = group.First().phrul.PointHistory.Amount,
-                        SenderId = group.First().phrul.PointHistory.SenderId,
-                        SenderName = !string.IsNullOrEmpty(group.First().phrul.PointHistory.SenderUser.UserName)
-                            ? group.First().phrul.PointHistory.SenderUser.UserName
-                            : group.First().phrul.PointHistory.SenderUser.FirstName + " " + group.First().phrul.PointHistory.SenderUser.LastName,
-                        SenderAvatar = group.First().phrul.PointHistory.SenderUser.Avatar != null
-                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().phrul.PointHistory.SenderUser.Avatar)}" : null,
-                        EventDate = group.First().phrul.PointHistory.EventDate,
-                        Description = group.First().phrul.PointHistory.Description,
-                        EventType = group.First().phrul.PointHistory.EventType,
-                        GiphyGif = !string.IsNullOrEmpty(group.First().phrul.PointHistory.GiphyGifUrl)
-                            ? group.First().phrul.PointHistory.GiphyGifUrl
+                        Amount = group.First().phrul.phrul.PointHistory.Amount,
+                        SenderId = group.First().phrul.phrul.PointHistory.SenderId,
+                        SenderName = !string.IsNullOrEmpty(group.First().phrul.phrul.PointHistory.SenderUser.UserName)
+                            ? group.First().phrul.phrul.PointHistory.SenderUser.UserName
+                            : group.First().phrul.phrul.PointHistory.SenderUser.FirstName + " " + group.First().phrul.phrul.PointHistory.SenderUser.LastName,
+                        SenderAvatar = group.First().phrul.phrul.PointHistory.SenderUser.Avatar != null
+                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().phrul.phrul.PointHistory.SenderUser.Avatar)}" : null,
+                        EventDate = group.First().phrul.phrul.PointHistory.EventDate,
+                        Description = group.First().phrul.phrul.PointHistory.Description,
+                        EventType = group.First().phrul.phrul.PointHistory.EventType,
+                        GiphyGif = !string.IsNullOrEmpty(group.First().phrul.phrul.PointHistory.GiphyGifUrl)
+                            ? group.First().phrul.phrul.PointHistory.GiphyGifUrl
                             : null,
-                        ReceiverUsers = group.Where(fi => fi.phrul.ReceiverUser != null).Select(fi => new ReceiverUsers()
+                        ReceiverUsers = group.Where(fi => fi.phrul.phrul.ReceiverUser != null).Select(fi => new ReceiverUsers()
                         {
-                            UserId = fi.phrul.ReceiverUser.Id,
-                            UserName = !string.IsNullOrEmpty(fi.phrul.ReceiverUser.User.UserName)
-                                ? fi.phrul.ReceiverUser.User.UserName
-                                : fi.phrul.ReceiverUser.User.FirstName + " " + fi.phrul.ReceiverUser.User.LastName,
-                            UserAvatar = fi.phrul.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.phrul.ReceiverUser.User.Avatar)}" : null,
+                            UserId = fi.phrul.phrul.ReceiverUser.Id,
+                            UserName = !string.IsNullOrEmpty(fi.phrul.phrul.ReceiverUser.User.UserName)
+                                ? fi.phrul.phrul.ReceiverUser.User.UserName
+                                : fi.phrul.phrul.ReceiverUser.User.FirstName + " " + fi.phrul.phrul.ReceiverUser.User.LastName,
+                            UserAvatar = fi.phrul.phrul.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.phrul.phrul.ReceiverUser.User.Avatar)}" : null,
                         }).ToList(),
-                        Likes = group.Where(fi => fi.Like != null).Select(fi => new LikeDto()
+                        Likes = group.Where(fi => fi.phrul.Like != null).Select(fi => new LikeDto()
                         {
-                            Id = fi.Like!.Id,
-                            LikedById = fi.Like.UserId,
-                            LikedByName = !string.IsNullOrEmpty(fi.Like.User.UserName)
-                                ? fi.Like.User.UserName
-                                : fi.Like.User.FirstName + " " + fi.Like.User.LastName
+                            Id = fi.phrul.Like!.Id,
+                            LikedById = fi.phrul.Like.UserId,
+                            LikedByName = !string.IsNullOrEmpty(fi.phrul.Like.User.UserName)
+                                ? fi.phrul.Like.User.UserName
+                                : fi.phrul.Like.User.FirstName + " " + fi.phrul.Like.User.LastName
                         }).ToList(),
-                        IsLikedByCurrentUser = group.Where(n => n.Like != null).Any(n => n.Like!.User.Id == userId)
+                        IsLikedByCurrentUser = group.Where(n => n.phrul.Like != null).Any(n => n.phrul.Like!.User.Id == userId),
+                        Comments = group.Where(fi => fi.Comment != null).Select(fi => new CommentDto()
+                        {
+                            Id = fi.Comment!.Id,
+                            Text = fi.Comment.Text,
+                            GiphyGif = fi.Comment.GiphyGifUrl,
+                            PointHistoryId = fi.Comment.PointHistoryId,
+                            CreateDate = fi.Comment.CreateDate,
+                            EditDate = fi.Comment.EditDate,
+                            SenderId = fi.Comment.UserId,
+                            SenderAvatar = fi.Comment.User.Avatar != null
+                                                ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.Comment.User.Avatar)}"
+                                                : null,
+                            SenderName = !string.IsNullOrEmpty(fi.Comment.User.UserName)
+                                                ? fi.Comment.User.UserName
+                                                : fi.Comment.User.FirstName + " " + fi.Comment.User.LastName
+                        }).OrderByDescending(c => c.CreateDate).ToList()
                     })
                     .OrderByDescending(fi => fi.EventDate)
                     .Skip(offset)
                     .Take(take)
                     .ToListAsync();
-
-                // Mock...
-                List<CommentDto> commentList = new List<CommentDto>()
-                {
-                    new CommentDto()
-                    {
-                        Id = 1,
-                        Text = "Ez az első comment...",
-                        GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(-5),
-                        PointHistoryId = 52,
-                        EditDate = null,
-                        SenderAvatar = null
-                    },
-                    new CommentDto()
-                    {
-                        Id = 2,
-                        Text = "Ez a második comment...",
-                        GiphyGif = null,
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(-4),
-                        PointHistoryId = 52,
-                        EditDate = null,
-                        SenderAvatar = null
-                    },
-                    new CommentDto()
-                    {
-                        Id = 3,
-                        Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta nulla id odio mollis, vitae vehicula metus ullamcorper. Duis sit amet libero pretium, consequat risus ut, efficitur augue. Mauris iaculis neque lorem, et scelerisque ipsum laoreet at. Maecenas at ante nulla. Suspendisse in lacus augue. Duis ornare ullamcorper vulputate. Vestibulum nulla purus, mattis eget nunc sed, lobortis aliquet neque. Donec et enim cursus tellus vulputate ultricies. Donec varius ex ac nunc imperdiet dictum. Morbi non nunc accumsan, mattis sapien in, eleifend nulla. Duis purus mauris, ultrices id mauris at, finibus molestie nisi. Maecenas diam purus, rutrum quis suscipit mattis, imperdiet sed felis.",
-                        GiphyGif = "https://media4.giphy.com/media/3oAt2dA6LxMkRrGc0g/giphy.gif",
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(-3),
-                        PointHistoryId = 52,
-                        // EditDate = DateTime.Now.AddDays(5),
-                        SenderAvatar = null
-                    },
-                    new CommentDto()
-                    {
-                        Id = 4,
-                        Text = "Ez a negyedik comment...",
-                        GiphyGif = null,
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(-2),
-                        PointHistoryId = 52,
-                        EditDate = null,
-                        SenderAvatar = null
-                    },
-                    new CommentDto()
-                    {
-                        Id = 5,
-                        Text = "Ez az ötödik comment...",
-                        GiphyGif = null,
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(-1),
-                        PointHistoryId = 52,
-                        EditDate = null,
-                        SenderAvatar = null
-                    },
-                    new CommentDto()
-                    {
-                        Id = 6,
-                        Text = "Ez a hatodik comment...",
-                        GiphyGif = null,
-                        SenderId = 1,
-                        SenderName = "1. Valaki",
-                        CreateDate = DateTime.Now.AddDays(0),
-                        PointHistoryId = 52,
-                        EditDate = null,
-                        SenderAvatar = null
-                    },
-                };
-
-                var targetItem = feedItems.FirstOrDefault(x => x.Id == 52);
-
-                if (targetItem != null)
-                {
-                    targetItem.Comments.AddRange(commentList);
-                    //targetItem.Comments.OrderByDescending(c => c.CreateDate);
-                    targetItem.Comments = targetItem.Comments.OrderByDescending(c => c.CreateDate).ToList();
-                }
 
                 return feedItems;
             }
@@ -447,7 +379,7 @@ namespace shout_out_api.Services
             {
                 var user = await _db.Users.FirstAsync(u => u.Id == userId);
 
-                var commentToCreate = new Comment()
+                var commentToCreate = new Comment
                 {
                     Text = model.Text,
                     GiphyGifUrl = model.GiphyGif,

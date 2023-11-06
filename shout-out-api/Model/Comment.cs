@@ -10,7 +10,7 @@ namespace shout_out_api.Model
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime? EditDate { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; } = new User();
+        public User User { get; set; } = null!;
         public int PointHistoryId { get; set; }
         public PointHistory PointHistory { get; set; } = null!;
     }
