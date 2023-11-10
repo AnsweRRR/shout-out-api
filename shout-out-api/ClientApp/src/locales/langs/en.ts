@@ -60,7 +60,8 @@ const en = {
       PasswordMustBeAtLeast: "Password must be at least",
       Characters: "characters",
       CodeIsRequired: "Code is required",
-      ConfirmPasswordIsRequired: "Confirm password is required"
+      ConfirmPasswordIsRequired: "Confirm password is required",
+      MustBeGreaterThanZero: "Must be greater than zero"
     }
   },
   SideMenu: {

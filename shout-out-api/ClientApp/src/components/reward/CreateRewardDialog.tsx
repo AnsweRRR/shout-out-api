@@ -32,7 +32,7 @@ export default function CreateRewardCardDialog({ open, onClose, onCreateReward, 
     const NewRewardSchema = Yup.object().shape({
         name: Yup.string().required(translate('Maintenance.Validator.NameIsRequired')),
         description: Yup.string().required(translate('Maintenance.Validator.DescriptionIsRequired')),
-        cost: Yup.number().required(translate('Maintenance.Validator.CostIsRequired')),
+        cost: Yup.number().min(0, translate('Maintenance.Validator.MustBeGreaterThanZero')).required(translate('Maintenance.Validator.CostIsRequired')),
         avatar: Yup.mixed().required(translate('Maintenance.Validator.AvatarIsRequired')),
     });
 

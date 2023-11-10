@@ -60,7 +60,8 @@ const hu = {
       PasswordMustBeAtLeast: "A jelszónak legalább",
       Characters: "karakternek kell lennie",
       CodeIsRequired: "Kód kötelező",
-      ConfirmPasswordIsRequired: "Új jelszó megerősítése kötelező"
+      ConfirmPasswordIsRequired: "Új jelszó megerősítése kötelező",
+      MustBeGreaterThanZero: "Nagyobbnak kell lennie, mint 0"
     }
   },
   SideMenu: {
