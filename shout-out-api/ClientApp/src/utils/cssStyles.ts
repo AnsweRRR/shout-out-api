@@ -313,7 +313,7 @@ export const MentionsInputStyles = `
       }
 
       .direction-input__suggestions__item {
-        padding: 16px 16px;
+        padding: 8px 8px;
         :first-child {
           border-top-left-radius: 8px;
           border-top-right-radius: 8px;

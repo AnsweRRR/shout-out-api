@@ -220,7 +220,7 @@ export default function PointSystemFeed(props: Props) {
                                     markup="@[__display__](__id__)"
                                     renderSuggestion={( suggestion: ExtendedSuggestionDataItem ) => 
                                         <Stack direction="row" alignItems="center" spacing={2}>
-                                            <CustomAvatar alt={suggestion.display} name={suggestion.display} src={suggestion.avatar} />
+                                            <CustomAvatar sx={{ height: 30, width: 30 }} alt={suggestion.display} name={suggestion.display} src={suggestion.avatar} />
                                             <Typography variant="subtitle2" noWrap>
                                                 {suggestion.display}
                                             </Typography>
