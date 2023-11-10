@@ -22,7 +22,7 @@ export enum EventType {
 export type CommentDto = {
     id?: number,
     pointHistoryId?: number,
-    text: string,
+    text?: string,
     giphyGif?: string | undefined |null,
     senderId?: number,
     senderName?: string,

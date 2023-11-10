@@ -84,7 +84,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     }
 
     const handleEditComment = async (commentId: number) => {
-        if (commentInEditorMode?.text) {
+        if (commentInEditorMode?.text || commentInEditorMode?.giphyGif) {
             const result = await editCommentAsync(commentId, commentInEditorMode, user?.accessToken);
             const { data } = result;
             if (result.status === 200) {
@@ -323,7 +323,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         </Stack>
                                 )}
 
-                                {comment.giphyGif && (
+                                {comment.giphyGif && commentInEditorMode?.id !== comment.id ? (
                                     <Box style={{ position: 'relative' }}>
                                         <Stack
                                             direction="row"
@@ -332,6 +332,41 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                             style={{ position: 'relative' }}
                                         >
                                             <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
+                                        </Stack>
+                                    </Box>
+                                ) : comment.giphyGif && commentInEditorMode?.id === comment.id && (
+                                    <Box style={{ position: 'relative' }}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={2}
+                                            style={{ position: 'relative' }}
+                                        >
+                                            {comment.id === commentInEditorMode?.id && commentInEditorMode?.giphyGif && (
+                                                <IconButton
+                                                    onClick={() => setCommentInEditorMode(commentToEdit => ({
+                                                        ...commentToEdit,
+                                                        giphyGif: null
+                                                    }))}
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        right: 0,
+                                                        transition: 'transform 0.2s'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.transform = 'scale(1.2)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.transform = 'scale(1)';
+                                                    }}
+                                                >
+                                                    <CloseIcon />
+                                                </IconButton>
+                                            )}
+                                            {commentInEditorMode?.giphyGif && (
+                                                <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={commentInEditorMode.giphyGif} alt="GiphyUrl" />
+                                            )}
                                         </Stack>
                                     </Box>
                                 )}
