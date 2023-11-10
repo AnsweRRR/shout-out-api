@@ -61,18 +61,21 @@ namespace shout_out_api.Services
                 await _db.Rewards.AddAsync(newReward);
                 _db.SaveChanges();
 
-                var userEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.VerifiedAt != DateTime.MinValue).Select(u => u.Email).ToList();
+                var userEmails = _db.Users
+                    .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt != null)
+                    .Select(u => u.Email)
+                    .ToList();
 
-                foreach(var userEmail in userEmails)
+                if (userEmails != null && userEmails.Any())
                 {
                     EmailDto emailModel = new EmailDto()
                     {
-                        ToEmailAddress = userEmail!,
+                        ToEmailAddress = null,
                         Subject = EmailContants.NEW_ITEM_CREATED_SUBJECT(),
                         Body = EmailContants.NEW_ITEM_CREATED_BODY(newReward.Name)
                     };
 
-                    _emailService.SendEmail(emailModel);
+                    _emailService.SendEmailToMultipleRecipients(userEmails!, emailModel);
                 }
 
                 var rewardDto = newReward.ToRewardResultDto();
@@ -175,20 +178,27 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
 
                     var adminUsers = _db.Users
-                        .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin)
+                        .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt != null && u.Role == Role.Admin)
                         .ToList();
 
-                    foreach (var adminUser in adminUsers)
+                    if (adminUsers != null && adminUsers.Any())
                     {
                         EmailDto emailModel = new EmailDto()
                         {
-                            ToEmailAddress = adminUser.Email!,
+                            ToEmailAddress = null,
                             Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
                             Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
                         };
 
-                        _emailService.SendEmail(emailModel);
+                        var adminUserEmails = adminUsers.Select(admin => admin.Email).ToList();
 
+                        _emailService.SendEmailToMultipleRecipients(adminUserEmails!, emailModel);
+
+
+                    }
+
+                    foreach (var adminUser in adminUsers!)
+                    {
                         CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
                         {
                             EventType = NotificationEventType.RewardClaimed,
@@ -197,19 +207,7 @@ namespace shout_out_api.Services
                             RewardId = reward.Id
                         };
 
-                        var notificationToCreate = new Notification()
-                        {
-                            DateTime = DateTime.Now,
-                            PointAmount = notificationItemDto.PointAmount,
-                            EventType = (int)notificationItemDto.EventType,
-                            SenderUserId = notificationItemDto.SenderUserId,
-                            ReceiverUser = adminUser,
-                            RewardId = notificationItemDto.RewardId,
-                            IsRead = false
-                        };
-
-                        _db.Notifications.Add(notificationToCreate);
-                        _db.SaveChanges();
+                        await _notificationService.CreateNotificationAsync(notificationItemDto);
                     }
 
                     transaction.Commit();
