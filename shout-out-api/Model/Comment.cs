@@ -5,7 +5,7 @@ namespace shout_out_api.Model
     public class Comment : IEntity
     {
         public int Id { get; set; }
-        public string Text { get; set; } = null!;
+        public string? Text { get; set; }
         public string? GiphyGifUrl { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime? EditDate { get; set; }

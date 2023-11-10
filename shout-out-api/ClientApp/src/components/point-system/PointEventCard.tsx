@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, useRef } from "react";
+import { Dispatch, SetStateAction, useState, useRef, useEffect } from "react";
 import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, List, ListItemText, ListItemButton, Button, Popover, Paper } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
@@ -25,7 +25,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const { user } = useAuthContext();
     const { enqueueSnackbar } = useSnackbar();
     const { translate } = useLocales();
-    const commentRef = useRef();
+    const commentRef = useRef<HTMLTextAreaElement | null>(null);
 
     const initialCommentState = {
         pointHistoryId: event.id,
@@ -40,6 +40,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const [isCommentAreaVisible, setIsCommentAreaVisible] = useState<boolean>(true);
     const [displayCommentsCount, setDisplayCommentsCount] = useState<number>(DISPLAY_COMMENTS_TAKE);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [commentInEditorMode, setCommentInEditorMode] = useState<CommentDto | null>(null);
 
     const likedByNames = event.likes?.map(like => like.likedByName);
     const resultString = likedByNames ? likedByNames.join(", ") : '';
@@ -71,15 +72,6 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
             }
         }
     };
-
-    const handleCommentClicked = () => {
-        if (!isCommentInputVisible) {
-            setIsCommentInputVisible(true);
-        } else {
-            setIsCommentInputVisible(false);
-        }
-    }
-
     const handleSendComment = async () => {
         if (commentToSend.text || commentToSend.giphyGif) {
             const result = await addCommentAsync(commentToSend ,user?.accessToken);
@@ -92,11 +84,24 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     }
 
     const handleEditComment = async (commentId: number) => {
-        if (commentToSend.text) {
-            const result = await editCommentAsync(commentId, commentToSend, user?.accessToken);
+        if (commentInEditorMode?.text) {
+            const result = await editCommentAsync(commentId, commentInEditorMode, user?.accessToken);
             const { data } = result;
             if (result.status === 200) {
-                // TODO: update comment...
+                const indexToEdit = comments.findIndex(c => c.id === commentId);
+                setComments(prevState => {
+                    const updatedComments = [...prevState];
+
+                    updatedComments[indexToEdit] = {
+                        ...updatedComments[indexToEdit],
+                        text: data.text,
+                        giphyGif: data.giphyGif
+                    };
+
+                    return updatedComments;
+                });
+
+                setCommentInEditorMode(null);
             }
         }
     }
@@ -133,6 +138,23 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         }));
         setGifAnchorEl(null);
     };
+
+    useEffect(() => {
+        if (isCommentInputVisible) {
+            if (commentRef.current) {
+                commentRef.current.focus();
+            }
+        }
+    }, [isCommentInputVisible]);
+
+    useEffect(() => {
+        if (commentInEditorMode) {
+            if (commentRef.current) {
+                commentRef.current.focus();
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [commentInEditorMode?.id]);
 
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
@@ -224,7 +246,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                 <IconButton
                         size="small"
                         color="inherit"
-                        onClick={handleCommentClicked}
+                        onClick={() => setIsCommentInputVisible(prevState => !prevState)}
                         sx={{ color: 'text.secondary' }}
                     >
                         <Iconify icon="eva:message-circle-fill" width={24} />
@@ -271,10 +293,34 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                     </Typography>
                                 </Stack>
 
-                                {comment.text && (
+                                {comment.text && commentInEditorMode?.id !== comment.id ? (
                                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                                         {comment.text}
                                     </Typography>
+                                ) : comment.text && commentInEditorMode?.id === comment.id && (
+                                        <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" >
+                                            <TextField
+                                                value={commentInEditorMode?.text}
+                                                onChange={e => setCommentInEditorMode(commentToEdit => ({
+                                                    ...commentToEdit,
+                                                    text: e.target.value
+                                                }))}
+                                                inputRef={commentRef}
+                                                variant="standard"
+                                                multiline
+                                                minRows={1}
+                                                maxRows={10}
+                                                sx={{ width: '100%', padding: 1 }}
+                                                InputProps={{ disableUnderline: true }}
+                                            />
+
+                                            <IconButton
+                                                disabled={!commentInEditorMode?.text && !commentInEditorMode?.giphyGif}
+                                                onClick={() => handleEditComment(commentInEditorMode?.id!)}
+                                            >
+                                                <SendIcon />
+                                            </IconButton>
+                                        </Stack>
                                 )}
 
                                 {comment.giphyGif && (
@@ -292,7 +338,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
                                 {comment.senderId === user?.id && (
                                     <Stack direction="row" alignItems="flex-end" sx={{ justifyContent: 'end' }}>
-                                        <IconButton onClick={() => handleEditComment(comment.id!)}>
+                                        <IconButton onClick={() => setCommentInEditorMode(!commentInEditorMode ? comment : null)}>
                                             <Iconify icon="eva:edit-outline" />
                                         </IconButton>
 

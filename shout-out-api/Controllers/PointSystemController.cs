@@ -98,7 +98,7 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("editcomment")]
         [Authorize]
-        public async Task<IActionResult> EditComment([FromQuery] int id, [FromForm] CommentDto model)
+        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 

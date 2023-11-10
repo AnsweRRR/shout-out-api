@@ -370,6 +370,7 @@ namespace shout_out_api.Services
             try
             {
                 var comment = await _db.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+                var user = _db.Users.Single(u => u.Id == userId);
 
                 if (comment == null)
                 {
@@ -382,8 +383,9 @@ namespace shout_out_api.Services
                 }
 
                 comment.EditDate = DateTime.Now;
-                comment.Text = model.Text!;
+                comment.Text = model.Text;
                 comment.GiphyGifUrl = model.GiphyGif;
+                comment.User = user;
 
                 _db.Comments.Update(comment);
                 _db.SaveChanges();
