@@ -243,20 +243,6 @@ namespace shout_out_api.Services
                         };
 
                         await _notificationService.CreateNotificationAsync(notificationItemDto);
-
-                        //var notificationToCreate = new Notification()
-                        //{
-                        //    DateTime = DateTime.Now,
-                        //    PointAmount = notificationItemDto.PointAmount,
-                        //    EventType = (int)notificationItemDto.EventType,
-                        //    SenderUserId = notificationItemDto.SenderUserId,
-                        //    ReceiverUser = user,
-                        //    RewardId = notificationItemDto.RewardId,
-                        //    IsRead = false
-                        //};
-
-                        //_db.Notifications.Add(notificationToCreate);
-                        //_db.SaveChanges();
                     }
 
                     _db.PointHistory_ReceiverUsers.AddRange(pointHistory_ReceiverUser);
