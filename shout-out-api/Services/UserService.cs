@@ -44,8 +44,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.RefreshTokenCreated = DateTime.Now;
-                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
                 _db.Update(user);
                 _db.SaveChanges();
 
@@ -177,8 +177,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.RefreshTokenCreated = DateTime.Now;
-                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
                 user.VerificationToken = null;
 
                 _db.Update(user);
@@ -324,8 +324,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.RefreshTokenCreated = DateTime.Now;
-                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
                 _db.Update(user);
                 _db.SaveChanges();
 

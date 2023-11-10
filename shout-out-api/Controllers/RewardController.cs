@@ -20,9 +20,9 @@ namespace shout_out_api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken = default)
         {
-            var result = await _rewardService.GetRewards();
+            var result = await _rewardService.GetRewards(cancellationToken);
 
             return Ok(result);
         }
@@ -72,9 +72,9 @@ namespace shout_out_api.Controllers
 
         [HttpGet("mostpopularrewards")]
         [Authorize]
-        public async Task<IActionResult> GetMostPopularRewards()
+        public async Task<IActionResult> GetMostPopularRewards(CancellationToken cancellationToken = default)
         {
-            var result = await _rewardService.GetMostPopularRewards();
+            var result = await _rewardService.GetMostPopularRewards(cancellationToken);
 
             return Ok(result);
         }

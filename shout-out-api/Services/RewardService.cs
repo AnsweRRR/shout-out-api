@@ -26,11 +26,11 @@ namespace shout_out_api.Services
             _notificationService = notificationService;
         }
 
-        public async Task<IList<RewardDto>> GetRewards()
+        public async Task<IList<RewardDto>> GetRewards(CancellationToken cancellationToken)
         {
             try
             {
-                List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync();
+                List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync(cancellationToken);
                 List<RewardDto> rewardsDto = rewards.ToRewardsResultDto();
 
                 return rewardsDto;
@@ -221,7 +221,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<List<RewardDto>> GetMostPopularRewards()
+        public async Task<List<RewardDto>> GetMostPopularRewards(CancellationToken cancellationToken)
         {
             DateTime now = DateTime.Now;
 
@@ -238,7 +238,7 @@ namespace shout_out_api.Services
                 })
                 .OrderByDescending(n => n.Count)
                 .Take(5)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             List<RewardDto> rewardsDto = new List<RewardDto>();
 

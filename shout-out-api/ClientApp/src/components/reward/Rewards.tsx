@@ -71,14 +71,20 @@ export default function Rewards() {
     }
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const getRewards = async () => {
+            const { signal } = controller;
             if (user) {
-                const result = await getRewardsAsync(user?.accessToken);
+                const result = await getRewardsAsync(user?.accessToken, signal);
                 setRewards(result.data);
             }
         }
         getRewards();
-    }, [user]);
+
+        return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <Box

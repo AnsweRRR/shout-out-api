@@ -238,50 +238,46 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
             {isCommentAreaVisible && comments && comments?.length > 0 && (
                 <Stack spacing={1.5} sx={{ px: 3, pb: 2 }}>
-                    {comments.slice(0, displayCommentsCount).sort((a, b) => new Date(a.createDate!).getTime() - new Date(b.createDate!).getTime()).map(comment => {
-                        console.log(comment);
-
-                        return (
-                            <Stack key={comment.id} direction="row" spacing={2}>
-                                <CustomAvatar alt={comment.senderName} name={comment.senderName} src={comment.senderAvatar!} />
-                                <Paper
-                                    sx={{ p: 1.5, flexGrow: 1, bgcolor: 'background.neutral' }}
+                    {comments.slice(0, displayCommentsCount).sort((a, b) => new Date(a.createDate!).getTime() - new Date(b.createDate!).getTime()).map(comment => (
+                        <Stack key={comment.id} direction="row" spacing={2}>
+                            <CustomAvatar alt={comment.senderName} name={comment.senderName} src={comment.senderAvatar!} />
+                            <Paper
+                                sx={{ p: 1.5, flexGrow: 1, bgcolor: 'background.neutral' }}
+                            >
+                                <Stack
+                                    justifyContent="space-between"
+                                    direction={{ xs: 'column', sm: 'row' }}
+                                    alignItems={{ sm: 'center' }}
+                                    sx={{ mb: 0.5 }}
                                 >
-                                    <Stack
-                                        justifyContent="space-between"
-                                        direction={{ xs: 'column', sm: 'row' }}
-                                        alignItems={{ sm: 'center' }}
-                                        sx={{ mb: 0.5 }}
-                                    >
-                                        <Typography variant="subtitle2">{comment.senderName}</Typography>
+                                    <Typography variant="subtitle2">{comment.senderName}</Typography>
 
-                                        <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                                            {fHungarianDateTime(comment.createDate!)}
-                                        </Typography>
-                                    </Stack>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                                        {fHungarianDateTime(comment.createDate!)}
+                                    </Typography>
+                                </Stack>
 
-                                    {comment.text && (
-                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                            {comment.text}
-                                        </Typography>
-                                    )}
+                                {comment.text && (
+                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                        {comment.text}
+                                    </Typography>
+                                )}
 
-                                   {comment.giphyGif && (
-                                        <Box style={{ position: 'relative' }}>
-                                            <Stack
-                                                direction="row"
-                                                alignItems="center"
-                                                spacing={2}
-                                                style={{ position: 'relative' }}
-                                            >
-                                                <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
-                                            </Stack>
-                                        </Box>
-                                    )}
-                                </Paper>
-                            </Stack>
-                        );
-                    })}
+                                {comment.giphyGif && (
+                                    <Box style={{ position: 'relative' }}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={2}
+                                            style={{ position: 'relative' }}
+                                        >
+                                            <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
+                                        </Stack>
+                                    </Box>
+                                )}
+                            </Paper>
+                        </Stack>
+                    ))}
                 </Stack>
             )}
 

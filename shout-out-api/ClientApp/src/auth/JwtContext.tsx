@@ -109,18 +109,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const storageAvailable = localStorageAvailable();
 
-  // useEffect(() => {
-  //   const accessToken = storageAvailable ? localStorage.getItem('accessToken') : '';
+  useEffect(() => {
+    const accessToken = storageAvailable ? localStorage.getItem('accessToken') : '';
 
-  //   setInterval(() => {
-  //     if (accessToken && isValidToken(accessToken)) {
-  //       refreshToken(accessToken);
-  //       console.log(accessToken);
-  //     }
-  //   }, 5000)
+    setInterval(() => {
+      if (accessToken && isValidToken(accessToken)) {
+        refreshToken(accessToken);
+      }
+    }, 900000) // 15 min
 
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialize = useCallback(async () => {
     try {
@@ -171,8 +170,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const response = await axios.post('/api/user/login', {
       email,
       password,
-    });
-    const { accessToken, refreshToken, user } = response.data;
+    }, { withCredentials: true });
+    const { accessToken, user } = response.data;
 
     setSession(accessToken);
 
@@ -205,7 +204,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // REGISTER
   const register = useCallback(
     async (registerDto: RegisterDto) => {
-      const response = await axios.post('/api/user/register', registerDto);
+      const response = await axios.post('/api/user/register', registerDto, { withCredentials: true });
       const { accessToken, user } = response.data;
 
       localStorage.setItem('accessToken', accessToken);

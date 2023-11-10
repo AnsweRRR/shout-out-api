@@ -45,7 +45,8 @@ export default function PointSystemFeed() {
         getPointHistory();
 
         return () => controller.abort();
-    }, [user, offset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [offset]);
 
     return (
         <Grid container spacing={3}>

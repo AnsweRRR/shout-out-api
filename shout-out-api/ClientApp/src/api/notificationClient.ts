@@ -1,6 +1,6 @@
 import axios from 'src/utils/axios';
 
-export async function getNotificationsAsync(offset: number, take: number, accessToken: string) {
+export async function getNotificationsAsync(offset: number, take: number, accessToken: string, signal: AbortSignal) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
@@ -11,7 +11,7 @@ export async function getNotificationsAsync(offset: number, take: number, access
             take
         };
 
-        const response = await axios.get(`/api/notification`, { params, headers });
+        const response = await axios.get(`/api/notification`, { params, headers, signal });
         return response;
     }
     catch(error) {
@@ -20,13 +20,13 @@ export async function getNotificationsAsync(offset: number, take: number, access
     }
 }
 
-export async function getAmountOfUnreadNotificationsAsync(accessToken: string) {
+export async function getAmountOfUnreadNotificationsAsync(accessToken: string, signal: AbortSignal) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
 
-        const response = await axios.get(`/api/notification/amountofunreadnotifications`, { headers });
+        const response = await axios.get(`/api/notification/amountofunreadnotifications`, { headers, signal });
         return response;
     }
     catch(error) {

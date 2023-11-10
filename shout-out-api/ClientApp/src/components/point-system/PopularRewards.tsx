@@ -6,19 +6,24 @@ import { useAuthContext } from "src/auth/useAuthContext";
 import useLocales from "src/locales/useLocales";
 
 export default function PopularRewards() {
+    const controller = new AbortController();
     const { user } = useAuthContext();
     const { translate } = useLocales();
     const [popularRewards, setPopularRewards] = useState<Array<Reward>>([]);
 
     useEffect(() => {
+        const { signal } = controller;
         const getRewards = async () => {
             if (user) {
-                const result = await getMostPopularRewardsAsync(user?.accessToken);
+                const result = await getMostPopularRewardsAsync(user?.accessToken, signal);
                 setPopularRewards(result.data);
             }
         }
         getRewards();
-    }, [user]);
+
+        return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <Stack sx={{ marginTop: 42 }}>
