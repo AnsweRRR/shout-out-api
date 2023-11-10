@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useState, useRef } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, List, ListItemText, ListItemButton, Button, Popover } from "@mui/material";
+import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, List, ListItemText, ListItemButton, Button, Popover, Paper } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
-import { fHungarianDateTime } from "src/utils/formatTime";
+import { fDate, fHungarianDateTime } from "src/utils/formatTime";
 import useLocales from "src/locales/useLocales";
 import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync } from "src/api/feedClient";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
@@ -227,8 +227,6 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                 </Stack>
             </Stack>
 
-            <Divider />
-
             {comments.length > displayCommentsCount && (
                 <Stack>
                     <IconButton onClick={handleShowMoreComments} style={{ backgroundColor: 'transparent' }}>
@@ -240,82 +238,52 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
             )}
 
             {isCommentAreaVisible && comments && comments?.length > 0 && (
-                <List disablePadding>
+                <Stack spacing={1.5} sx={{ px: 3, pb: 2 }}>
                     {comments.slice(0, displayCommentsCount).sort((a, b) => new Date(a.createDate!).getTime() - new Date(b.createDate!).getTime()).map(comment => {
-                        console.log(comment)
+                        console.log(comment);
 
                         return (
-                            <Stack key={comment.id}>
-                                <ListItemButton
-                                    disableGutters
-                                    sx={{ p: 1, cursor: 'default' }}
+                            <Stack key={comment.id} direction="row" spacing={2}>
+                                <CustomAvatar alt={comment.senderName} src={comment.senderAvatar!} />
+                                <Paper
+                                    sx={{ p: 1.5, flexGrow: 1, bgcolor: 'background.neutral' }}
                                 >
-                                    <Grid container>
-                                        <Grid item xs={6} md={6}>
-                                            <CustomAvatar
-                                                src={comment.senderAvatar!}
-                                                alt={comment.senderName}
-                                                name={comment.senderName}
-                                                sx={{ width: 48, height: 48 }}
-                                            />
-                                        </Grid>
-    
-                                        <Grid item xs={6} md={6}>
-                                            <Typography
-                                                noWrap
-                                                variant="body2"
-                                                component="span"
-                                                sx={{ mb: 1.5, fontSize: 12, color: 'text.disabled', display: 'flex', justifyContent: 'flex-end' }}
-                                            >
-                                                {!comment.editDate
-                                                    ? formatDistanceToNowStrict(new Date(comment.createDate!), { addSuffix: false })
-                                                    : formatDistanceToNowStrict(new Date(comment.editDate!), { addSuffix: false })}
-                                            </Typography>
-                                        </Grid>
+                                    <Stack
+                                        justifyContent="space-between"
+                                        direction={{ xs: 'column', sm: 'row' }}
+                                        alignItems={{ sm: 'center' }}
+                                        sx={{ mb: 0.5 }}
+                                    >
+                                        <Typography variant="subtitle2">{comment.senderName}</Typography>
 
-                                        <Grid item xs={11} md={11}>
-                                            <ListItemText
-                                                primary={comment.text}
-                                                primaryTypographyProps={{ variant: 'subtitle2'}}
-                                                sx={{ paddingLeft: 1, maxWidth: '85%' }}
-                                            />
-                                            {comment.giphyGif && (
-                                                <Box style={{ position: 'relative' }}>
-                                                    <Stack
-                                                        direction="row"
-                                                        alignItems="center"
-                                                        spacing={2}
-                                                        style={{ position: 'relative' }}
-                                                    >
-                                                        {/* <IconButton
-                                                            onClick={() => setSelectedGiphyUrl(null)}
-                                                            style={{
-                                                                position: 'absolute',
-                                                                top: 0,
-                                                                right: 0,
-                                                                transition: 'transform 0.2s'
-                                                            }}
-                                                            onMouseEnter={(e) => {
-                                                                e.currentTarget.style.transform = 'scale(1.2)';
-                                                            }}
-                                                            onMouseLeave={(e) => {
-                                                                e.currentTarget.style.transform = 'scale(1)';
-                                                            }}
-                                                        >
-                                                            <CloseIcon />
-                                                        </IconButton> */}
-                                                        <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
-                                                    </Stack>
-                                                </Box>
-                                            )}
-                                        </Grid>
-                                    </Grid>
-                                </ListItemButton>
-                                <Divider />
+                                        <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                                            {fDate(comment.createDate!)}
+                                        </Typography>
+                                    </Stack>
+
+                                    {comment.text && (
+                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                            {comment.text}
+                                        </Typography>
+                                    )}
+
+                                   {comment.giphyGif && (
+                                        <Box style={{ position: 'relative' }}>
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                spacing={2}
+                                                style={{ position: 'relative' }}
+                                            >
+                                                <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
+                                            </Stack>
+                                        </Box>
+                                    )}
+                                </Paper>
                             </Stack>
-                        )
+                        );
                     })}
-                </List>
+                </Stack>
             )}
 
             {isCommentInputVisible && 
