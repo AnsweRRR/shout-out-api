@@ -297,7 +297,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                                         {comment.text}
                                     </Typography>
-                                ) : comment.text && commentInEditorMode?.id === comment.id && (
+                                ) : commentInEditorMode?.id === comment.id && (
                                         <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" >
                                             <TextField
                                                 value={commentInEditorMode?.text}
@@ -334,7 +334,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                             <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={comment.giphyGif} alt="GiphyUrl" />
                                         </Stack>
                                     </Box>
-                                ) : comment.giphyGif && commentInEditorMode?.id === comment.id && (
+                                ) : commentInEditorMode?.id === comment.id && (
                                     <Box style={{ position: 'relative' }}>
                                         <Stack
                                             direction="row"
