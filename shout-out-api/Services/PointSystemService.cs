@@ -25,7 +25,7 @@ namespace shout_out_api.Services
             _notificationService = notificationService;
         }
 
-        public async Task<IList<FeedItem>> GetHistory(int userId, int take = 10, int offset = 0)
+        public async Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace shout_out_api.Services
                     .OrderByDescending(ph => ph.EventDate)
                     .Skip(offset)
                     .Take(take)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 #region old query
                 //List<FeedItem> feedItems = await _db.PointHistories

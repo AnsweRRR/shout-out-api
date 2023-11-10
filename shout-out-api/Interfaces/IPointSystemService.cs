@@ -5,7 +5,7 @@ namespace shout_out_api.Interfaces
 {
     public interface IPointSystemService
     {
-        Task<IList<FeedItem>> GetHistory(int userId, int take = 10, int offset = 0);
+        Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0);
         Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model);
         Task Like(int userId, int feedItemId);
         Task Dislike(int userId, int feedItemId);

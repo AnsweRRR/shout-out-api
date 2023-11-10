@@ -18,7 +18,7 @@ namespace shout_out_api.Controllers
 
         [HttpGet("history")]
         [Authorize]
-        public async Task<IActionResult> Get(int take, int offset)
+        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -27,7 +27,7 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), take, offset);
+            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), cancellationToken, take, offset);
 
             return Ok(result);
         }

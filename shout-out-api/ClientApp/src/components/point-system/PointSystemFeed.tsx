@@ -23,10 +23,13 @@ export default function PointSystemFeed() {
     const eventPerPage = 10;
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const getPointHistory = async () => {
+            const { signal } = controller;
             if (user) {
                 setIsLoading(true);
-                const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken);
+                const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken, signal);
                 const items = result.data as Array<FeedItem>;
                 if (items.length < eventPerPage) {
                     setIsLastPage(true);
@@ -40,6 +43,8 @@ export default function PointSystemFeed() {
         }
 
         getPointHistory();
+
+        return () => controller.abort();
     }, [user, offset]);
 
     return (
