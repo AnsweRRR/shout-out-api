@@ -74,7 +74,7 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
               }}
             >
               <Button variant="text" onClick={() => setOpenEditorDialog(true)} >
-                <Iconify icon="eva:edit-fill" />
+                <Iconify icon="eva:edit-outline" />
               </Button>
             </Box>
 

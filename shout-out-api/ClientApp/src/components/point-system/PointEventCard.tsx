@@ -4,12 +4,14 @@ import SendIcon from '@mui/icons-material/Send';
 import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
 import useLocales from "src/locales/useLocales";
-import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync } from "src/api/feedClient";
+import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync, deleteCommentAsync } from "src/api/feedClient";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { CustomAvatar } from "../custom-avatar";
 import Iconify from "../iconify/Iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
+import { useSnackbar } from "../snackbar";
+import ConfirmDialog from "../confirm-dialog/ConfirmDialog";
 
 type Props = {
     event: FeedItem;
@@ -21,6 +23,7 @@ const DISPLAY_COMMENTS_TAKE = 3;
 
 export default function PointSystemFeed({ event, feedItems, setFeedItems }: Props) {
     const { user } = useAuthContext();
+    const { enqueueSnackbar } = useSnackbar();
     const { translate } = useLocales();
     const commentRef = useRef();
 
@@ -36,6 +39,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const [isCommentInputVisible, setIsCommentInputVisible] = useState<boolean>(false);
     const [isCommentAreaVisible, setIsCommentAreaVisible] = useState<boolean>(true);
     const [displayCommentsCount, setDisplayCommentsCount] = useState<number>(DISPLAY_COMMENTS_TAKE);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     const likedByNames = event.likes?.map(like => like.likedByName);
     const resultString = likedByNames ? likedByNames.join(", ") : '';
@@ -89,11 +93,21 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
     const handleEditComment = async (commentId: number) => {
         if (commentToSend.text) {
-            const result = await editCommentAsync(commentId, commentToSend ,user?.accessToken);
+            const result = await editCommentAsync(commentId, commentToSend, user?.accessToken);
             const { data } = result;
             if (result.status === 200) {
                 // TODO: update comment...
             }
+        }
+    }
+
+    const handleDeleteComment = async (commentId: number) => {
+        const result = await deleteCommentAsync(commentId, user?.accessToken);
+        if (result.status === 200) {
+            enqueueSnackbar(`${translate('ApiCallResults.DeletedSuccessfully')}`, { variant: 'success' });
+            setComments((prevState) => prevState.filter(r => r.id !== commentId));
+        } else {
+            enqueueSnackbar(`${translate('ApiCallResults.SomethingWentWrong')}`, { variant: 'error' });
         }
     }
 
@@ -275,7 +289,38 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         </Stack>
                                     </Box>
                                 )}
+
+                                {comment.senderId === user?.id && (
+                                    <Stack direction="row" alignItems="flex-end" sx={{ justifyContent: 'end' }}>
+                                        <IconButton onClick={() => handleEditComment(comment.id!)}>
+                                            <Iconify icon="eva:edit-outline" />
+                                        </IconButton>
+
+                                        <IconButton onClick={() => setOpenDeleteDialog(true)}>
+                                            <Iconify icon="eva:trash-2-outline" />
+                                        </IconButton>
+                                    </Stack>
+                                )}
                             </Paper>
+
+                            <ConfirmDialog
+                                open={openDeleteDialog}
+                                onClose={() => setOpenDeleteDialog(false)}
+                                title={`${translate('Maintenance.Delete')}`}
+                                content={<>{`${translate('Maintenance.AreYouSureWantToDelete')}`}</>}
+                                action={
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => {
+                                            handleDeleteComment(comment.id!);
+                                            setOpenDeleteDialog(false);
+                                        }}
+                                    >
+                                        {`${translate('Maintenance.Delete')}`}
+                                    </Button>
+                                }
+                            />
                         </Stack>
                     ))}
                 </Stack>
