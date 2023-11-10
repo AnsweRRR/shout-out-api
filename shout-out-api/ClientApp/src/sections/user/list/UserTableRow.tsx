@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   Stack,
-  Avatar,
   Button,
   TableRow,
   MenuItem,
@@ -11,10 +10,12 @@ import {
 } from '@mui/material';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import { useLocales } from 'src/locales';
+import { CustomAvatar } from 'src/components/custom-avatar';
 import { IUserAccountGeneral, RolesToDisplay } from '../../../@types/user';
 import Iconify from '../../../components/iconify';
 import MenuPopover from '../../../components/menu-popover';
 import ConfirmDialog from '../../../components/confirm-dialog';
+
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ export default function UserTableRow({
       <TableRow hover>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={firstName + lastName} src={avatarUrl} />
+            <CustomAvatar alt={firstName + lastName} name={firstName + lastName} src={avatarUrl} />
 
             <Typography variant="subtitle2" noWrap>
               {`${firstName} ${lastName}`}

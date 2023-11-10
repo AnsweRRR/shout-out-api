@@ -243,7 +243,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
                         return (
                             <Stack key={comment.id} direction="row" spacing={2}>
-                                <CustomAvatar alt={comment.senderName} src={comment.senderAvatar!} />
+                                <CustomAvatar alt={comment.senderName} name={comment.senderName} src={comment.senderAvatar!} />
                                 <Paper
                                     sx={{ p: 1.5, flexGrow: 1, bgcolor: 'background.neutral' }}
                                 >

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { MentionsInput, Mention } from "react-mentions";
-import { Avatar, Box, Button, Card, Grid, IconButton, Popover, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, IconButton, Popover, Stack, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useStyle } from 'src/hooks/useStyle';
 import { useLocales } from "src/locales";
@@ -14,6 +14,7 @@ import { givePointsAsync } from "src/api/feedClient";
 import Iconify from "../iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
 import { useSnackbar } from "../snackbar";
+import { CustomAvatar } from "../custom-avatar";
 
 interface Props {
     setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
@@ -219,7 +220,7 @@ export default function PointSystemFeed(props: Props) {
                                     markup="@[__display__](__id__)"
                                     renderSuggestion={( suggestion: ExtendedSuggestionDataItem ) => 
                                         <Stack direction="row" alignItems="center" spacing={2}>
-                                            <Avatar alt={suggestion.display} src={suggestion.avatar} />
+                                            <CustomAvatar alt={suggestion.display} name={suggestion.display} src={suggestion.avatar} />
                                             <Typography variant="subtitle2" noWrap>
                                                 {suggestion.display}
                                             </Typography>
