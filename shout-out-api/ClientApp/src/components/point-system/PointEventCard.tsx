@@ -251,7 +251,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                     sx={{ p: 1, cursor: 'default' }}
                                 >
                                     <Grid container>
-                                        <Grid item xs={1} md={1}>
+                                        <Grid item xs={6} md={6}>
                                             <CustomAvatar
                                                 src={comment.senderAvatar!}
                                                 alt={comment.senderName}
@@ -260,7 +260,20 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                             />
                                         </Grid>
     
-                                        <Grid item xs={10} md={10}>
+                                        <Grid item xs={6} md={6}>
+                                            <Typography
+                                                noWrap
+                                                variant="body2"
+                                                component="span"
+                                                sx={{ mb: 1.5, fontSize: 12, color: 'text.disabled', display: 'flex', justifyContent: 'flex-end' }}
+                                            >
+                                                {!comment.editDate
+                                                    ? formatDistanceToNowStrict(new Date(comment.createDate!), { addSuffix: false })
+                                                    : formatDistanceToNowStrict(new Date(comment.editDate!), { addSuffix: false })}
+                                            </Typography>
+                                        </Grid>
+
+                                        <Grid item xs={11} md={11}>
                                             <ListItemText
                                                 primary={comment.text}
                                                 primaryTypographyProps={{ variant: 'subtitle2'}}
@@ -295,19 +308,6 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                                     </Stack>
                                                 </Box>
                                             )}
-                                        </Grid>
-    
-                                        <Grid item xs={1} md={1}>
-                                            <Typography
-                                                noWrap
-                                                variant="body2"
-                                                component="span"
-                                                sx={{ mb: 1.5, fontSize: 12, color: 'text.disabled' }}
-                                            >
-                                                {!comment.editDate
-                                                    ? formatDistanceToNowStrict(new Date(comment.createDate!), { addSuffix: false })
-                                                    : formatDistanceToNowStrict(new Date(comment.editDate!), { addSuffix: false })}
-                                            </Typography>
                                         </Grid>
                                     </Grid>
                                 </ListItemButton>
