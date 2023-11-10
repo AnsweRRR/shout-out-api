@@ -1,9 +1,8 @@
 import { Dispatch, SetStateAction, useState, useRef } from "react";
-import { formatDistanceToNowStrict } from "date-fns";
 import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, List, ListItemText, ListItemButton, Button, Popover, Paper } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
-import { fDate, fHungarianDateTime } from "src/utils/formatTime";
+import { fHungarianDateTime } from "src/utils/formatTime";
 import useLocales from "src/locales/useLocales";
 import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync } from "src/api/feedClient";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
@@ -125,7 +124,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
                 <Grid container>
-                    <Grid item xs={8} md={8}>
+                    <Grid item xs={7} md={8}>
                         <Stack direction="row" alignItems="center" spacing={2}>
                         <Tooltip title={event.senderId !== null ? event.senderName : 'ShoutOut'}>
                             <CustomAvatar
@@ -161,7 +160,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                         </Stack>
                     </Grid>
 
-                    <Grid item xs={4} md={4}>
+                    <Grid item xs={5} md={4}>
                         <Box style={{ marginLeft: "auto", textAlign: "right" }}>
                             <Chip label={fHungarianDateTime(event.eventDate)} />
                         </Box>
@@ -257,7 +256,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         <Typography variant="subtitle2">{comment.senderName}</Typography>
 
                                         <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                                            {fDate(comment.createDate!)}
+                                            {fHungarianDateTime(comment.createDate!)}
                                         </Typography>
                                     </Stack>
 
