@@ -335,13 +335,13 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         </Stack>
                                     </Box>
                                 ) : commentInEditorMode?.id === comment.id && (
-                                    <Box style={{ position: 'relative' }}>
-                                        <Stack
-                                            direction="row"
-                                            alignItems="center"
-                                            spacing={2}
-                                            style={{ position: 'relative' }}
-                                        >
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        spacing={2}
+                                        style={{ position: 'relative' }}
+                                    >
+                                        <Box style={{ position: 'relative' }}>
                                             {comment.id === commentInEditorMode?.id && commentInEditorMode?.giphyGif && (
                                                 <IconButton
                                                     onClick={() => setCommentInEditorMode(commentToEdit => ({
@@ -364,11 +364,12 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                                     <CloseIcon />
                                                 </IconButton>
                                             )}
+                                            
                                             {commentInEditorMode?.giphyGif && (
                                                 <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={commentInEditorMode.giphyGif} alt="GiphyUrl" />
                                             )}
-                                        </Stack>
-                                    </Box>
+                                        </Box>
+                                    </Stack>
                                 )}
 
                                 {comment.senderId === user?.id && (
