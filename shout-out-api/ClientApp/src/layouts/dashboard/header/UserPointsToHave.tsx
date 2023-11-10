@@ -9,7 +9,7 @@ export default function UserPointsToHave() {
     const theme = useTheme();
 
     return (
-        <Tooltip title={`${translate('Header.PointsToGive')}`}>
+        <Tooltip title={`${translate('Header.PointsToHave')}`}>
             <Typography color={ theme.palette.mode === 'light' ? 'grey' : 'inherit'}>
                 {user?.pointToHave}
             </Typography>
