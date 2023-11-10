@@ -131,7 +131,7 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("edit")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditUser(int userId, EditUserRequestDto model)
+        public async Task<IActionResult> EditUser([FromQuery] int userId, EditUserRequestDto model)
         {
             await _userService.EditUser(userId, model, true);
 

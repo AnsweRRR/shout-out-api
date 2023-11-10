@@ -18,6 +18,21 @@ export async function createUserAsync(newUserDto: InviteRequestDto, accessToken:
     }
 }
 
+export async function editUserAsync(userId: number, editUserDto: InviteRequestDto, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.patch(`/api/user/edit?userId=${userId}`, editUserDto, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function editOwnUserAccountAsync(userDto: EditUserDto, accessToken: string) {
     try {
         const headers = {
