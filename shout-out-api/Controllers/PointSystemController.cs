@@ -18,7 +18,7 @@ namespace shout_out_api.Controllers
 
         [HttpGet("history")]
         [Authorize]
-        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken = default)
         {
             string? currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
