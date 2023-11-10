@@ -66,7 +66,8 @@ builder.Services.AddCors(options => options.AddPolicy(name: "ShoutOut-Origins",
     {
         policy.WithOrigins(new[] { "http://localhost:3000", "http://localhost:3001" })
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
     })
 );
 

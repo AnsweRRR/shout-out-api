@@ -7,9 +7,6 @@ using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace shout_out_api.Services
 {
@@ -325,6 +322,13 @@ namespace shout_out_api.Services
                 string jwtToken = _tokenService.CreateJWTToken(user);
 
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+                user.RefreshToken = newRefreshToken.Token;
+                user.RefreshTokenCreated = DateTime.Now;
+                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                _db.Update(user);
+                _db.SaveChanges();
+
                 CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
 
                 UserResultDto userDto = user.ToUserResultDto();
