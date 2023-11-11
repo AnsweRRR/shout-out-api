@@ -40,7 +40,7 @@ namespace shout_out_api.Services
 
                 return notificationItemsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -56,7 +56,7 @@ namespace shout_out_api.Services
 
                 return totalUnreadNotifications;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -87,7 +87,7 @@ namespace shout_out_api.Services
 
                 return notification.ToNotificationItemResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -114,7 +114,7 @@ namespace shout_out_api.Services
 
                 return notification.ToNotificationItemResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -138,7 +138,7 @@ namespace shout_out_api.Services
 
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }
@@ -163,7 +163,7 @@ namespace shout_out_api.Services
                 _db.Notifications.Add(notificationToCreate);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -35,7 +35,7 @@ namespace shout_out_api.Services
 
                 return rewardsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -82,7 +82,7 @@ namespace shout_out_api.Services
 
                 return rewardDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -116,7 +116,7 @@ namespace shout_out_api.Services
 
                 return rewardDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -139,7 +139,7 @@ namespace shout_out_api.Services
                 _db.Remove(reward);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -214,7 +214,7 @@ namespace shout_out_api.Services
 
                     return buyerUser.PointToHave;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }

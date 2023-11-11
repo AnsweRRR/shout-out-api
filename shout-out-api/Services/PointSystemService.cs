@@ -14,12 +14,14 @@ namespace shout_out_api.Services
 {
     public class PointSystemService: IPointSystemService
     {
+        private readonly ILogger _logger;
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
         private readonly INotificationService _notificationService;
 
-        public PointSystemService(Context db, ConfigHelper configHelper, INotificationService notificationService)
+        public PointSystemService(ILogger logger, Context db, ConfigHelper configHelper, INotificationService notificationService)
         {
+            _logger = logger;
             _db = db;
             _configHelper = configHelper;
             _notificationService = notificationService;
@@ -162,7 +164,7 @@ namespace shout_out_api.Services
 
                 return feedItems;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -277,7 +279,7 @@ namespace shout_out_api.Services
 
                     return givePointsResultDto;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }
@@ -313,7 +315,7 @@ namespace shout_out_api.Services
                 _db.Likes.Add(like);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -333,7 +335,7 @@ namespace shout_out_api.Services
                 _db.Likes.Remove(like);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -359,7 +361,7 @@ namespace shout_out_api.Services
 
                 return commentToCreate.ToCommentResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -392,7 +394,7 @@ namespace shout_out_api.Services
 
                 return comment.ToCommentResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -526,6 +528,7 @@ namespace shout_out_api.Services
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     throw;
                 }
             }

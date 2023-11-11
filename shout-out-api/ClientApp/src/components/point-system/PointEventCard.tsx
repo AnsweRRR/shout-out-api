@@ -139,6 +139,14 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         setGifAnchorEl(null);
     };
 
+    const handleSelectGifInComment = (selectedGif: any) => {
+        setCommentInEditorMode(commentToEdit => ({
+            ...commentToEdit,
+            giphyGif: selectedGif.images.fixedHeight.url
+        }));
+        setGifAnchorEl(null);
+    };
+
     useEffect(() => {
         if (isCommentInputVisible) {
             if (commentRef.current) {
@@ -335,41 +343,73 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                                         </Stack>
                                     </Box>
                                 ) : commentInEditorMode?.id === comment.id && (
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        spacing={2}
-                                        style={{ position: 'relative' }}
-                                    >
-                                        <Box style={{ position: 'relative' }}>
-                                            {comment.id === commentInEditorMode?.id && commentInEditorMode?.giphyGif && (
-                                                <IconButton
-                                                    onClick={() => setCommentInEditorMode(commentToEdit => ({
-                                                        ...commentToEdit,
-                                                        giphyGif: null
-                                                    }))}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        right: 0,
-                                                        transition: 'transform 0.2s'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1.2)';
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1)';
-                                                    }}
-                                                >
-                                                    <CloseIcon />
+                                    <>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={2}
+                                            style={{ position: 'relative' }}
+                                        >
+                                            <Box style={{ position: 'relative' }}>
+                                                {comment.id === commentInEditorMode?.id && commentInEditorMode?.giphyGif && (
+                                                    <IconButton
+                                                        onClick={() => setCommentInEditorMode(commentToEdit => ({
+                                                            ...commentToEdit,
+                                                            giphyGif: null
+                                                        }))}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            right: 0,
+                                                            transition: 'transform 0.2s'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            e.currentTarget.style.transform = 'scale(1.2)';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.transform = 'scale(1)';
+                                                        }}
+                                                    >
+                                                        <CloseIcon />
+                                                    </IconButton>
+                                                )}
+                                                
+                                                {commentInEditorMode?.giphyGif && (
+                                                    <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={commentInEditorMode.giphyGif} alt="GiphyUrl" />
+                                                )}
+                                            </Box>
+                                        </Stack>
+
+                                        {!commentInEditorMode?.giphyGif && (
+                                            <Stack direction="row" alignItems="center" spacing={2} style={{ justifyContent: 'space-between' }}>
+                                                <IconButton onClick={(e) => setGifAnchorEl(e.currentTarget)} sx={{ padding: 0 }}>
+                                                    <Iconify icon="fluent:emoji-32-regular" width={20} />
+                                                    <Iconify icon="material-symbols:gif" width={40} />
                                                 </IconButton>
-                                            )}
-                                            
-                                            {commentInEditorMode?.giphyGif && (
-                                                <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={commentInEditorMode.giphyGif} alt="GiphyUrl" />
-                                            )}
-                                        </Box>
-                                    </Stack>
+                                            </Stack>
+                                        )}
+
+                                        <Popover
+                                            open={Boolean(gifAnchorEl)}
+                                            onClose={() => setGifAnchorEl(null)}
+                                            anchorEl={gifAnchorEl}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'left',
+                                            }}
+                                        >
+                                                <Box sx={{ marginTop: '10px' }} className="searchboxWrapper">
+                                                <GiphyGIFSearchBox
+                                                    imageRenditionFileType="gif"
+                                                    onSelect={(item: any) => handleSelectGifInComment(item)}
+                                                    masonryConfig={[
+                                                        { columns: 2, imageWidth: 110, gutter: 5 },
+                                                        { mq: '700px', columns: 3, imageWidth: 120, gutter: 5 }
+                                                    ]}
+                                                />
+                                            </Box>
+                                        </Popover>
+                                    </>
                                 )}
 
                                 {comment.senderId === user?.id && (

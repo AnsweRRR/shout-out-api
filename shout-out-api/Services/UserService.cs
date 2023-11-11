@@ -65,7 +65,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -121,7 +121,7 @@ namespace shout_out_api.Services
                     _emailService.SendEmail(emailModel);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -138,7 +138,7 @@ namespace shout_out_api.Services
                     throw new Exception("User not found");
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -200,7 +200,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -245,7 +245,7 @@ namespace shout_out_api.Services
                 _db.Update(user);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -265,7 +265,7 @@ namespace shout_out_api.Services
                 _db.Remove(user);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -281,7 +281,7 @@ namespace shout_out_api.Services
 
                 return userResultDtoList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -297,7 +297,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -345,7 +345,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -366,7 +366,7 @@ namespace shout_out_api.Services
 
                 return userDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -402,7 +402,7 @@ namespace shout_out_api.Services
 
                 return user.Email!;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -440,7 +440,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -476,7 +476,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
