@@ -10,9 +10,11 @@ namespace shout_out_api.Services
 {
     public class EmailService: IEmailService
     {
+        private readonly ILogger _logger;
         private readonly ConfigHelper _configHelper;
-        public EmailService(ConfigHelper configHelper)
+        public EmailService(ILogger logger, ConfigHelper configHelper)
         {
+            _logger = logger;
             _configHelper = configHelper;
         }
 
@@ -38,7 +40,7 @@ namespace shout_out_api.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
         }
 
@@ -60,7 +62,7 @@ namespace shout_out_api.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
         }
     }
