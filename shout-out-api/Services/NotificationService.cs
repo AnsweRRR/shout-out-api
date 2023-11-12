@@ -16,7 +16,7 @@ namespace shout_out_api.Services
             _db = db;
         }
 
-        public async Task<IList<NotificationItemDto>> GetNotifications(int userId, int take = 10, int offset = 0)
+        public async Task<IList<NotificationItemDto>> GetNotifications(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0)
         {
             try
             {
@@ -36,27 +36,27 @@ namespace shout_out_api.Services
                     .OrderByDescending(n => n.DateTime)
                     .Skip(offset)
                     .Take(take)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 return notificationItemsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
-        public async Task<int> GetAmountOfUnreadNotifications(int userId)
+        public async Task<int> GetAmountOfUnreadNotifications(int userId, CancellationToken cancellationToken)
         {
             try
             {
                 var totalUnreadNotifications = await _db.Notifications
                     .Where(n => n.ReceiverUserId == userId && !n.IsRead)
-                    .CountAsync();
+                    .CountAsync(cancellationToken);
 
                 return totalUnreadNotifications;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -85,9 +85,9 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
                 }
 
-                return notification.ToNotificationItemDto();
+                return notification.ToNotificationItemResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -112,9 +112,9 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
                 }
 
-                return notification.ToNotificationItemDto();
+                return notification.ToNotificationItemResultDto();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -138,7 +138,7 @@ namespace shout_out_api.Services
 
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }
@@ -163,7 +163,7 @@ namespace shout_out_api.Services
                 _db.Notifications.Add(notificationToCreate);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

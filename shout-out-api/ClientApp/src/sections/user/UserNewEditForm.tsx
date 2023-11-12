@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { createUserAsync } from 'src/api/userClient';
+import { createUserAsync, editUserAsync } from 'src/api/userClient';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -74,16 +74,18 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
+      const userDto: InviteRequestDto = {
+        email: data.email,
+        // eslint-disable-next-line eqeqeq
+        role: data.role == Roles.Admin ? Roles.Admin : Roles.User,
+        firstName: data.firstName,
+        lastName: data.lastName
+      }
+
       if (!isEdit) {
-        const newUserDto: InviteRequestDto = {
-          email: data.email,
-          role: data.role,
-          firstName: data.firstName,
-          lastName: data.lastName
-        }
-        await createUserAsync(newUserDto, user?.accessToken);
+        await createUserAsync(userDto, user?.accessToken);
       } else {
-        // TODO: edit here...
+        await editUserAsync(currentUser?.id!, userDto, user?.accessToken);
       }
       
       reset();

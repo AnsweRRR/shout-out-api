@@ -17,7 +17,7 @@ export function fDateTime(date: InputValue, newFormat?: string) {
 }
 
 export function fHungarianDateTime(date: InputValue, newFormat?: string) {
-  const fm = newFormat || 'yyyy.MMM.dd  hh:mm';
+  const fm = newFormat || 'yyyy.MMM.dd  HH:mm';
 
   return date ? format(new Date(date), fm) : '';
 }

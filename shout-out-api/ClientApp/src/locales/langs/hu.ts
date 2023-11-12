@@ -60,7 +60,8 @@ const hu = {
       PasswordMustBeAtLeast: "A jelszónak legalább",
       Characters: "karakternek kell lennie",
       CodeIsRequired: "Kód kötelező",
-      ConfirmPasswordIsRequired: "Új jelszó megerősítése kötelező"
+      ConfirmPasswordIsRequired: "Új jelszó megerősítése kötelező",
+      MustBeGreaterThanZero: "Nagyobbnak kell lennie, mint 0"
     }
   },
   SideMenu: {
@@ -76,7 +77,7 @@ const hu = {
     Logout: "Kijelentkezés",
     General: "Általános",
     Notifications: "Értesítések",
-    ChangePassword: "Jelszó megváltoztatása",
+    ChangePassword: "Jelszó megváltoztatása"
   },
   Header: {
     PointsToHave: 'Pontjaid',
@@ -84,8 +85,14 @@ const hu = {
   },
   FeedPage: {
     Send: "Elküldöm",
-    PlaceHolderExample: "@felhasználónév +10 hozzászólás...",
-    Loading: "Töltés..."
+    PlaceHolderExample: "@felhasználónév #ok +10 hozzászólás...",
+    Loading: "Töltés...",
+    PopularRewards: "Legnépszerűbb jutalmak",
+    Like: "Tetszik",
+    Comment: "Hozzászólás",
+    Comments: "Hozzászólások",
+    Edited: 'Szerkesztve',
+    MoreComments: "Több hozzászólás"
   },
   RewardCard: {
     Cost: "Érték",

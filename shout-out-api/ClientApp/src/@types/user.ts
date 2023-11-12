@@ -1,3 +1,4 @@
+import { SuggestionDataItem } from "react-mentions";
 import { CustomFile } from "src/components/upload";
 
 export enum Roles {
@@ -89,5 +90,12 @@ export type UserDataToSelectDto = {
   firstName: string,
   lastName: string,
   email: string,
-  avatarUrl: string | null
+  avatarUrl: string | null,
+  display: string
+}
+
+export interface ExtendedSuggestionDataItem extends SuggestionDataItem {
+  id: string | number;
+  display?: string;
+  avatar?: string;
 }

@@ -30,4 +30,5 @@ export type JWTContextType = {
   register: (dto: RegisterDto) => Promise<void>;
   logout: () => void;
   updatePointToHave: (pointsToHaveAfterClaim: number) => void
+  updatePointToGive: (pointsToGiveAfterSend: number) => void
 };

@@ -8,7 +8,10 @@ export type FeedItem = {
     description: string | null,
     eventType: EventType,
     giphyGif: string | null,
-    receiverUsers: Array<ReceiverUser>
+    receiverUsers: Array<ReceiverUser>,
+    likes?: Array<Like>,
+    comments?: Array<CommentDto>,
+    isLikedByCurrentUser?: boolean
 }
 
 export enum EventType {
@@ -16,10 +19,35 @@ export enum EventType {
     SystemEvent = 1
 }
 
+export type CommentDto = {
+    id?: number,
+    pointHistoryId?: number,
+    text?: string,
+    giphyGif?: string | undefined |null,
+    senderId?: number,
+    senderName?: string,
+    senderAvatar?: string | null,
+    createDate?: Date,
+    editDate?: Date | null
+}
+
+export type Like = {
+    id: number,
+    likedById: number,
+    likedByName: string
+}
+
 export type ReceiverUser = {
     userId: number,
     userName: string,
     userAvatar: string | null
+}
+
+export type SendPointsDto = {
+    hashTags: Array<string>,
+    amount: number,
+    receiverUsers: Array<number>,
+    giphyGifUrl?: string | null
 }
 
 export type ImageRenditionFileType = 'gif' | 'webp';

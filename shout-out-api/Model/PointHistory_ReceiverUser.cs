@@ -12,11 +12,11 @@ namespace shout_out_api.Model
         public int PointHistoryId { get; set; }
 
         [ForeignKey("PointHistoryId")]
-        public PointHistory PointHistory { get; set; } = new PointHistory();
+        public PointHistory PointHistory { get; set; } = null!;
 
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; } = new User();
+        public User User { get; set; } = null!;
     }
 }

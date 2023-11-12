@@ -65,7 +65,7 @@ export default function Router() {
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
         { path: 'feed', element: <FeedPage /> },
-        { path: 'reward', element: <AuthGuard requiredRoles={[Roles.Admin]}> <RewardPage /> </AuthGuard> },
+        { path: 'reward', element: <RewardPage /> },
         {
           path: 'user',
           children: [

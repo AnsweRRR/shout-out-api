@@ -60,7 +60,8 @@ const en = {
       PasswordMustBeAtLeast: "Password must be at least",
       Characters: "characters",
       CodeIsRequired: "Code is required",
-      ConfirmPasswordIsRequired: "Confirm password is required"
+      ConfirmPasswordIsRequired: "Confirm password is required",
+      MustBeGreaterThanZero: "Must be greater than zero"
     }
   },
   SideMenu: {
@@ -84,8 +85,14 @@ const en = {
   },
   FeedPage: {
     Send: "Send",
-    PlaceHolderExample: "@nickname +10 comment...",
-    Loading: "Loading..."
+    PlaceHolderExample: "@nickname #reason +10 comment...",
+    Loading: "Loading...",
+    PopularRewards: "Popular rewards",
+    Like: "Like",
+    Comment: "Comment",
+    Comments: "Comments",
+    Edited: "Edited",
+    MoreComments: "More comments"
   },
   RewardCard: {
     Cost: "Cost",

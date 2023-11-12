@@ -1,12 +1,26 @@
 import { Reward } from 'src/@types/reward';
 import axios from 'src/utils/axios';
 
-export async function getRewardsAsync(accessToken: string) {
+export async function getRewardsAsync(accessToken: string, signal: AbortSignal) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.get(`/api/reward`, { headers });
+        const response = await axios.get(`/api/reward`, { headers, signal });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function getMostPopularRewardsAsync(accessToken: string, signal: AbortSignal) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+        const response = await axios.get(`/api/reward/mostpopularrewards`, { headers, signal });
         return response;
     }
     catch(error) {

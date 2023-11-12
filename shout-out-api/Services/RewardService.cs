@@ -7,6 +7,7 @@ using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
+using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -25,16 +26,16 @@ namespace shout_out_api.Services
             _notificationService = notificationService;
         }
 
-        public async Task<IList<RewardDto>> GetRewards()
+        public async Task<IList<RewardDto>> GetRewards(CancellationToken cancellationToken)
         {
             try
             {
-                List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync();
-                List<RewardDto> rewardsDto = rewards.ToRewardResultDto();
+                List<Reward> rewards = await _db.Rewards.OrderBy(r => r.Cost).ToListAsync(cancellationToken);
+                List<RewardDto> rewardsDto = rewards.ToRewardsResultDto();
 
                 return rewardsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -60,25 +61,28 @@ namespace shout_out_api.Services
                 await _db.Rewards.AddAsync(newReward);
                 _db.SaveChanges();
 
-                var userEmails = _db.Users.Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue).Select(u => u.Email).ToList();
+                var userEmails = _db.Users
+                    .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt != null)
+                    .Select(u => u.Email)
+                    .ToList();
 
-                foreach(var userEmail in userEmails)
+                if (userEmails != null && userEmails.Any())
                 {
                     EmailDto emailModel = new EmailDto()
                     {
-                        ToEmailAddress = userEmail!,
+                        ToEmailAddress = null,
                         Subject = EmailContants.NEW_ITEM_CREATED_SUBJECT(),
                         Body = EmailContants.NEW_ITEM_CREATED_BODY(newReward.Name)
                     };
 
-                    _emailService.SendEmail(emailModel);
+                    _emailService.SendEmailToMultipleRecipients(userEmails!, emailModel);
                 }
 
                 var rewardDto = newReward.ToRewardResultDto();
 
                 return rewardDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -112,7 +116,7 @@ namespace shout_out_api.Services
 
                 return rewardDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -124,6 +128,9 @@ namespace shout_out_api.Services
             {
                 var reward = await _db.Rewards.SingleOrDefaultAsync(r => r.Id == id);
 
+                var relatedNotification = await _db.Notifications.Where(n => n.RewardId == id).ExecuteDeleteAsync();
+                _db.SaveChanges();
+
                 if (reward == null)
                 {
                     throw new Exception("Reward not found");
@@ -132,7 +139,7 @@ namespace shout_out_api.Services
                 _db.Remove(reward);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -171,26 +178,33 @@ namespace shout_out_api.Services
                     _db.SaveChanges();
 
                     var adminUsers = _db.Users
-                        .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt.HasValue && u.Role == Role.Admin)
-                        .Select(u => new { u.Email, u.Id})
+                        .Where(u => !string.IsNullOrEmpty(u.Email) && u.VerifiedAt != null && u.Role == Role.Admin)
                         .ToList();
 
-                    foreach (var adminUser in adminUsers)
+                    if (adminUsers != null && adminUsers.Any())
                     {
                         EmailDto emailModel = new EmailDto()
                         {
-                            ToEmailAddress = adminUser.Email!,
+                            ToEmailAddress = null,
                             Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
                             Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
                         };
 
-                        _emailService.SendEmail(emailModel);
+                        var adminUserEmails = adminUsers.Select(admin => admin.Email).ToList();
 
+                        _emailService.SendEmailToMultipleRecipients(adminUserEmails!, emailModel);
+
+
+                    }
+
+                    foreach (var adminUser in adminUsers!)
+                    {
                         CreateNotificationItemDto notificationItemDto = new CreateNotificationItemDto()
                         {
                             EventType = NotificationEventType.RewardClaimed,
                             ReceiverUserId = adminUser.Id,
-                            SenderUserId = buyerUserId
+                            SenderUserId = buyerUserId,
+                            RewardId = reward.Id
                         };
 
                         await _notificationService.CreateNotificationAsync(notificationItemDto);
@@ -200,11 +214,56 @@ namespace shout_out_api.Services
 
                     return buyerUser.PointToHave;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }
             }
+        }
+
+        public async Task<List<RewardDto>> GetMostPopularRewards(CancellationToken cancellationToken)
+        {
+            DateTime now = DateTime.Now;
+
+            var mostPopularRewards = await _db.Notifications
+                .Where(n =>
+                    n.EventType == (int)NotificationEventType.RewardClaimed &&
+                    n.RewardId.HasValue &&
+                    n.DateTime >= now.AddMonths(-1))
+                .GroupBy(n => n.RewardId)
+                .Select(group => new
+                {
+                    Entity = group.First().Reward,
+                    Count = group.Count()
+                })
+                .OrderByDescending(n => n.Count)
+                .Take(5)
+                .ToListAsync(cancellationToken);
+
+            List<RewardDto> rewardsDto = new List<RewardDto>();
+
+            foreach(var reward in mostPopularRewards)
+            {
+                var rewardDto = new RewardDto()
+                {
+                    Id = reward.Entity.Id,
+                    Description = reward.Entity.Description,
+                    Name = reward.Entity.Name,
+                    Cost = reward.Entity.Cost,
+                };
+
+                if (reward.Entity.Avatar != null)
+                {
+                    var imageBase64string = Convert.ToBase64String(reward.Entity.Avatar);
+                    var fileTpye = "jpg";
+                    var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                    rewardDto.Avatar = source;
+                }
+
+                rewardsDto.Add(rewardDto);
+            }
+
+            return rewardsDto;
         }
     }
 }

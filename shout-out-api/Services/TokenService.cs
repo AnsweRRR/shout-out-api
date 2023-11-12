@@ -22,7 +22,7 @@ namespace shout_out_api.Services
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(1),
                 Created = DateTime.Now
             };
 
@@ -34,7 +34,9 @@ namespace shout_out_api.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = newRefreshToken.Expires
+                Expires = newRefreshToken.Expires,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
 
             user.RefreshToken = newRefreshToken.Token;

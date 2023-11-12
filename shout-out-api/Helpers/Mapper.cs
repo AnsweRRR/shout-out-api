@@ -1,4 +1,5 @@
 ﻿using shout_out_api.Dto.Notification;
+using shout_out_api.Dto.PointSystem;
 using shout_out_api.Dto.Reward;
 using shout_out_api.Dto.User;
 using shout_out_api.Enums;
@@ -17,6 +18,7 @@ namespace shout_out_api.Helpers
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
                 Email = entity.Email,
+                Display = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : entity.FirstName + " " + entity.LastName,
                 Role = entity.Role,
                 StartAtCompany = entity.StartAtCompany,
                 Birthday = entity.Birthday,
@@ -50,6 +52,7 @@ namespace shout_out_api.Helpers
                     FirstName = entity.FirstName,
                     LastName = entity.LastName,
                     Email = entity.Email,
+                    Display = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : entity.FirstName + " " + entity.LastName,
                     Role = entity.Role,
                     Verified = entity.VerifiedAt.HasValue
                 };
@@ -89,7 +92,7 @@ namespace shout_out_api.Helpers
             return rewardDto;
         }
 
-        public static List<RewardDto> ToRewardResultDto(this List<Reward> entities)
+        public static List<RewardDto> ToRewardsResultDto(this List<Reward> entities)
         {
             List<RewardDto> rewardList = new List<RewardDto>();
 
@@ -117,9 +120,7 @@ namespace shout_out_api.Helpers
             return rewardList;
         }
 
-        //-----
-
-        public static NotificationItemDto ToNotificationItemDto(this Notification entity)
+        public static NotificationItemDto ToNotificationItemResultDto(this Notification entity)
         {
             NotificationItemDto notificationItemDto = new NotificationItemDto()
             {
@@ -144,7 +145,7 @@ namespace shout_out_api.Helpers
             return notificationItemDto;
         }
 
-        public static List<NotificationItemDto> ToNotificationItemsDto(this List<Notification> entities)
+        public static List<NotificationItemDto> ToNotificationItemsResultDto(this List<Notification> entities)
         {
             List<NotificationItemDto> notificationList = new List<NotificationItemDto>();
 
@@ -174,6 +175,49 @@ namespace shout_out_api.Helpers
             }
 
             return notificationList;
+        }
+
+        public static CommentDto ToCommentResultDto(this Comment entity)
+        {
+            CommentDto commentDto = new CommentDto()
+            {
+                Id = entity.Id,
+                PointHistoryId = entity.PointHistoryId,
+                Text = entity.Text,
+                GiphyGif = entity.GiphyGifUrl,
+                SenderId = entity.UserId,
+                SenderName = !string.IsNullOrEmpty(entity.User.UserName) ? entity.User.UserName : entity.User.FirstName + " " + entity.User.LastName,
+                SenderAvatar = entity.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(entity.User.Avatar)}" : null,
+                CreateDate = entity.CreateDate,
+                EditDate = entity.EditDate
+            };
+
+            return commentDto;
+        }
+
+        public static List<CommentDto> ToCommentsResultDto(this List<Comment> entities)
+        {
+            List<CommentDto> commentList = new List<CommentDto>();
+
+            foreach (var entity in entities)
+            {
+                CommentDto commentDto = new CommentDto()
+                {
+                    Id = entity.Id,
+                    PointHistoryId = entity.PointHistoryId,
+                    Text = entity.Text,
+                    GiphyGif = entity.GiphyGifUrl,
+                    SenderId = entity.UserId,
+                    SenderName = !string.IsNullOrEmpty(entity.User.UserName) ? entity.User.UserName : entity.User.FirstName + " " + entity.User.LastName,
+                    SenderAvatar = entity.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(entity.User.Avatar)}" : null,
+                    CreateDate = entity.CreateDate,
+                    EditDate = entity.EditDate
+                };
+
+                commentList.Add(commentDto);
+            }
+
+            return commentList;
         }
     }
 }

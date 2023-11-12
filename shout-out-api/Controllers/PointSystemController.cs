@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.PointSystem;
 using shout_out_api.Interfaces;
-using shout_out_api.Services;
 using System.Security.Claims;
 
 namespace shout_out_api.Controllers
@@ -19,9 +18,16 @@ namespace shout_out_api.Controllers
 
         [HttpGet("history")]
         [Authorize]
-        public async Task<IActionResult> Get(int take, int offset)
+        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken = default)
         {
-            var result = await _pointSystemService.GetHistory(take, offset);
+            string? currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (currentUserId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), cancellationToken, take, offset);
 
             return Ok(result);
         }
@@ -37,7 +43,87 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
+            var result = await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
+
+            return Ok(result);
+        }
+
+        [HttpPatch("like")]
+        [Authorize]
+        public async Task<IActionResult> Like([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.Like(int.Parse(userId), id);
+
+            return Ok();
+        }
+
+        [HttpPatch("dislike")]
+        [Authorize]
+        public async Task<IActionResult> Dislike([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.Dislike(int.Parse(userId), id);
+
+            return Ok();
+        }
+
+        [HttpPost("addcomment")]
+        [Authorize]
+        public async Task<IActionResult> AddComment([FromBody] CommentDto model)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _pointSystemService.AddComment(int.Parse(userId), model);
+
+            return Ok(result);
+        }
+
+        [HttpPatch("editcomment")]
+        [Authorize]
+        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _pointSystemService.EditComment(int.Parse(userId), id, model);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("deletecomment")]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment([FromQuery] int id)
+        {
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            await _pointSystemService.DeleteComment(int.Parse(userId), id);
 
             return Ok();
         }

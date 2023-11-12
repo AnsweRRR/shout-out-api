@@ -5,15 +5,17 @@ import { getPointsHistoryAsync } from "src/api/feedClient";
 import { FeedItem } from "src/@types/feed";
 import InfiniteScroll from "react-infinite-scroller";
 import useLocales from "src/locales/useLocales";
+import useResponsive from "src/hooks/useResponsive";
 import Spinner from "../giphyGIF/Spinner";
 import PointEventCard from "./PointEventCard";
 import FeedPointGive from "./FeedPointGive";
 import Socials from "../social/Socials";
-
+import PopularRewards from "./PopularRewards";
 
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
     const { translate } = useLocales();
+    const isDesktop = useResponsive('up', 'lg');
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
@@ -21,10 +23,13 @@ export default function PointSystemFeed() {
     const eventPerPage = 10;
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const getPointHistory = async () => {
+            const { signal } = controller;
             if (user) {
                 setIsLoading(true);
-                const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken);
+                const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken, signal);
                 const items = result.data as Array<FeedItem>;
                 if (items.length < eventPerPage) {
                     setIsLastPage(true);
@@ -38,13 +43,16 @@ export default function PointSystemFeed() {
         }
 
         getPointHistory();
-    }, [user, offset]);
+
+        return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [offset]);
 
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={2} />
             <Grid item xs={12} md={7}>
-                <FeedPointGive />
+                <FeedPointGive setFeedItems={setFeedItems} />
 
                 <InfiniteScroll
                     pageStart={0}
@@ -58,12 +66,14 @@ export default function PointSystemFeed() {
                         </div>
                     )}
                 >
-                    {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} />)}
+                    {feedItems.map((item: FeedItem) => <PointEventCard key={item.id} event={item} feedItems={feedItems} setFeedItems={setFeedItems} />)}
 
                     <Socials />
                 </InfiniteScroll>
             </Grid>
-            <Grid item xs={12} md={2} />
+            <Grid item xs={12} md={2}>
+                {/* {isDesktop && <PopularRewards />} */}
+            </Grid>
         </Grid>
     );
 }

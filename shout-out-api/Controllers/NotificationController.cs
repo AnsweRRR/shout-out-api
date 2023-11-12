@@ -18,7 +18,7 @@ namespace shout_out_api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Get(int take, int offset)
+        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken = default)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -27,14 +27,14 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            var result = await _notificationService.GetNotifications(int.Parse(userId), take, offset);
+            var result = await _notificationService.GetNotifications(int.Parse(userId), cancellationToken, take, offset);
 
             return Ok(result);
         }
 
         [HttpGet("amountofunreadnotifications")]
         [Authorize]
-        public async Task<IActionResult> GetAmountOfUnreadNotifications()
+        public async Task<IActionResult> GetAmountOfUnreadNotifications(CancellationToken cancellationToken = default)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -43,7 +43,7 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            var result = await _notificationService.GetAmountOfUnreadNotifications(int.Parse(userId));
+            var result = await _notificationService.GetAmountOfUnreadNotifications(int.Parse(userId), cancellationToken);
 
             return Ok(result);
         }

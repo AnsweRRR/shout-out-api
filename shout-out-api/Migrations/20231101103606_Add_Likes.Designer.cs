@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using shout_out_api.DataAccess;
 
@@ -11,9 +12,11 @@ using shout_out_api.DataAccess;
 namespace shout_out_api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20231101103606_Add_Likes")]
+    partial class Add_Likes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,41 +24,6 @@ namespace shout_out_api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("shout_out_api.Model.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EditDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GiphyGifUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PointHistoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PointHistoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
 
             modelBuilder.Entity("shout_out_api.Model.Like", b =>
                 {
@@ -288,25 +256,6 @@ namespace shout_out_api.Migrations
                             UserName = "Admin User",
                             VerifiedAt = new DateTime(1999, 9, 23, 12, 12, 12, 485, DateTimeKind.Utc)
                         });
-                });
-
-            modelBuilder.Entity("shout_out_api.Model.Comment", b =>
-                {
-                    b.HasOne("shout_out_api.Model.PointHistory", "PointHistory")
-                        .WithMany()
-                        .HasForeignKey("PointHistoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("shout_out_api.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PointHistory");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("shout_out_api.Model.Like", b =>

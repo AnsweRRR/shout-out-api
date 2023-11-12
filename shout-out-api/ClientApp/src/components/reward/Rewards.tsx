@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box } from '@mui/material';
 import { Reward } from "src/@types/reward";
+import { Roles } from "src/@types/user";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useLocales } from "src/locales";
 import { buyRewardAsync, deleteRewardAsync, editRewardAsync, getRewardsAsync } from 'src/api/rewardClient';
@@ -10,6 +11,7 @@ import CreateRewardCard from "./CreateRewardCard";
 
 export default function Rewards() {
     const { user, updatePointToHave } = useAuthContext();
+    const currentRole = user?.role;
     const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
     const [rewards, setRewards] = useState<Array<Reward>>([]);
@@ -69,14 +71,20 @@ export default function Rewards() {
     }
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const getRewards = async () => {
+            const { signal } = controller;
             if (user) {
-                const result = await getRewardsAsync(user?.accessToken);
+                const result = await getRewardsAsync(user?.accessToken, signal);
                 setRewards(result.data);
             }
         }
         getRewards();
-    }, [user]);
+
+        return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <Box
@@ -88,7 +96,7 @@ export default function Rewards() {
                 md: 'repeat(3, 1fr)',
             }}
         >
-            <CreateRewardCard setRewards={setRewards} cover={cover} />
+            {currentRole === Roles.Admin && <CreateRewardCard setRewards={setRewards} cover={cover} />}
 
             {rewards.sort((reward1, reward2) => reward1.cost! - reward2.cost!).map((reward) =>
                 <RewardCard

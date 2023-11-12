@@ -11,6 +11,8 @@ namespace shout_out_api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        public static string REFRESH_TOKEN_NAME = "ShoutOut_RefreshToken";
+
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)
@@ -35,7 +37,7 @@ namespace shout_out_api.Controllers
         {
             var result = await _userService.Login(model);
 
-            Response.Cookies.Append("refreshToken", result.RefreshToken, result.CookieOptions);
+            Response.Cookies.Append(REFRESH_TOKEN_NAME, result.RefreshToken, result.CookieOptions);
 
             return Ok(result);
         }
@@ -74,7 +76,7 @@ namespace shout_out_api.Controllers
 
             var result = await _userService.Register(model);
 
-            Response.Cookies.Append("refreshToken", result.RefreshToken, result.CookieOptions);
+            Response.Cookies.Append(REFRESH_TOKEN_NAME, result.RefreshToken, result.CookieOptions);
 
             return Ok(result);
         }
@@ -83,7 +85,7 @@ namespace shout_out_api.Controllers
         [Authorize]
         public async Task<IActionResult> RefreshToken()
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = Request.Cookies[REFRESH_TOKEN_NAME];
 
             if(refreshToken == null)
             {
@@ -92,7 +94,7 @@ namespace shout_out_api.Controllers
 
             var result = await _userService.RefreshToken(refreshToken);
 
-            Response.Cookies.Append("refreshToken", result.RefreshToken, result.CookieOptions);
+            Response.Cookies.Append(REFRESH_TOKEN_NAME, result.RefreshToken, result.CookieOptions);
 
             return Ok(result);
         }
@@ -131,7 +133,7 @@ namespace shout_out_api.Controllers
 
         [HttpPatch("edit")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditUser(int userId, EditUserRequestDto model)
+        public async Task<IActionResult> EditUser([FromQuery] int userId, EditUserRequestDto model)
         {
             await _userService.EditUser(userId, model, true);
 
@@ -151,7 +153,14 @@ namespace shout_out_api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.GetUsers();
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var users = await _userService.GetUsers(int.Parse(userId));
 
             return Ok(users);
         }

@@ -7,9 +7,6 @@ using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace shout_out_api.Services
 {
@@ -47,8 +44,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.RefreshTokenCreated = DateTime.Now;
-                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
                 _db.Update(user);
                 _db.SaveChanges();
 
@@ -68,7 +65,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -124,7 +121,7 @@ namespace shout_out_api.Services
                     _emailService.SendEmail(emailModel);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -141,7 +138,7 @@ namespace shout_out_api.Services
                     throw new Exception("User not found");
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -180,8 +177,8 @@ namespace shout_out_api.Services
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
 
                 user.RefreshToken = newRefreshToken.Token;
-                user.RefreshTokenCreated = DateTime.Now;
-                user.RefreshTokenExpires = DateTime.Now.AddDays(7);
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
                 user.VerificationToken = null;
 
                 _db.Update(user);
@@ -203,7 +200,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -248,7 +245,7 @@ namespace shout_out_api.Services
                 _db.Update(user);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -268,23 +265,23 @@ namespace shout_out_api.Services
                 _db.Remove(user);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
         }
 
-        public async Task<List<UserResultDto>> GetUsers()
+        public async Task<List<UserResultDto>> GetUsers(int userId)
         {
             try
             {
-                var users = await _db.Users.ToListAsync();
+                var users = await _db.Users.Where(u => u.Id != userId && u.VerifiedAt.HasValue && u.VerifiedAt != DateTime.MinValue).ToListAsync();
 
                 var userResultDtoList = users.ToUsersResultDto();
 
                 return userResultDtoList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -300,7 +297,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -325,6 +322,13 @@ namespace shout_out_api.Services
                 string jwtToken = _tokenService.CreateJWTToken(user);
 
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+                user.RefreshToken = newRefreshToken.Token;
+                user.RefreshTokenCreated = newRefreshToken.Created;
+                user.RefreshTokenExpires = newRefreshToken.Expires;
+                _db.Update(user);
+                _db.SaveChanges();
+
                 CookieOptions cookieOptions = _tokenService.SetRefreshToken(user, newRefreshToken);
 
                 UserResultDto userDto = user.ToUserResultDto();
@@ -341,7 +345,7 @@ namespace shout_out_api.Services
 
                 return dto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -362,7 +366,7 @@ namespace shout_out_api.Services
 
                 return userDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -398,7 +402,7 @@ namespace shout_out_api.Services
 
                 return user.Email!;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -436,7 +440,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -472,7 +476,7 @@ namespace shout_out_api.Services
 
                 return userResultDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

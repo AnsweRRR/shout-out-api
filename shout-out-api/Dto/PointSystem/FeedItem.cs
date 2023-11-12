@@ -14,6 +14,9 @@ namespace shout_out_api.Dto.PointSystem
         public PointEventType EventType { get; set; }
         public string? GiphyGif { get; set; }
         public List<ReceiverUsers> ReceiverUsers { get; set; } = new List<ReceiverUsers>();
+        public List<LikeDto> Likes { get; set; } = new List<LikeDto>();
+        public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
+        public bool IsLikedByCurrentUser { get; set; }
     }
 
     public class ReceiverUsers

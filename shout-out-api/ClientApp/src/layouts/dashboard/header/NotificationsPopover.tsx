@@ -70,10 +70,13 @@ export default function NotificationsPopover() {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const getNotifications = async () => {
       if (user) {
         setIsLoading(true);
-        const result = await getNotificationsAsync(offset, eventPerPage, user?.accessToken);
+        const result = await getNotificationsAsync(offset, eventPerPage, user?.accessToken, signal);
         const items = result.data as Array<NotificationItemDto>;
         if (items.length < eventPerPage) {
           setIsLastPage(true);
@@ -88,7 +91,7 @@ export default function NotificationsPopover() {
 
     const getAmountOfUnreadNotifications = async () => {
       if (user) {
-        const result = await getAmountOfUnreadNotificationsAsync(user?.accessToken);
+        const result = await getAmountOfUnreadNotificationsAsync(user?.accessToken, signal);
         const { data } = result;
         setTotalUnRead(data);
       }
@@ -100,7 +103,9 @@ export default function NotificationsPopover() {
       getAmountOfUnreadNotifications();
     }
     
-  }, [user, offset, openPopover]);
+    return () => controller.abort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset, openPopover]);
 
   return (
     <>

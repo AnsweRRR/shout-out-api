@@ -39,7 +39,7 @@ export default function FeedPage() {
     return (
         <>
             <Helmet>
-                <title>ShoutOut Feed</title>
+                <title>Feed</title>
             </Helmet>
 
             <Container maxWidth={themeStretch ? false : 'lg'}>

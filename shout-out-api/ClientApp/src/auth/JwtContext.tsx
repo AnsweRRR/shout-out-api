@@ -8,9 +8,11 @@ import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './ty
 enum Types {
   INITIAL = 'INITIAL',
   LOGIN = 'LOGIN',
+  REFRESHTOKEN = 'REFRESHTOKEN',
   REGISTER = 'REGISTER',
   LOGOUT = 'LOGOUT',
-  UPDATE_POINTS_TO_HAVE = "UPDATE_POINTS_TO_HAVE"
+  UPDATE_POINTS_TO_HAVE = "UPDATE_POINTS_TO_HAVE",
+  UPDATE_POINTS_TO_GIVE = "UPDATE_POINTS_TO_GIVE",
 }
 
 type Payload = {
@@ -21,11 +23,17 @@ type Payload = {
   [Types.LOGIN]: {
     user: AuthUserType;
   };
+  [Types.REFRESHTOKEN]: {
+    user: AuthUserType;
+  };
   [Types.REGISTER]: {
     user: AuthUserType;
   };
   [Types.LOGOUT]: undefined;
   [Types.UPDATE_POINTS_TO_HAVE]: {
+    user: AuthUserType;
+  };
+  [Types.UPDATE_POINTS_TO_GIVE]: {
     user: AuthUserType;
   };
 };
@@ -49,6 +57,13 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
     };
   }
   if (action.type === Types.LOGIN) {
+    return {
+      ...state,
+      isAuthenticated: true,
+      user: action.payload.user,
+    };
+  }
+  if (action.type === Types.REFRESHTOKEN) {
     return {
       ...state,
       isAuthenticated: true,
@@ -93,6 +108,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const storageAvailable = localStorageAvailable();
+
+  useEffect(() => {
+    const accessToken = storageAvailable ? localStorage.getItem('accessToken') : '';
+
+    setInterval(() => {
+      if (accessToken && isValidToken(accessToken)) {
+        refreshToken(accessToken);
+      }
+    }, 900000) // 15 min
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialize = useCallback(async () => {
     try {
@@ -143,7 +170,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const response = await axios.post('/api/user/login', {
       email,
       password,
-    });
+    }, { withCredentials: true });
     const { accessToken, user } = response.data;
 
     setSession(accessToken);
@@ -156,10 +183,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
   }, []);
 
+  const refreshToken = useCallback(async (access_Token: string) => {
+    const headers = {
+      'Authorization': `Bearer ${access_Token}`
+    };
+
+    const response = await axios.post('/api/user/refresh-token', null, { withCredentials: true, headers });
+    const { accessToken, user } = response.data;
+
+    setSession(accessToken);
+
+    dispatch({
+      type: Types.REFRESHTOKEN,
+      payload: {
+        user,
+      },
+    });
+  }, []);
+
   // REGISTER
   const register = useCallback(
     async (registerDto: RegisterDto) => {
-      const response = await axios.post('/api/user/register', registerDto);
+      const response = await axios.post('/api/user/register', registerDto, { withCredentials: true });
       const { accessToken, user } = response.data;
 
       localStorage.setItem('accessToken', accessToken);
@@ -196,6 +241,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
   }, [state.user, dispatch]);
 
+  const updatePointToGive = useCallback((pointsToGiveAfterSend: number) => {
+    const updatedUser = {
+      ...state.user,
+      pointsToGive: pointsToGiveAfterSend,
+    };
+  
+    dispatch({
+      type: Types.UPDATE_POINTS_TO_HAVE,
+      payload: {
+        user: updatedUser,
+      },
+    });
+  }, [state.user, dispatch]);
+
   const memoizedValue = useMemo(
     () => ({
       isInitialized: state.isInitialized,
@@ -205,9 +264,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       register,
       logout,
-      updatePointToHave
+      updatePointToHave,
+      updatePointToGive
     }),
-    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register, updatePointToHave]
+    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register, updatePointToHave, updatePointToGive]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

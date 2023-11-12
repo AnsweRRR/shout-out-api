@@ -4,8 +4,8 @@ namespace shout_out_api.Interfaces
 {
     public interface INotificationService
     {
-        Task<IList<NotificationItemDto>> GetNotifications(int userId, int take = 10, int offset = 0);
-        Task<int> GetAmountOfUnreadNotifications(int userId);
+        Task<IList<NotificationItemDto>> GetNotifications(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0);
+        Task<int> GetAmountOfUnreadNotifications(int userId, CancellationToken cancellationToken);
         Task<NotificationItemDto> MarkAsUnRead(int id, int userId);
         Task<NotificationItemDto> MarkAsRead(int id, int userId);
         Task MarkAllAsRead(int userId);
