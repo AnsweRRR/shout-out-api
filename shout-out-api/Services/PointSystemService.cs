@@ -14,12 +14,12 @@ namespace shout_out_api.Services
 {
     public class PointSystemService: IPointSystemService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<IPointSystemService> _logger;
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
         private readonly INotificationService _notificationService;
 
-        public PointSystemService(ILogger logger, Context db, ConfigHelper configHelper, INotificationService notificationService)
+        public PointSystemService(ILogger<IPointSystemService> logger, Context db, ConfigHelper configHelper, INotificationService notificationService)
         {
             _logger = logger;
             _db = db;

@@ -10,9 +10,9 @@ namespace shout_out_api.Services
 {
     public class EmailService: IEmailService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<IEmailService> _logger;
         private readonly ConfigHelper _configHelper;
-        public EmailService(ILogger logger, ConfigHelper configHelper)
+        public EmailService(ILogger<IEmailService> logger, ConfigHelper configHelper)
         {
             _logger = logger;
             _configHelper = configHelper;
