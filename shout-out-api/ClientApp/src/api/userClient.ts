@@ -60,13 +60,13 @@ export async function verifyInviteToken(verificationToken: string) {
     }
 }
 
-export async function getUsersAsync(accessToken: string) {
+export async function getUsersAsync(onlyVerified: boolean, accessToken: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
 
-        const response = await axios.get(`/api/user/users`, { headers });
+        const response = await axios.get(`/api/user/users?onlyVerified=${onlyVerified}`, { headers });
         return response;
     }
     catch(error) {

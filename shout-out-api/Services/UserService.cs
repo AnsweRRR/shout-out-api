@@ -271,11 +271,14 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task<List<UserResultDto>> GetUsers(int userId)
+        public async Task<List<UserResultDto>> GetUsers(int userId, bool onlyVerified)
         {
             try
             {
-                var users = await _db.Users.Where(u => u.Id != userId && u.VerifiedAt.HasValue && u.VerifiedAt != DateTime.MinValue).ToListAsync();
+                var users = await _db.Users
+                    .Where(u => u.Id != userId &&
+                        (!onlyVerified || u.VerifiedAt != null))
+                    .ToListAsync();
 
                 var userResultDtoList = users.ToUsersResultDto();
 

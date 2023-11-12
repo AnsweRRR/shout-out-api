@@ -80,7 +80,7 @@ export default function UserListPage() {
   const getUsers = async () => {
     if (user) {
       const getUsersList = async () => {
-        const result = await getUsersAsync(user?.accessToken);
+        const result = await getUsersAsync(false, user?.accessToken);
         const userList = result.data;
 
         const userListGeneral: Array<IUserAccountGeneral> = userList.map((userData: any) => ({
@@ -125,7 +125,7 @@ export default function UserListPage() {
   useEffect(() => {
     if (user) {
       const getUsersList = async () => {
-        const result = await getUsersAsync(user?.accessToken);
+        const result = await getUsersAsync(false, user?.accessToken);
         const userList = result.data;
 
         const userListGeneral: Array<IUserAccountGeneral> = userList.map((userData: any) => ({

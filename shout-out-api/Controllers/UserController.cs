@@ -151,7 +151,7 @@ namespace shout_out_api.Controllers
 
         [HttpGet("users")]
         [Authorize]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] bool onlyVerified = false)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -160,7 +160,7 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            var users = await _userService.GetUsers(int.Parse(userId));
+            var users = await _userService.GetUsers(int.Parse(userId), onlyVerified);
 
             return Ok(users);
         }

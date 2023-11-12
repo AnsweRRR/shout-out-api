@@ -19,7 +19,7 @@ export default function FeedPage() {
             if (user) {
                 try {
                     dispatch(initalizeFetchUsers());
-                    const result = await getUsersAsync(user?.accessToken);
+                    const result = await getUsersAsync(true, user?.accessToken);
                     const { data } = result;
                     const payload: UpdateUsersActionPayload = {
                         users: data
