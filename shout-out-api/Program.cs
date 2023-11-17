@@ -31,6 +31,7 @@ builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer(builder.Configura
 
 builder.Services.AddScoped<ConfigHelper>();
 builder.Services.AddScoped<FileConverter>();
+builder.Services.AddScoped<EmailTemplates>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserService, UserService>();
