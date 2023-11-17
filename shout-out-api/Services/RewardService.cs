@@ -7,7 +7,6 @@ using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
-using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -16,13 +15,15 @@ namespace shout_out_api.Services
         private readonly Context _db;
         private readonly FileConverter _fileConverter;
         private readonly IEmailService _emailService;
+        private readonly EmailTemplates _emailTemplates;
         private readonly INotificationService _notificationService;
 
-        public RewardService(Context db, FileConverter fileConverter, IEmailService emailService, INotificationService notificationService)
+        public RewardService(Context db, FileConverter fileConverter, IEmailService emailService, EmailTemplates emailTemplates, INotificationService notificationService)
         {
             _db = db;
             _fileConverter = fileConverter;
             _emailService = emailService;
+            _emailTemplates = emailTemplates;
             _notificationService = notificationService;
         }
 
@@ -71,8 +72,8 @@ namespace shout_out_api.Services
                     EmailDto emailModel = new EmailDto()
                     {
                         ToEmailAddress = null,
-                        Subject = EmailContants.NEW_ITEM_CREATED_SUBJECT(),
-                        Body = EmailContants.NEW_ITEM_CREATED_BODY(newReward.Name)
+                        Subject = _emailTemplates.NEW_ITEM_CREATED_SUBJECT(),
+                        Body = _emailTemplates.NEW_ITEM_CREATED_BODY(newReward.Name)
                     };
 
                     _emailService.SendEmailToMultipleRecipients(userEmails!, emailModel);
@@ -186,8 +187,8 @@ namespace shout_out_api.Services
                         EmailDto emailModel = new EmailDto()
                         {
                             ToEmailAddress = null,
-                            Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
-                            Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
+                            Subject = _emailTemplates.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
+                            Body = _emailTemplates.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
                         };
 
                         var adminUserEmails = adminUsers.Select(admin => admin.Email).ToList();

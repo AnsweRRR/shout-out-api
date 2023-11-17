@@ -398,8 +398,8 @@ namespace shout_out_api.Services
 
                 EmailDto emailDto = new EmailDto()
                 {
-                    Subject = EmailContants.PASSWORD_RESET_TOKEN_SUBJECT(),
-                    Body = EmailContants.PASSWORD_RESET_TOKEN_BODY(user.PasswordResetToken),
+                    Subject = _emailTemplates.PASSWORD_RESET_TOKEN_SUBJECT(),
+                    Body = _emailTemplates.PASSWORD_RESET_TOKEN_BODY(user.PasswordResetToken),
                     ToEmailAddress = user.Email!
                 };
 
