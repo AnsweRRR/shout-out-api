@@ -16,7 +16,7 @@ export enum EventTypes {
     RewardClaimed = 3
 }
 
-export const RolesToDisplay: { [index: number]: string } = {
+export const EventTypeToDisplay: { [index: number]: string } = {
     [EventTypes.GetPointsByUser]: "GetPointsByUser",
     [EventTypes.GetPointsByBirthday]: "GetPointsByBirthday",
     [EventTypes.GetPointsByJoinDate]: "GetPointsByJoinDate",
