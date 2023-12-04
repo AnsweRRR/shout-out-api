@@ -24,7 +24,7 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
     // const logo = (
     //   <Box
     //     component="img"
-    //     src="/logo/logo_single.svg" => your path
+    //     src="/logo/logo_teszt.svg"
     //     sx={{ width: 40, height: 40, cursor: 'pointer', ...sx }}
     //   />
     // );
