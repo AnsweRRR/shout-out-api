@@ -39,8 +39,8 @@ export default function HtmlEditor() {
                     marginBottom: '24px',
                     margin: '0 auto'
                 }}>
-                    <h1>You have forgotten your password</h1>
-                    <h4>If you did not requested the new password then please do not pay attention to this eam.</h4>
+                    <h1>New item is available...</h1>
+                    {/* <h4>New item '{{_replace::itemName}}' is available in ShoutOut. Go check it quickly!</h4> */}
                     <img src="https://m.media-amazon.com/images/I/81ADRpAX19L._AC_UF1000,1000_QL80_.jpg" alt="item-logo" style={{ height: '100px', margin: 'auto' }} />
                 </div>
 

@@ -81,7 +81,7 @@
             return "New item is available in ShoutOut";
         }
 
-        public string NEW_ITEM_CREATED_BODY(string itemName)
+        public string NEW_ITEM_CREATED_BODY(string itemName, string itemImageSrc)
         {
             var emailImages = GetEmailImagePath();
             var headerImageSrc = emailImages.First(x => x.Key == HEADER_LOGO_PNG).Value;
@@ -91,6 +91,7 @@
             var htmlContent = File.ReadAllText(filePath);
 
             htmlContent = htmlContent.Replace("{{_replace::itemName}}", itemName);
+            htmlContent = htmlContent.Replace("{{_replace::newItemImage}}", itemImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::headerLogo}}", headerImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::footerLogo}}", footerImageSrc);
 

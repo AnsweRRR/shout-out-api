@@ -71,11 +71,20 @@ namespace shout_out_api.Services
 
                 if (userEmails != null && userEmails.Any())
                 {
+                    string itemImageSrc = string.Empty;
+                    if (newReward.Avatar != null)
+                    {
+                        var imageBase64string = Convert.ToBase64String(newReward.Avatar);
+                        var fileTpye = "jpg";
+                        var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                        itemImageSrc = source;
+                    }
+
                     EmailDto emailModel = new EmailDto()
                     {
                         ToEmailAddress = null,
                         Subject = _emailTemplates.NEW_ITEM_CREATED_SUBJECT(),
-                        Body = _emailTemplates.NEW_ITEM_CREATED_BODY(newReward.Name)
+                        Body = _emailTemplates.NEW_ITEM_CREATED_BODY(newReward.Name, itemImageSrc)
                     };
 
                     _emailService.SendEmailToMultipleRecipients(userEmails!, emailModel);
