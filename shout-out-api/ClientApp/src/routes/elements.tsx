@@ -32,3 +32,6 @@ export const UserEditPage = Loadable(lazy(() => import('../pages/dashboard/UserE
 export const Page500 = Loadable(lazy(() => import('../pages/Page500')));
 export const Page403 = Loadable(lazy(() => import('../pages/Page403')));
 export const Page404 = Loadable(lazy(() => import('../pages/Page404')));
+
+// HTML Editor
+export const HtmlEditor = Loadable(lazy(() => import('../pages/HtmlEditor')));

@@ -3,10 +3,12 @@ using shout_out_api.DataAccess;
 using shout_out_api.Dto.Email;
 using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.Reward;
+using shout_out_api.Dto.User;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
 using shout_out_api.Model;
+using shout_out_api.Model.Interfaces;
 
 namespace shout_out_api.Services
 {
@@ -184,11 +186,20 @@ namespace shout_out_api.Services
 
                     if (adminUsers != null && adminUsers.Any())
                     {
+                        string itemImageSrc = string.Empty;
+                        if (reward.Avatar != null)
+                        {
+                            var imageBase64string = Convert.ToBase64String(reward.Avatar);
+                            var fileTpye = "jpg";
+                            var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                            itemImageSrc = source;
+                        }
+
                         EmailDto emailModel = new EmailDto()
                         {
                             ToEmailAddress = null,
                             Subject = _emailTemplates.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
-                            Body = _emailTemplates.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
+                            Body = _emailTemplates.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name, itemImageSrc)
                         };
 
                         var adminUserEmails = adminUsers.Select(admin => admin.Email).ToList();
