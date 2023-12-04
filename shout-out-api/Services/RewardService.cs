@@ -3,6 +3,7 @@ using shout_out_api.DataAccess;
 using shout_out_api.Dto.Email;
 using shout_out_api.Dto.Notification;
 using shout_out_api.Dto.Reward;
+using shout_out_api.Dto.User;
 using shout_out_api.Enums;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
@@ -16,13 +17,15 @@ namespace shout_out_api.Services
         private readonly Context _db;
         private readonly FileConverter _fileConverter;
         private readonly IEmailService _emailService;
+        private readonly EmailTemplates _emailTemplates;
         private readonly INotificationService _notificationService;
 
-        public RewardService(Context db, FileConverter fileConverter, IEmailService emailService, INotificationService notificationService)
+        public RewardService(Context db, FileConverter fileConverter, IEmailService emailService, EmailTemplates emailTemplates, INotificationService notificationService)
         {
             _db = db;
             _fileConverter = fileConverter;
             _emailService = emailService;
+            _emailTemplates = emailTemplates;
             _notificationService = notificationService;
         }
 
@@ -68,11 +71,20 @@ namespace shout_out_api.Services
 
                 if (userEmails != null && userEmails.Any())
                 {
+                    string itemImageSrc = string.Empty;
+                    if (newReward.Avatar != null)
+                    {
+                        var imageBase64string = Convert.ToBase64String(newReward.Avatar);
+                        var fileTpye = "jpg";
+                        var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                        itemImageSrc = source;
+                    }
+
                     EmailDto emailModel = new EmailDto()
                     {
                         ToEmailAddress = null,
-                        Subject = EmailContants.NEW_ITEM_CREATED_SUBJECT(),
-                        Body = EmailContants.NEW_ITEM_CREATED_BODY(newReward.Name)
+                        Subject = _emailTemplates.NEW_ITEM_CREATED_SUBJECT(),
+                        Body = _emailTemplates.NEW_ITEM_CREATED_BODY(newReward.Name, itemImageSrc)
                     };
 
                     _emailService.SendEmailToMultipleRecipients(userEmails!, emailModel);
@@ -183,11 +195,20 @@ namespace shout_out_api.Services
 
                     if (adminUsers != null && adminUsers.Any())
                     {
+                        string itemImageSrc = string.Empty;
+                        if (reward.Avatar != null)
+                        {
+                            var imageBase64string = Convert.ToBase64String(reward.Avatar);
+                            var fileTpye = "jpg";
+                            var source = $"data:image/{fileTpye};base64,{imageBase64string}";
+                            itemImageSrc = source;
+                        }
+
                         EmailDto emailModel = new EmailDto()
                         {
                             ToEmailAddress = null,
-                            Subject = EmailContants.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
-                            Body = EmailContants.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name)
+                            Subject = _emailTemplates.NEW_ITEM_CLAIM_EVENT_SUBJECT(),
+                            Body = _emailTemplates.NEW_ITEM_CLAIM_EVENT_BODY(buyerUserNameToDisplay, reward.Name, itemImageSrc)
                         };
 
                         var adminUserEmails = adminUsers.Select(admin => admin.Email).ToList();

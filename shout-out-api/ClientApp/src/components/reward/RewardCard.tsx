@@ -126,7 +126,7 @@ export default function RewardCard({ reward, cover, userPoints, handleClaimButto
 
           <StyledOverlay />
           
-          <Image src={cover} alt={cover} ratio="21/9" />
+          <Image src={avatar as unknown as string} alt={avatar as unknown as string} ratio="21/9" />
         </Box>
 
         <Typography variant="subtitle1" sx={{ mt: 6, mb: 0.5 }}>

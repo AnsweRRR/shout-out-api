@@ -21,9 +21,10 @@ import {
 
   Page500,
   Page403,
-  Page404
-} from './elements';
+  Page404,
 
+  HtmlEditor
+} from './elements';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -86,6 +87,7 @@ export default function Router() {
         { path: '403', element: <Page403 /> },
       ],
     },
+    { path: 'htmleditor', element: <HtmlEditor /> },
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);
 }

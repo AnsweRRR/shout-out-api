@@ -16,14 +16,16 @@ namespace shout_out_api.Services
 
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
+        private readonly EmailTemplates _emailTemplates;
         private readonly Context _db;
         private readonly ConfigHelper _configHelper;
         private readonly FileConverter _fileConverter;
 
-        public UserService(ITokenService tokenService, IEmailService emailService, Context db, ConfigHelper configHelper, FileConverter fileConverter)
+        public UserService(ITokenService tokenService, IEmailService emailService, EmailTemplates emailTemplates, Context db, ConfigHelper configHelper, FileConverter fileConverter)
         {
             _tokenService = tokenService;
             _emailService = emailService;
+            _emailTemplates = emailTemplates;
             _db = db;
             _configHelper = configHelper;
             _fileConverter = fileConverter;
@@ -101,8 +103,8 @@ namespace shout_out_api.Services
                     EmailDto emailModel = new EmailDto()
                     {
                         ToEmailAddress = newUser.Email,
-                        Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
-                        Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
+                        Subject = _emailTemplates.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
+                        Body = _emailTemplates.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
                     };
 
                     _emailService.SendEmail(emailModel);
@@ -114,8 +116,8 @@ namespace shout_out_api.Services
                     EmailDto emailModel = new EmailDto()
                     {
                         ToEmailAddress = user!.Email!,
-                        Subject = EmailContants.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
-                        Body = EmailContants.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
+                        Subject = _emailTemplates.NEW_USER_CONFIRM_EMAIL_SUBJECT(),
+                        Body = _emailTemplates.NEW_USER_CONFIRM_EMAIL_BODY(confirmLink)
                     };
 
                     _emailService.SendEmail(emailModel);
@@ -396,8 +398,8 @@ namespace shout_out_api.Services
 
                 EmailDto emailDto = new EmailDto()
                 {
-                    Subject = EmailContants.PASSWORD_RESET_TOKEN_SUBJECT(),
-                    Body = EmailContants.PASSWORD_RESET_TOKEN_BODY(user.PasswordResetToken),
+                    Subject = _emailTemplates.PASSWORD_RESET_TOKEN_SUBJECT(),
+                    Body = _emailTemplates.PASSWORD_RESET_TOKEN_BODY(user.PasswordResetToken),
                     ToEmailAddress = user.Email!
                 };
 
