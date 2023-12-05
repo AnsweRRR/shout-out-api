@@ -22,5 +22,13 @@ namespace shout_out_api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("getChatResponseFromOpenAI")]
+        public async Task<IActionResult> GetChatResponseFromOpenAI(string input, CancellationToken cancellationToken = default)
+        {
+            var result = await _openAIService.GetChatResponseFromOpenAI(input, cancellationToken);
+
+            return Ok(result);
+        }
     }
 }

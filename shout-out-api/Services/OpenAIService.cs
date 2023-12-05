@@ -2,6 +2,7 @@
 using OpenAI_API;
 using shout_out_api.Helpers;
 using shout_out_api.Interfaces;
+using OpenAI_API.Chat;
 
 namespace shout_out_api.Services
 {
@@ -38,6 +39,47 @@ namespace shout_out_api.Services
                     }
 
                     return response;
+                }
+                else
+                {
+                    throw new Exception("Not found!");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<string> GetChatResponseFromOpenAI(string input, CancellationToken cancellationToken)
+        {
+            try
+            {
+                string apiKey = _configHelper.OpenAI.ApiKey;
+                ChatMessage chatMessage = new ChatMessage();
+
+                OpenAIAPI openAI = new OpenAIAPI(apiKey);
+
+                ChatRequest chatRequest = new ChatRequest()
+                {
+                    Model = "gpt-3.5-turbo-1106",
+                    Temperature = 0.1,
+                    MaxTokens = 4000,
+                    Messages = new ChatMessage[] {
+                        new ChatMessage(ChatMessageRole.User, input)
+                    }
+                };
+
+                var output = await openAI.Chat.CreateChatCompletionAsync(chatRequest);
+
+                if (output != null)
+                {
+                    foreach (var item in output.Choices)
+                    {
+                        chatMessage = item.Message;
+                    }
+
+                    return chatMessage.Content;
                 }
                 else
                 {
