@@ -143,6 +143,11 @@ const hu = {
     WeHaveSentA6DigitConfirmationEmailToYourEmail: "Küldtünk egy 6 számjegyű kódot a megadott email címre.",
     ChangePasswordSuccess: "Sikeresen megváltoztattad a jelszavad!"
   },
+  OpenAIWidget: {
+    OpenAI: "OpenAI",
+    YouCanAskAnythingFromTheOpenAI: "Bármit kérdezhetsz az OpenAI-tól",
+    AskSomething: "Kérdezz valamit..."
+  },
   NotificationPopover: {
     ViewAll: "Összes megtekintése",
     MarkAsRead: "Megjelölés olvasottként",

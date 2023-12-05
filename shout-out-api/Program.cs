@@ -39,6 +39,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRewardService, RewardService>();
 builder.Services.AddScoped<IPointSystemService, PointSystemService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
 builder.Services.AddSwaggerGen(options =>
 {

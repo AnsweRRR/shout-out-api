@@ -143,6 +143,11 @@ const en = {
     WeHaveSentA6DigitConfirmationEmailToYourEmail: "We've sent a 6-digit confirmation email to your email.",
     ChangePasswordSuccess: "Change password success!"
   },
+  OpenAIWidget: {
+    OpenAI: "OpenAI",
+    YouCanAskAnythingFromTheOpenAI: "You can ask anything from OpenAI",
+    AskSomething: "Ask something..."
+  },
   NotificationPopover: {
     ViewAll: "View all",
     MarkAsRead: "Mark as read",

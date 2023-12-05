@@ -97,6 +97,24 @@
             }
         }
 
+        public OpenAIConfig OpenAI
+        {
+            get
+            {
+                string ApiKey = string.Empty;
+
+                if (!string.IsNullOrEmpty(_configuration["OpenAI:ApiKey"]))
+                {
+                    ApiKey = _configuration["OpenAI:ApiKey"];
+                }
+
+                return new OpenAIConfig
+                {
+                    ApiKey = ApiKey
+                };
+            }
+        }
+
         public ClientAppConfig ClientApp
         {
             get
@@ -158,6 +176,11 @@
     }
 
     public class GiphyConfig
+    {
+        public string ApiKey { get; set; }
+    }
+
+    public class OpenAIConfig
     {
         public string ApiKey { get; set; }
     }

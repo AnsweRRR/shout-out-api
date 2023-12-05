@@ -332,3 +332,41 @@ export const MentionsInputStyles = `
     }
   }
 `;
+
+export const chatWidgetStyles = `
+  .rcw-widget-container {
+    max-width: 360px
+  }
+
+  .rcw-conversation-container > .rcw-header,
+  .rcw-widget-container > .rcw-launcher {
+    background-color: #00AB55;
+  }
+
+  .rcw-client .rcw-message-text {
+    background-color: #00AB55;
+  }
+
+  .rcw-message > .rcw-response {
+    background-color: inherit;
+  }
+
+  .rcw-response .rcw-message-text {
+    color: black
+  }
+
+  .rcw-new-message {
+    color: black;
+    cursor: text;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .rcw-close-launcher {
+    margin: auto;
+  }
+
+  .rcw-picker-btn {
+    display: none;
+  }
+`;
