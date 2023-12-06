@@ -10,7 +10,7 @@ export async function getOpenAIResponseAsync(input: string, accessToken: string,
             input
         };
 
-        const response = await axios.get(`/api/openAI`, { params, headers, signal });
+        const response = await axios.get(`/api/openAI/getChatResponseFromOpenAI`, { params, headers, signal });
         return response;
     }
     catch(error) {
