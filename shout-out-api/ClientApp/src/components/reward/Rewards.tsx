@@ -5,6 +5,7 @@ import { Roles } from "src/@types/user";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { useLocales } from "src/locales";
 import { buyRewardAsync, deleteRewardAsync, editRewardAsync, getRewardsAsync } from 'src/api/rewardClient';
+import { m } from "framer-motion";
 import { useSnackbar } from '../snackbar';
 import RewardCard from "./RewardCard";
 import CreateRewardCard from "./CreateRewardCard";
@@ -86,29 +87,59 @@ export default function Rewards() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return (
-        <Box
-            gap={3}
-            display="grid"
-            gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-            }}
-        >
-            {currentRole === Roles.Admin && <CreateRewardCard setRewards={setRewards} cover={cover} />}
+    const framerContainer = {
+        hidden: { opacity: 1, scale: 0 },
+        visible: {
+          opacity: 1,
+          scale: 1,
+          transition: {
+            delayChildren: 0.3,
+            staggerChildren: 0.2
+          }
+        }
+    };
+      
+    const framerItem = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1
+        }
+    };
 
-            {rewards.sort((reward1, reward2) => reward1.cost! - reward2.cost!).map((reward) =>
-                <RewardCard
-                    key={reward.id}
-                    reward={reward}
-                    cover={cover}
-                    userPoints={user?.pointToHave}
-                    handleClaimButtonClick={handleClaimButtonClick}
-                    handleDeleteButtonClick={handleDeleteButtonClick}
-                    handleEditButtonClick={handleEditButtonClick}
-                />)
-            }
-        </Box>
+    return (
+        <m.ul
+            className="container"
+            variants={framerContainer}
+            initial="hidden"
+            animate="visible"
+        >
+            <Box
+                gap={3}
+                display="grid"
+                gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(3, 1fr)',
+                }}
+            >
+                    {currentRole === Roles.Admin && <CreateRewardCard setRewards={setRewards} cover={cover} />}
+
+                    {rewards.sort((reward1, reward2) => reward1.cost! - reward2.cost!).map((reward) =>
+                        <m.div key={reward.id} className="item" variants={framerItem}>
+                            <RewardCard
+                                key={reward.id}
+                                reward={reward}
+                                cover={cover}
+                                userPoints={user?.pointToHave}
+                                handleClaimButtonClick={handleClaimButtonClick}
+                                handleDeleteButtonClick={handleDeleteButtonClick}
+                                handleEditButtonClick={handleEditButtonClick}
+                            />
+                        </m.div>
+                        )
+                    }
+            </Box>
+        </m.ul>
     );
 }
