@@ -9,10 +9,14 @@ export default function UserPointsToHave() {
     const theme = useTheme();
 
     return (
-        <Tooltip title={`${translate('Header.PointsToHave')}`}>
-            <Typography color={ theme.palette.mode === 'light' ? 'grey' : 'inherit'}>
-                {user?.pointToHave}
-            </Typography>
-        </Tooltip>
+        <>
+            <Tooltip title={`${translate('Header.PointsToHave')}`}>
+                <Typography color={ theme.palette.mode === 'light' ? 'grey' : 'inherit'}>
+                    {user?.pointToHave}
+                </Typography>
+            </Tooltip>
+
+            <img src='/logo/logo_full_coin.png' alt='points-to-have' style={{ maxHeight: '20px', marginLeft: 3 }} />
+        </>
     );
 }
