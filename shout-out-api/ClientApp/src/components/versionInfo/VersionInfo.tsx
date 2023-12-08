@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { _socials } from "src/assets/_socials";
 import axios from "src/utils/axios";
 
 export default function VersionInfo() {

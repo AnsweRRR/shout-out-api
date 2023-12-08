@@ -33,7 +33,7 @@ export default function LoginLayout({ children, illustration, title }: Props) {
           disabledEffect
           visibleByDefault
           alt="auth"
-          src={illustration || '/assets/illustrations/illustration_dashboard.png'}
+          src={illustration || '/logo/logo_full.png'}
           sx={{ maxWidth: 720 }}
         />
 

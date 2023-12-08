@@ -1,4 +1,6 @@
-﻿namespace shout_out_api.Helpers
+﻿using shout_out_api.Dto.Social;
+
+namespace shout_out_api.Helpers
 {
     public class ConfigHelper
     {
@@ -132,6 +134,26 @@
                 };
             }
         }
+
+        public SocialConfig Social
+        {
+            get
+            {
+                var socialInfo = new List<SocialInfoDto>();
+
+                var socialsFromConfig = _configuration.GetSection("SocialInfo").Get<List<SocialInfoDto>>();
+
+                if (socialsFromConfig != null && socialsFromConfig.Any())
+                {
+                    socialInfo = socialsFromConfig;
+                }
+
+                return new SocialConfig
+                {
+                    SocialInfo = socialInfo
+                };
+            }
+        }
     }
 
     public class ConnectionStringConfig
@@ -170,5 +192,10 @@
     public class VersionConfig
     {
         public string VersionNumber { get; set; }
+    }
+
+    public class SocialConfig
+    {
+        public List<SocialInfoDto> SocialInfo { get; set; }
     }
 }
