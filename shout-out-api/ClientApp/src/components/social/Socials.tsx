@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { IconButton, Stack, Tooltip, alpha } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { getSocialInfo } from "src/api/socialClient";
+import { SocialInfo } from "src/@types/social";
 import Iconify from "../iconify";
 
 export default function Socials() {
   const { user } = useAuthContext();
-  const [socials, setSocials] = useState<Array<any>>([]);
+  const [socials, setSocials] = useState<Array<SocialInfo>>([]);
 
   useEffect(() => {
     const controller = new AbortController();
