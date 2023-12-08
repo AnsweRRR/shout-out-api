@@ -31,6 +31,8 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
   const { user } = useAuthContext();
   const { translate } = useLocales();
 
+  const encodedUrl = encodeURI(window.location.origin.toString());
+
   const NewUserSchema = Yup.object().shape({
     firstName: Yup.string().required(translate('Maintenance.Validator.FirstNameIsRequired')),
     lastName: Yup.string().required(translate('Maintenance.Validator.LastNameIsRequired')),
@@ -79,7 +81,8 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
         // eslint-disable-next-line eqeqeq
         role: data.role == Roles.Admin ? Roles.Admin : Roles.User,
         firstName: data.firstName,
-        lastName: data.lastName
+        lastName: data.lastName,
+        encodedUrl
       }
 
       if (!isEdit) {

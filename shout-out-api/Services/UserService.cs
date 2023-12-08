@@ -98,7 +98,7 @@ namespace shout_out_api.Services
                     _db.Users.Add(newUser);
                     _db.SaveChanges();
 
-                    string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/{newUser.VerificationToken}";
+                    string confirmLink = $"{model.EncodedUrl}/auth/register/{newUser.VerificationToken}";
 
                     EmailDto emailModel = new EmailDto()
                     {
@@ -111,7 +111,7 @@ namespace shout_out_api.Services
                 }
                 else
                 {
-                    string confirmLink = $"{_configHelper.ClientApp.BaseUrl}/auth/register/{user!.VerificationToken}";
+                    string confirmLink = $"{model.EncodedUrl}/auth/register/{user!.VerificationToken}";
 
                     EmailDto emailModel = new EmailDto()
                     {

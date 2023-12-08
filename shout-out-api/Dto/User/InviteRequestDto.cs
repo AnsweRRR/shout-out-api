@@ -16,5 +16,8 @@ namespace shout_out_api.Dto.User
 
         [Required]
         public string LastName { get; set; }
+
+        [Required]
+        public string EncodedUrl { get; set; }
     }
 }

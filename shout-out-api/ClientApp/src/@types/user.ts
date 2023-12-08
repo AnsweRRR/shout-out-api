@@ -49,7 +49,8 @@ export type InviteRequestDto = {
   email: string,
   role: Roles,
   firstName: string,
-  lastName: string
+  lastName: string,
+  encodedUrl?: string | null
 };
 
 export type ResetPasswordDto = {
