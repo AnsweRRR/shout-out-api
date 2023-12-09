@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Grid } from "@mui/material";
+import { PATH_APP } from "src/routes/paths";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { getPointsHistoryAsync } from "src/api/feedClient";
-import { FeedItem } from "src/@types/feed";
+import { FeedContext, FeedItem } from "src/@types/feed";
 import InfiniteScroll from "react-infinite-scroller";
 import useLocales from "src/locales/useLocales";
 import useResponsive from "src/hooks/useResponsive";
@@ -16,21 +18,52 @@ import PopularRewards from "./PopularRewards";
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
     const { translate } = useLocales();
+    const location = useLocation();
     const isDesktop = useResponsive('up', 'lg');
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const eventPerPage = 10;
+    
+    useEffect(() => {
+        if (location.pathname === PATH_APP.feed.receivedPoints) {
+            console.log('Current route:', location.pathname);
+            console.log('receivedPoints');
+        } else if (location.pathname === PATH_APP.feed.givenPoints) {
+            console.log('Current route:', location.pathname);
+            console.log('givenPoints');
+        } else {
+            console.log('Current route:', location.pathname);
+            console.log('main');
+        }
+        
+    }, [location]);
 
     useEffect(() => {
         const controller = new AbortController();
+
+        let feedContext: FeedContext = FeedContext.Main;
+
+        if (location.pathname === PATH_APP.feed.receivedPoints) {
+            console.log('Current route:', location.pathname);
+            console.log('receivedPoints');
+            feedContext = FeedContext.ReceivedPoints;
+        } else if (location.pathname === PATH_APP.feed.givenPoints) {
+            console.log('Current route:', location.pathname);
+            console.log('givenPoints');
+            feedContext = FeedContext.GivenPoints;
+        } else {
+            console.log('Current route:', location.pathname);
+            console.log('main');
+            feedContext = FeedContext.Main
+        }
 
         const getPointHistory = async () => {
             const { signal } = controller;
             if (user) {
                 setIsLoading(true);
-                const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken, signal);
+                const result = await getPointsHistoryAsync(offset, eventPerPage, feedContext, user?.accessToken, signal);
                 const items = result.data as Array<FeedItem>;
                 if (items.length < eventPerPage) {
                     setIsLastPage(true);
@@ -47,7 +80,7 @@ export default function PointSystemFeed() {
 
         return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [offset]);
+    }, [offset, location]);
 
     const framerContainer = {
         hidden: { opacity: 1, scale: 0 },

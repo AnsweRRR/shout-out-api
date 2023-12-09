@@ -19,7 +19,6 @@ type Props = {
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { pathname } = useLocation();
-
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {

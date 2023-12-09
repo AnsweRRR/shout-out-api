@@ -1,7 +1,7 @@
-import { CommentDto } from 'src/@types/feed';
+import { CommentDto, FeedContext } from 'src/@types/feed';
 import axios from 'src/utils/axios';
 
-export async function getPointsHistoryAsync(offset: number, take: number, accessToken: string, signal: AbortSignal) {
+export async function getPointsHistoryAsync(offset: number, take: number, feedContext: FeedContext, accessToken: string, signal: AbortSignal) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
@@ -9,7 +9,8 @@ export async function getPointsHistoryAsync(offset: number, take: number, access
 
         const params = {
             offset,
-            take
+            take,
+            feedContext
         };
 
         const response = await axios.get(`/api/pointSystem/history`, { params, headers, signal });

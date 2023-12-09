@@ -65,7 +65,17 @@ export default function Router() {
       ),
       children: [
         { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
-        { path: 'feed', element: <FeedPage /> },
+        // { path: 'feed', element: <FeedPage /> },
+
+        {
+          path: 'feed',
+          children: [
+            { element: <FeedPage />, index: true },
+            { path: 'receivedPoints', element: <FeedPage /> },
+            { path: 'givenPoints', element: <FeedPage /> },
+          ],
+        },
+
         { path: 'reward', element: <RewardPage /> },
         {
           path: 'user',

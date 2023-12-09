@@ -1,7 +1,7 @@
 import { PATH_APP } from './routes/paths';
 
 export const HOST_API_KEY = process.env.REACT_APP_HOST_API_KEY || '';
-export const PATH_AFTER_LOGIN = PATH_APP.feed;
+export const PATH_AFTER_LOGIN = PATH_APP.feed.root;
 
 // LAYOUT
 // ----------------------------------------------------------------------

@@ -26,13 +26,25 @@ const navConfig = [
     subheader: '',
     items: [
       {
-        title: 'SideMenu.Menu',
+        title: 'SideMenu.Feed',
         path: PATH_APP.root,
         icon: ICONS.analytics,
         children: [
-          { title: 'SideMenu.Feed', path: PATH_APP.feed},
-          { title: 'SideMenu.Reward', path: PATH_APP.reward },
+          { title: 'SideMenu.Feed', path: PATH_APP.feed.root},
+          { title: 'SideMenu.ReceivedPoints', path: PATH_APP.feed.receivedPoints},
+          { title: 'SideMenu.GivenPoints', path: PATH_APP.feed.givenPoints},
         ],
+      }
+    ]
+  },
+
+  {
+    subheader: '',
+    items: [
+      {
+        title: 'SideMenu.Reward',
+        path: PATH_APP.reward,
+        icon: ICONS.analytics
       }
     ]
   },

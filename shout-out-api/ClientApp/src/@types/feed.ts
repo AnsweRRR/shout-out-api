@@ -14,6 +14,12 @@ export type FeedItem = {
     isLikedByCurrentUser?: boolean
 }
 
+export enum FeedContext {
+    Main = 0,
+    ReceivedPoints = 1,
+    GivenPoints = 2
+}
+
 export enum EventType {
     UserEvent = 0,
     SystemEvent = 1

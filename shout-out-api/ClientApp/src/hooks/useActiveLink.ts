@@ -7,11 +7,9 @@ type ReturnType = {
   isExternalLink: boolean;
 };
 
-export default function useActiveLink(path: string, deep = true): ReturnType {
+export default function useActiveLink(path: string, deep = false): ReturnType {
   const { pathname } = useLocation();
-
   const normalActive = path ? !!matchPath({ path, end: true }, pathname) : false;
-
   const deepActive = path ? !!matchPath({ path, end: false }, pathname) : false;
 
   return {

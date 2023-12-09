@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Enums;
 using shout_out_api.Interfaces;
 using System.Security.Claims;
 
@@ -18,7 +19,7 @@ namespace shout_out_api.Controllers
 
         [HttpGet("history")]
         [Authorize]
-        public async Task<IActionResult> Get(int take, int offset, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Get(int take, int offset, FeedContext feedContext, CancellationToken cancellationToken = default)
         {
             string? currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -27,7 +28,7 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), cancellationToken, take, offset);
+            var result = await _pointSystemService.GetHistory(int.Parse(currentUserId), cancellationToken, take, offset, feedContext);
 
             return Ok(result);
         }

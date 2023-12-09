@@ -1,11 +1,12 @@
 ﻿using GiphyApiWrapper.Models;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Enums;
 
 namespace shout_out_api.Interfaces
 {
     public interface IPointSystemService
     {
-        Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0);
+        Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0, FeedContext feedContext = FeedContext.Main);
         Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model);
         Task Like(int userId, int feedItemId);
         Task Dislike(int userId, int feedItemId);

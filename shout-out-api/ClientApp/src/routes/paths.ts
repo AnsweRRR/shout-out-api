@@ -27,7 +27,11 @@ export const PATH_PAGE = {
 
 export const PATH_APP = {
   root: ROOTS_APP,
-  feed: path(ROOTS_APP, '/feed'),
+  feed: {
+    root: path(ROOTS_APP, '/feed'),
+    receivedPoints: path(ROOTS_APP, '/feed/receivedPoints'),
+    givenPoints: path(ROOTS_APP, '/feed/givenPoints'),
+  },
   reward: path(ROOTS_APP, '/reward'),
   permissionDenied: path(ROOTS_APP, '/permission-denied'),
   user: {

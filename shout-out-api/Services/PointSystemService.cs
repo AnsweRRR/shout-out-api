@@ -27,7 +27,7 @@ namespace shout_out_api.Services
             _notificationService = notificationService;
         }
 
-        public async Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0)
+        public async Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0, FeedContext feedContext = FeedContext.Main)
         {
             try
             {
@@ -50,6 +50,7 @@ namespace shout_out_api.Services
                             ? group.First().GiphyGifUrl
                             : null,
                         ReceiverUsers = _db.PointHistory_ReceiverUsers
+                            .AsEnumerable()
                             .Where(phru => phru.PointHistoryId == group.Key)
                             .Select(phru => new ReceiverUsers()
                             {
@@ -93,6 +94,10 @@ namespace shout_out_api.Services
                             .ToList(),
                         IsLikedByCurrentUser = _db.Likes.Any(l => l.PointHistoryId == group.Key && l.UserId == userId)
                     })
+                    .Where(ph =>
+                        feedContext == FeedContext.Main
+                        || (feedContext == FeedContext.GivenPoints && ph.SenderId == userId)
+                        || (feedContext == FeedContext.ReceivedPoints && ph.ReceiverUsers.AsEnumerable().Any(ru => ru.UserId == userId)))
                     .OrderByDescending(ph => ph.EventDate)
                     .Skip(offset)
                     .Take(take)
