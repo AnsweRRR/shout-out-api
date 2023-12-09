@@ -11,6 +11,8 @@ namespace shout_out_api.Interfaces
         Task<LoginResultDto> Register(RegisterRequestDto model);
         Task EditUser(int userId, EditUserRequestDto model, bool editByAdmin);
         Task DeleteUser(int userId);
+        Task InactivateUser(int userId);
+        Task ReactivateUser(int userId);
         Task<List<UserResultDto>> GetUsers(int userId, bool onlyVerified);
         Task<UserResultDto> GetUserData(int userId);
         Task<LoginResultDto> RefreshToken(string refreshToken);

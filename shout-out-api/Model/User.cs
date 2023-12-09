@@ -24,5 +24,6 @@ namespace shout_out_api.Model
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenCreated { get; set; }
         public DateTime? RefreshTokenExpires { get; set; }
+        public bool IsActive { get; set; }
     }
 }

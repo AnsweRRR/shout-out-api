@@ -25,7 +25,8 @@ namespace shout_out_api.Helpers
                 PointsToGive = entity.PointsToGive,
                 PointToHave = entity.PointToHave,
                 RefreshToken = entity.RefreshToken,
-                Verified = entity.VerifiedAt.HasValue
+                Verified = entity.VerifiedAt.HasValue,
+                IsActive = entity.IsActive
             };
 
             if(entity.Avatar != null)
@@ -54,7 +55,8 @@ namespace shout_out_api.Helpers
                     Email = entity.Email,
                     Display = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : entity.FirstName + " " + entity.LastName,
                     Role = entity.Role,
-                    Verified = entity.VerifiedAt.HasValue
+                    Verified = entity.VerifiedAt.HasValue,
+                    IsActive = entity.IsActive
                 };
 
                 if (entity.Avatar != null)

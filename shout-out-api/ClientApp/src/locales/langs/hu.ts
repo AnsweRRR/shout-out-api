@@ -3,7 +3,11 @@ const hu = {
     Create: "Létrehozás",
     Edit: "Szerkesztés",
     Delete: "Törlés",
+    Inactivate: "Inaktiválás",
+    Reactivate: "Visszaállítás",
     AreYouSureWantToDelete: "Biztos törölni szeretné?",
+    AreYouSureWantToInactivate: "Biztos inaktívvá szeretnéd állítani?",
+    AreYouSureWantToReactivate: "Biztos aktívvá szeretnéd állítani?",
     Name: "Név",
     Cost: "Érték",
     Description: "Leírás",
@@ -37,7 +41,8 @@ const hu = {
       UserName: "Felhasználónév",
       Email: "Email",
       Role: "Szerepkör",
-      Verified: "Regisztrált"
+      Verified: "Regisztrált",
+      IsActive: "Aktív"
     },
 
     Validator: {

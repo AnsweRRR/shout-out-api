@@ -3,7 +3,11 @@ const en = {
     Create: "Create",
     Edit: "Edit",
     Delete: "Delete",
+    Inactivate: "Inactivate",
+    Reactivate: "Reactivate",
     AreYouSureWantToDelete: "Are you sure want to delete?",
+    AreYouSureWantToInactivate: "Are you sure want to inactivate?",
+    AreYouSureWantToReactivate: "Are you sure want to reactivate?",
     Name: "Name",
     Cost: "Cost",
     Description: "Description",
@@ -37,7 +41,8 @@ const en = {
       UserName: "User name",
       Email: "Email",
       Role: "Role",
-      Verified: "Verified"
+      Verified: "Verified",
+      IsActive: "IsActive"
     },
 
     Validator: {
@@ -100,6 +105,7 @@ const en = {
     Delete: "Delete",
     AreYouSureWantToClaim: "Are you sure want to claim",
     AreYouSureWantToDelete: "Are you sure want to delete",
+    
     Item: "item"
   },
   ApiCallResults: {

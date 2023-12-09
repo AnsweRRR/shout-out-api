@@ -149,6 +149,24 @@ namespace shout_out_api.Controllers
             return Ok();
         }
 
+        [HttpPost("inactivate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> InactivateUser([FromQuery] int userId)
+        {
+            await _userService.InactivateUser(userId);
+
+            return Ok();
+        }
+
+        [HttpPost("reactivate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ReactivateUser([FromQuery] int userId)
+        {
+            await _userService.ReactivateUser(userId);
+
+            return Ok();
+        }
+
         [HttpGet("users")]
         [Authorize]
         public async Task<IActionResult> GetUsers([FromQuery] bool onlyVerified = false)

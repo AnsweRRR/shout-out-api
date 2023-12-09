@@ -37,7 +37,7 @@ namespace shout_out_api.Services
             {
                 User? user = await _db.Users.SingleOrDefaultAsync(u => u.Email == model.Email);
 
-                if (user == null || user.Email != model.Email || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+                if (user == null || user.Email != model.Email || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash) || !user.IsActive)
                 {
                     throw new Exception("Invalid credentials");
                 }
@@ -92,7 +92,8 @@ namespace shout_out_api.Services
                         LastName = model.LastName,
                         PointsToGive = 100,
                         PointToHave = 0,
-                        VerificationToken = verificationToken
+                        VerificationToken = verificationToken,
+                        IsActive = false
                     };
 
                     _db.Users.Add(newUser);
@@ -182,6 +183,7 @@ namespace shout_out_api.Services
                 user.RefreshTokenCreated = newRefreshToken.Created;
                 user.RefreshTokenExpires = newRefreshToken.Expires;
                 user.VerificationToken = null;
+                user.IsActive = true;
 
                 _db.Update(user);
                 _db.SaveChanges();
@@ -253,6 +255,7 @@ namespace shout_out_api.Services
             }
         }
 
+        [Obsolete]
         public async Task DeleteUser(int userId)
         {
             try
@@ -268,6 +271,50 @@ namespace shout_out_api.Services
                 _db.SaveChanges();
             }
             catch(Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task InactivateUser(int userId)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                user.IsActive = false;
+
+                _db.Update(user);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task ReactivateUser(int userId)
+        {
+            try
+            {
+                var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                user.IsActive = true;
+
+                _db.Update(user);
+                _db.SaveChanges();
+            }
+            catch (Exception)
             {
                 throw;
             }

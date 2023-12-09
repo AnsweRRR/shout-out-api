@@ -19,6 +19,7 @@ export type IUserAccountGeneral = {
   userName: string | null;
   email: string;
   isVerified: boolean;
+  isActive: boolean;
   role: Roles;
   pointsToGive?: number;
   pointsToHave?: number;

@@ -12,7 +12,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import { useAuthContext } from 'src/auth/useAuthContext';
-import { deleteUsersAsync, getUsersAsync } from 'src/api/userClient';
+import { deleteUsersAsync, getUsersAsync, inactivateUsersAsync, rectivateUsersAsync } from 'src/api/userClient';
 import { useLocales } from 'src/locales';
 import { PATH_APP } from '../../routes/paths';
 import { IUserAccountGeneral } from '../../@types/user';
@@ -62,6 +62,7 @@ export default function UserListPage() {
     { id: 'email', label: translate('Maintenance.UserListTableHead.Email'), align: 'left' },
     { id: 'role', label: translate('Maintenance.UserListTableHead.Role'), align: 'left' },
     { id: 'verified', label: translate('Maintenance.UserListTableHead.Verified'), align: 'center' },
+    { id: 'isActive', label: translate('Maintenance.UserListTableHead.IsActive'), align: 'center' },
     { id: '' },
   ];
 
@@ -91,6 +92,7 @@ export default function UserListPage() {
           userName: userData.userName,
           email: userData.email,
           isVerified: userData.verified,
+          isActive: userData.isActive,
           role: userData.role,
           birthDay: userData.birthday ? new Date(userData.birthday) : null,
           startAtCompany: userData.startAtCompany ? new Date(userData.startAtCompany) : null,
@@ -110,6 +112,16 @@ export default function UserListPage() {
 
   const handleDeleteRow = async (id: number) => {
     await deleteUsersAsync(id, user?.accessToken);
+    getUsers();
+  };
+
+  const handleInactivateRow = async (id: number) => {
+    await inactivateUsersAsync(id, user?.accessToken);
+    getUsers();
+  };
+
+  const handleReactivateRow = async (id: number) => {
+    await rectivateUsersAsync(id, user?.accessToken);
     getUsers();
   };
 
@@ -136,6 +148,7 @@ export default function UserListPage() {
           userName: userData.userName,
           email: userData.email,
           isVerified: userData.verified,
+          isActive: userData.isActive,
           role: userData.role,
           birthDay: userData.birthday ? new Date(userData.birthday) : null,
           startAtCompany: userData.startAtCompany ? new Date(userData.startAtCompany) : null,
@@ -217,6 +230,8 @@ export default function UserListPage() {
                         key={row.id}
                         row={row}
                         onDeleteRow={() => handleDeleteRow(row.id)}
+                        onInactivateRow={() => handleInactivateRow(row.id)}
+                        onReactivateRow={() => handleReactivateRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}

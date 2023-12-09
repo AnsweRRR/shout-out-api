@@ -113,6 +113,36 @@ export async function deleteUsersAsync(userId: number, accessToken: string) {
     }
 }
 
+export async function inactivateUsersAsync(userId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.post(`/api/user/inactivate?userId=${userId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function rectivateUsersAsync(userId: number, accessToken: string) {
+    try {
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const response = await axios.post(`/api/user/reactivate?userId=${userId}`, { headers });
+        return response;
+    }
+    catch(error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function resetPasswordRequestAsync(email: string) {
     try {
         const response = await axios.post(`/api/user/resetpasswordrequest?email=${email}`);

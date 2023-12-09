@@ -35,6 +35,7 @@ export default function UserEditPage() {
           userName: userData.userName,
           email: userData.email,
           isVerified: userData.verified,
+          isActive: userData.isActive,
           role: userData.role,
           birthDay: userData.birthday ? new Date(userData.birthday) : null,
           startAtCompany: userData.startAtCompany ? new Date(userData.startAtCompany) : null,
