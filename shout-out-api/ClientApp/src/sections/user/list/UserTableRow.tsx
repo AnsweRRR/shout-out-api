@@ -74,6 +74,16 @@ export default function UserTableRow({
     setOpenPopover(null);
   };
 
+  const handleInactivateRow = async () => {
+    onInactivateRow();
+    handleCloseInactivateConfirm();
+  };
+
+  const handleReactivateRow = async () => {
+    onReactivateRow();
+    handleCloseReactivateConfirm();
+  };
+
   return (
     <>
       <TableRow hover>
@@ -207,7 +217,7 @@ export default function UserTableRow({
         title={`${translate('Maintenance.Inactivate')}`}
         content={`${translate('Maintenance.AreYouSureWantToInactivate')}`}
         action={
-          <Button variant="contained" color="error" onClick={onInactivateRow}>
+          <Button variant="contained" color="error" onClick={handleInactivateRow}>
             {`${translate('Maintenance.Inactivate')}`}
           </Button>
         }
@@ -219,7 +229,7 @@ export default function UserTableRow({
         title={`${translate('Maintenance.Reactivate')}`}
         content={`${translate('Maintenance.AreYouSureWantToReactivate')}`}
         action={
-          <Button variant="contained" color="success" onClick={onReactivateRow}>
+          <Button variant="contained" color="success" onClick={handleReactivateRow}>
             {`${translate('Maintenance.Reactivate')}`}
           </Button>
         }
