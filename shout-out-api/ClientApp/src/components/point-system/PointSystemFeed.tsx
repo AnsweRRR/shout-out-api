@@ -7,21 +7,39 @@ import InfiniteScroll from "react-infinite-scroller";
 import useLocales from "src/locales/useLocales";
 import useResponsive from "src/hooks/useResponsive";
 import { m } from "framer-motion";
+import { addGivePointsEventListener } from "src/middlewares/signalRHub";
+import { useDispatch, useSelector } from "src/redux/store";
+import { AppState } from "src/redux/rootReducerTypes";
 import Spinner from "../giphyGIF/Spinner";
 import PointEventCard from "./PointEventCard";
 import FeedPointGive from "./FeedPointGive";
 import Socials from "../social/Socials";
 import PopularRewards from "./PopularRewards";
 
+
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
     const { translate } = useLocales();
+    const dispatch = useDispatch();
+    const connection = useSelector((state: AppState) => state.signalRHubState.hubConnection);
     const isDesktop = useResponsive('up', 'lg');
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
     const [offset, setOffset] = useState<number>(0);
     const eventPerPage = 10;
+
+    useEffect(() => {
+        console.log(connection);
+        if (connection) {
+            addGivePointsEventListener((result) => {
+                console.log('addGivePointsEventListener');
+                console.log(result);
+            }, connection);
+        }
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         const controller = new AbortController();

@@ -23,6 +23,7 @@ import ScrollToTop from './components/scroll-to-top';
 import { MotionLazyContainer } from './components/animate';
 import { ThemeSettings, SettingsProvider } from './components/settings';
 import { AuthProvider } from './auth/JwtContext';
+import SignalRHubProvider from './middlewares/SignalRHubProvider';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +42,9 @@ export default function App() {
                       <ThemeSettings>
                         <ThemeLocalization>
                           <SnackbarProvider>
-                            <Router />
+                            <SignalRHubProvider>
+                              <Router />
+                            </SignalRHubProvider>
                           </SnackbarProvider>
                         </ThemeLocalization>
                       </ThemeSettings>

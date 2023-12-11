@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Hubs;
 using shout_out_api.Interfaces;
 using System.Security.Claims;
 
@@ -11,9 +13,11 @@ namespace shout_out_api.Controllers
     public class PointSystemController: ControllerBase
     {
         private readonly IPointSystemService _pointSystemService;
-        public PointSystemController(IPointSystemService pointSystemService)
+        IHubContext<SignalRHub> _signalRHubContext;
+        public PointSystemController(IPointSystemService pointSystemService, IHubContext<SignalRHub> signalRHubContext)
         {
             _pointSystemService = pointSystemService;
+            _signalRHubContext = signalRHubContext;
         }
 
         [HttpGet("history")]
@@ -45,6 +49,8 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
 
+            await _signalRHubContext.Clients.All.SendAsync("GivePointsEvent", result);
+
             return Ok(result);
         }
 
@@ -60,6 +66,8 @@ namespace shout_out_api.Controllers
             }
 
             await _pointSystemService.Like(int.Parse(userId), id);
+
+            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("likePostEvent");
 
             return Ok();
         }
@@ -77,6 +85,8 @@ namespace shout_out_api.Controllers
 
             await _pointSystemService.Dislike(int.Parse(userId), id);
 
+            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("dislikePostEvent");
+
             return Ok();
         }
 
@@ -92,6 +102,8 @@ namespace shout_out_api.Controllers
             }
 
             var result = await _pointSystemService.AddComment(int.Parse(userId), model);
+
+            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("addCommentEvent", result);
 
             return Ok(result);
         }
@@ -109,6 +121,8 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.EditComment(int.Parse(userId), id, model);
 
+            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("editCommentEvent", result);
+
             return Ok(result);
         }
 
@@ -124,6 +138,8 @@ namespace shout_out_api.Controllers
             }
 
             await _pointSystemService.DeleteComment(int.Parse(userId), id);
+
+            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("deleteCommentEvent");
 
             return Ok();
         }

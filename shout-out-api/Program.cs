@@ -9,6 +9,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using shout_out_api.Interfaces;
+using shout_out_api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddLogging();
 
 builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:Default").Value!));
+
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<ConfigHelper>();
 builder.Services.AddScoped<FileConverter>();
@@ -91,9 +94,19 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}");
+    endpoints.MapHub<SignalRHub>("/signalRHub");
+});
 
 app.MapControllers();
 
