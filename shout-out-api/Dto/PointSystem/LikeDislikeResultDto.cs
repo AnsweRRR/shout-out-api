@@ -2,7 +2,7 @@
 {
     public class LikeDislikeResultDto
     {
-        public int FeedItemId { get; set; }
+        public int PointHistoryId { get; set; }
         public int LikedById { get; set; }
         public string? LikedByName { get; set; }
     }

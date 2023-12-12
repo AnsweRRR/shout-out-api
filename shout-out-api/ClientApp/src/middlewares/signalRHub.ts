@@ -41,3 +41,21 @@ export const addDislikePostEventListener = (callback: (responseData: any) => voi
         callback(responseData);
     });
 };
+
+export const addCommentEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
+    connection.on("AddCommentEvent", (responseData: any) => {
+        callback(responseData);
+    });
+};
+
+export const editCommentEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
+    connection.on("EditCommentEvent", (responseData: any) => {
+        callback(responseData);
+    });
+};
+
+export const deleteCommentEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
+    connection.on("DeleteCommentEvent", (responseData: any) => {
+        callback(responseData);
+    });
+};

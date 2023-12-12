@@ -92,7 +92,7 @@ namespace shout_out_api.Controllers
 
         [HttpPost("addcomment")]
         [Authorize]
-        public async Task<IActionResult> AddComment([FromBody] CommentDto model)
+        public async Task<IActionResult> AddComment([FromBody] CommentDto model, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -103,14 +103,14 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.AddComment(int.Parse(userId), model);
 
-            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("AddCommentEvent", result);
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("AddCommentEvent", result);
 
             return Ok(result);
         }
 
         [HttpPatch("editcomment")]
         [Authorize]
-        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model)
+        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -121,14 +121,14 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.EditComment(int.Parse(userId), id, model);
 
-            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("EditCommentEvent", result);
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("EditCommentEvent", result);
 
             return Ok(result);
         }
 
         [HttpDelete("deletecomment")]
         [Authorize]
-        public async Task<IActionResult> DeleteComment([FromQuery] int id)
+        public async Task<IActionResult> DeleteComment([FromQuery] int id, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -137,9 +137,9 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.DeleteComment(int.Parse(userId), id);
+            var result = await _pointSystemService.DeleteComment(int.Parse(userId), id);
 
-            //await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("DeleteCommentEvent");
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("DeleteCommentEvent", result);
 
             return Ok();
         }

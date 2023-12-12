@@ -11,7 +11,7 @@ namespace shout_out_api.Interfaces
         Task<LikeDislikeResultDto> Dislike(int userId, int feedItemId);
         Task<CommentDto> AddComment(int userId, CommentDto model);
         Task<CommentDto> EditComment(int userId, int id, CommentDto model);
-        Task DeleteComment(int userId, int id);
+        Task<DeleteCommentResultDto> DeleteComment(int userId, int id);
         Task ScheduledTask();
         Task<RootObject> GetGiphyGifs(int limit, int offset, string? filterName = null);
     }

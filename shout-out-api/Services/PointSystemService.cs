@@ -81,7 +81,7 @@ namespace shout_out_api.Services
                             .OrderByDescending(c => c.CreateDate)
                             .ToList(),
                         Likes = _db.Likes
-                            .Where(l => l.PointHistoryId == group.Key)
+                            .Where(l => l.PointHistoryId == group.Key && l.UserId != userId)
                             .Select(fi => new LikeDto()
                             {
                                 Id = fi.Id,
@@ -315,7 +315,7 @@ namespace shout_out_api.Services
 
                 LikeDislikeResultDto likeDislikeResultDto = new LikeDislikeResultDto()
                 {
-                    FeedItemId = feedItemId,
+                    PointHistoryId = feedItemId,
                     LikedById = userId,
                     LikedByName = userResultDto.Display
                 };
@@ -347,7 +347,7 @@ namespace shout_out_api.Services
 
                 LikeDislikeResultDto likeDislikeResultDto = new LikeDislikeResultDto()
                 {
-                    FeedItemId = feedItemId,
+                    PointHistoryId = feedItemId,
                     LikedById = userId,
                     LikedByName = userResultDto.Display
                 };
@@ -422,7 +422,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task DeleteComment(int userId, int commentId)
+        public async Task<DeleteCommentResultDto> DeleteComment(int userId, int commentId)
         {
             try
             {
@@ -438,8 +438,16 @@ namespace shout_out_api.Services
                     throw new Exception("You can not delete someone else's comment.");
                 }
 
+                DeleteCommentResultDto deleteCommentResultDto = new DeleteCommentResultDto()
+                {
+                    Id = comment.Id,
+                    PointHistoryId = comment.PointHistoryId
+                };
+
                 _db.Comments.Remove(comment);
                 _db.SaveChanges();
+
+                return deleteCommentResultDto;
             }
             catch (Exception)
             {

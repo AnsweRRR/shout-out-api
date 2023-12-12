@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { getPointsHistoryAsync } from "src/api/feedClient";
-import { FeedItem, Like, LikeDislikeResultDto } from "src/@types/feed";
+import { CommentDto, FeedItem, HubEventType, Like, LikeDislikeResultDto, TemporaryHubResultState } from "src/@types/feed";
 import InfiniteScroll from "react-infinite-scroller";
 import useLocales from "src/locales/useLocales";
 import useResponsive from "src/hooks/useResponsive";
 import { m } from "framer-motion";
-import { addDislikePostEventListener, addGivePointsEventListener, addLikePostEventListener } from "src/middlewares/signalRHub";
+import { addCommentEventListener, addDislikePostEventListener, addGivePointsEventListener, addLikePostEventListener, deleteCommentEventListener, editCommentEventListener } from "src/middlewares/signalRHub";
 import { useDispatch, useSelector } from "src/redux/store";
 import { AppState } from "src/redux/rootReducerTypes";
 import Spinner from "../giphyGIF/Spinner";
@@ -28,7 +28,7 @@ export default function PointSystemFeed() {
     const connection = useSelector((state: AppState) => state.signalRHubState.hubConnection);
     const isDesktop = useResponsive('up', 'lg');
     const [isNewPostsButtonVisible, setIsNewPostsButtonVisible] = useState<boolean>(false);
-    const [temporaryHubResult, setTemporaryHubResult] = useState<any>({});
+    const [temporaryHubResult, setTemporaryHubResult] = useState<TemporaryHubResultState | null>(null);
     const [feedItems, setFeedItems] = useState<Array<FeedItem>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
@@ -75,6 +75,7 @@ export default function PointSystemFeed() {
         return () => controller.abort();
     }
 
+    // hub listeners...
     useEffect(() => {
         try {
             addGivePointsEventListener((result) => {
@@ -83,11 +84,23 @@ export default function PointSystemFeed() {
             }, connection!);
 
             addLikePostEventListener((result: LikeDislikeResultDto) => {
-                setTemporaryHubResult({...result, refreshByHub: true, isLikeEvent: true});
+                setTemporaryHubResult({...result, refreshByHub: true, hubEventType: HubEventType.LikePostEventListener});
             }, connection!);
 
             addDislikePostEventListener((result) => {
-                setTemporaryHubResult({...result, refreshByHub: true, isLikeEvent: false});
+                setTemporaryHubResult({...result, refreshByHub: true, hubEventType: HubEventType.DislikePostEventListener});
+            }, connection!);
+
+            addCommentEventListener((result) => {
+                setTemporaryHubResult({...result, refreshByHub: true, hubEventType: HubEventType.AddCommentEventListener});
+            }, connection!);
+
+            editCommentEventListener((result) => {
+                setTemporaryHubResult({...result, refreshByHub: true, hubEventType: HubEventType.EditCommentEventListener});
+            }, connection!);
+
+            deleteCommentEventListener((result) => {
+                setTemporaryHubResult({...result, refreshByHub: true, hubEventType: HubEventType.DeleteCommentEventListener});
             }, connection!);
         }
         catch(error) {
@@ -96,34 +109,69 @@ export default function PointSystemFeed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    /* eslint-disable no-else-return */
     useEffect(() => {
-        if (temporaryHubResult.refreshByHub) {
+        if (temporaryHubResult?.refreshByHub) {
             const newFeedItems = feedItems.map(item => {
-                if (item.id === temporaryHubResult.feedItemId) {
-                    if (temporaryHubResult.isLikeEvent) { // In case of like event...
-                        const newLike = {
-                            id: temporaryHubResult.feedItemId,
-                            likedById: temporaryHubResult.likedById,
-                            likedByName: temporaryHubResult.likedByName
-                        };
-                
-                        const updatedLikes = item.likes ? [...item.likes, newLike] : [newLike];
-                
-                        return { ...item, likes: updatedLikes };
-                    }
+                if (item.id === temporaryHubResult.pointHistoryId) {
+                    switch(temporaryHubResult.hubEventType) {
+                        case HubEventType.LikePostEventListener: {
+                            const newLike : Like = {
+                                id: temporaryHubResult.pointHistoryId!,
+                                likedById: temporaryHubResult.likedById!,
+                                likedByName: temporaryHubResult.likedByName!
+                            };
                     
-                    // In case of dislike event...
-                    const updatedLikes = item.likes ? item.likes.filter(like => like.likedById !== temporaryHubResult.likedById) : [];
-                    return { ...item, likes: updatedLikes };
+                            const updatedLikes = item.likes ? [...item.likes, newLike] : [newLike];
+                            return { ...item, likes: updatedLikes };
+                        }
+                        case HubEventType.DislikePostEventListener: {
+                            const updatedLikes = item.likes ? item.likes.filter(like => like.likedById !== temporaryHubResult.likedById) : [];
+                            return { ...item, likes: updatedLikes };
+                        }
+                        case HubEventType.AddCommentEventListener: {
+                            const newComment : CommentDto = {
+                                id: temporaryHubResult.id,
+                                pointHistoryId: temporaryHubResult.pointHistoryId,
+                                text: temporaryHubResult.text!,
+                                giphyGif: temporaryHubResult.giphyGif,
+                                senderId: temporaryHubResult.senderId,
+                                senderName: temporaryHubResult.senderName,
+                                senderAvatar: temporaryHubResult.senderAvatar,                                
+                                createDate: temporaryHubResult.createDate!,
+                                editDate: temporaryHubResult.editDate
+                            };
+
+                            const updatedComments = item.comments ? [...item.comments, newComment] : [newComment];
+                            return { ...item, comments: updatedComments };
+                        }
+                        case HubEventType.EditCommentEventListener: {
+                            const commentToEdit = item.comments?.find(comment => comment.id === temporaryHubResult.id);
+
+                            if (commentToEdit) {
+                                commentToEdit.text = temporaryHubResult.text;
+                                commentToEdit.giphyGif = temporaryHubResult.giphyGif;
+                                commentToEdit.editDate = temporaryHubResult.editDate;
+                            }
+
+                            return { ...item, commentToEdit }
+                        }
+                        case HubEventType.DeleteCommentEventListener: {
+                            const updatedComments = item.comments ? item.comments.filter(comment => comment.id !== temporaryHubResult.id) : [];
+                            return { ...item, comments: updatedComments };
+                        }
+                        default:
+                            break;
+                    }
                 }
                 return item;
-            });
-        
+            });        
             setFeedItems(newFeedItems);
-            setTemporaryHubResult({});
+            setTemporaryHubResult(null);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [temporaryHubResult]);
+    /* eslint-enable no-else-return */
 
     useEffect(() => {
         const controller = new AbortController();
