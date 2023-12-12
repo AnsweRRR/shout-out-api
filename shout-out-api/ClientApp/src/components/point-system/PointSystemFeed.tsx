@@ -8,7 +8,7 @@ import useLocales from "src/locales/useLocales";
 import useResponsive from "src/hooks/useResponsive";
 import { m } from "framer-motion";
 import { addCommentEventListener, addDislikePostEventListener, addGivePointsEventListener, addLikePostEventListener, deleteCommentEventListener, editCommentEventListener } from "src/middlewares/signalRHub";
-import { useDispatch, useSelector } from "src/redux/store";
+import { useSelector } from "src/redux/store";
 import { AppState } from "src/redux/rootReducerTypes";
 import Spinner from "../giphyGIF/Spinner";
 import PointEventCard from "./PointEventCard";
@@ -17,14 +17,9 @@ import Socials from "../social/Socials";
 import PopularRewards from "./PopularRewards";
 import NewPostButton from "./NewPostButton";
 
-const scrollToTop = async () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-};
-
 export default function PointSystemFeed() {
     const { user } = useAuthContext();
     const { translate } = useLocales();
-    const dispatch = useDispatch();
     const connection = useSelector((state: AppState) => state.signalRHubState.hubConnection);
     const isDesktop = useResponsive('up', 'lg');
     const [isNewPostsButtonVisible, setIsNewPostsButtonVisible] = useState<boolean>(false);
@@ -35,10 +30,15 @@ export default function PointSystemFeed() {
     const [offset, setOffset] = useState<number>(0);
     const eventPerPage = 10;
 
+    const scrollToTop = async () => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    };
+
     const getPointHistory = async (controller: AbortController) => {
         const { signal } = controller;
         if (user) {
             setIsLoading(true);
+            console.log(offset);
             const result = await getPointsHistoryAsync(offset, eventPerPage, user?.accessToken, signal);
             const items = result.data as Array<FeedItem>;
             if (items.length < eventPerPage) {
@@ -61,7 +61,7 @@ export default function PointSystemFeed() {
 
     const handleNewPostButtonClick = async () => {
         const controller = new AbortController();
-        await scrollToTop();
+        // await scrollToTop();
 
         if (offset > 0) {
             setIsNewPostsButtonVisible(false);
@@ -71,7 +71,7 @@ export default function PointSystemFeed() {
             setIsNewPostsButtonVisible(false);
             getPointHistory(controller);
         }
-        
+
         return () => controller.abort();
     }
 
@@ -216,9 +216,13 @@ export default function PointSystemFeed() {
                 >
                     <InfiniteScroll
                         pageStart={0}
-                        loadMore={(page: number) => setOffset(page * eventPerPage)}
+                        loadMore={(page: number) => {
+                            console.log('page', page);
+                            setOffset(page * eventPerPage);
+                        }}
                         hasMore={!isLoading && !isLastPage}
                         initialLoad={false}
+                        threshold={50}
                         loader={(
                             <div key="loading">
                                 {isLoading && <Spinner message={`${translate(`FeedPage.Loading`)}`} image={null} />}

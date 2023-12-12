@@ -171,10 +171,6 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         setComments(event.comments ? event.comments : []);
     }, [event.comments]);
 
-    useEffect(() => {
-        console.log(comments);
-    }, [comments]);
-
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>
             <Stack direction="row" alignItems="center" spacing={2}>
