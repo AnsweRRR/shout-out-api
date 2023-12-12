@@ -1,9 +1,10 @@
 import * as signalR from "@microsoft/signalr";
 import { HubConnectionState, LogLevel } from "@microsoft/signalr";
+import { HOST_API_KEY } from '../config-global';
 
 export const hubConnectionBuilder = () => {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/signalRHub")
+        .withUrl(`${HOST_API_KEY}/signalRHub`)
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Error)
         .build();
@@ -11,7 +12,7 @@ export const hubConnectionBuilder = () => {
     return connection;
 };
 
-export const startChatHubConnection = async (connection: signalR.HubConnection) => {
+export const startHubConnection = async (connection: signalR.HubConnection) => {
     if (connection.state !== HubConnectionState.Connected && connection.state !== HubConnectionState.Connecting) {
         try {
             await connection.start();
@@ -25,6 +26,18 @@ export const startChatHubConnection = async (connection: signalR.HubConnection) 
 
 export const addGivePointsEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
     connection.on("GivePointsEvent", (responseData: any) => {
+        callback(responseData);
+    });
+};
+
+export const addLikePostEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
+    connection.on("LikePostEvent", (responseData: any) => {
+        callback(responseData);
+    });
+};
+
+export const addDislikePostEventListener = (callback: (responseData: any) => void, connection: signalR.HubConnection) => {
+    connection.on("DislikePostEvent", (responseData: any) => {
         callback(responseData);
     });
 };

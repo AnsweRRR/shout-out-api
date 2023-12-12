@@ -37,6 +37,12 @@ export type Like = {
     likedByName: string
 }
 
+export type LikeDislikeResultDto = {
+    feedItemId: number,
+    likedById: number,
+    likedByName: string
+}
+
 export type ReceiverUser = {
     userId: number,
     userName: string,

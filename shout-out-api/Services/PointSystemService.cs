@@ -286,7 +286,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task Like(int userId, int feedItemId)
+        public async Task<LikeDislikeResultDto> Like(int userId, int feedItemId)
         {
             try
             {
@@ -305,15 +305,25 @@ namespace shout_out_api.Services
                 }
 
                 var user = await _db.Users.FirstAsync(u => u.Id == userId);
+                var userResultDto = user.ToUserResultDto();
 
                 var like = new Like()
                 {
                     PointHistory = feedItem,
-                    User = user
+                    User = user,
+                };
+
+                LikeDislikeResultDto likeDislikeResultDto = new LikeDislikeResultDto()
+                {
+                    FeedItemId = feedItemId,
+                    LikedById = userId,
+                    LikedByName = userResultDto.Display
                 };
 
                 _db.Likes.Add(like);
                 _db.SaveChanges();
+
+                return likeDislikeResultDto;
             }
             catch(Exception)
             {
@@ -321,7 +331,7 @@ namespace shout_out_api.Services
             }
         }
 
-        public async Task Dislike(int userId, int feedItemId)
+        public async Task<LikeDislikeResultDto> Dislike(int userId, int feedItemId)
         {
             try
             {
@@ -332,8 +342,20 @@ namespace shout_out_api.Services
                     throw new Exception("You did not like this post before.");
                 }
 
+                var user = await _db.Users.FirstAsync(u => u.Id == userId);
+                var userResultDto = user.ToUserResultDto();
+
+                LikeDislikeResultDto likeDislikeResultDto = new LikeDislikeResultDto()
+                {
+                    FeedItemId = feedItemId,
+                    LikedById = userId,
+                    LikedByName = userResultDto.Display
+                };
+
                 _db.Likes.Remove(like);
                 _db.SaveChanges();
+
+                return likeDislikeResultDto;
             }
             catch (Exception)
             {

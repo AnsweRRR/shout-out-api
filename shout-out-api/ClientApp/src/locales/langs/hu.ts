@@ -97,7 +97,8 @@ const hu = {
     Comment: "Hozzászólás",
     Comments: "Hozzászólások",
     Edited: 'Szerkesztve',
-    MoreComments: "Több hozzászólás"
+    MoreComments: "Több hozzászólás",
+    NewPosts: "Új bejegyzések"
   },
   RewardCard: {
     Cost: "Érték",

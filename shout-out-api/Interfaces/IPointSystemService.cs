@@ -7,8 +7,8 @@ namespace shout_out_api.Interfaces
     {
         Task<IList<FeedItem>> GetHistory(int userId, CancellationToken cancellationToken, int take = 10, int offset = 0);
         Task<GivePointsResultDto> GivePoints(int senderUserId, GivePointsDto model);
-        Task Like(int userId, int feedItemId);
-        Task Dislike(int userId, int feedItemId);
+        Task<LikeDislikeResultDto> Like(int userId, int feedItemId);
+        Task<LikeDislikeResultDto> Dislike(int userId, int feedItemId);
         Task<CommentDto> AddComment(int userId, CommentDto model);
         Task<CommentDto> EditComment(int userId, int id, CommentDto model);
         Task DeleteComment(int userId, int id);

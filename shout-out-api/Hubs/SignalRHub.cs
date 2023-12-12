@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using shout_out_api.Dto.PointSystem;
 using shout_out_api.Interfaces;
 
 namespace shout_out_api.Hubs
@@ -10,6 +9,16 @@ namespace shout_out_api.Hubs
         public SignalRHub(IPointSystemService pointSystemService)
         {
             _pointSystemService = pointSystemService;
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            var cancellationToken = Context.ConnectionAborted;
+
+            Console.WriteLine("Client connected to the hub. Welcome :)");
+            Console.WriteLine(cancellationToken);
+
+            await base.OnConnectedAsync();
         }
     }
 }

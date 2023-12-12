@@ -21,12 +21,12 @@ export async function getPointsHistoryAsync(offset: number, take: number, access
     }
 }
 
-export async function givePointsAsync(dto: any, accessToken: string) {
+export async function givePointsAsync(dto: any, accessToken: string, connectionId: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.post(`/api/pointSystem/givepoints`, dto, { headers });
+        const response = await axios.post(`/api/pointSystem/givepoints?connectionId=${connectionId}`, dto, { headers });
         return response;
     }
     catch(error) {
@@ -35,12 +35,12 @@ export async function givePointsAsync(dto: any, accessToken: string) {
     }
 }
 
-export async function likeAsync(feedItemId: number, accessToken: string) {
+export async function likeAsync(feedItemId: number, accessToken: string, connectionId: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.patch(`/api/pointSystem/like?id=${feedItemId}`, { headers });
+        const response = await axios.patch(`/api/pointSystem/like?id=${feedItemId}&connectionId=${connectionId}`, { headers });
         return response;
     }
     catch(error) {
@@ -49,12 +49,12 @@ export async function likeAsync(feedItemId: number, accessToken: string) {
     }
 }
 
-export async function dislikeAsync(feedItemId: number, accessToken: string) {
+export async function dislikeAsync(feedItemId: number, accessToken: string, connectionId: string) {
     try {
         const headers = {
             'Authorization': `Bearer ${accessToken}`
         };
-        const response = await axios.patch(`/api/pointSystem/dislike?id=${feedItemId}`, { headers });
+        const response = await axios.patch(`/api/pointSystem/dislike?id=${feedItemId}&connectionId=${connectionId}`, { headers });
         return response;
     }
     catch(error) {
