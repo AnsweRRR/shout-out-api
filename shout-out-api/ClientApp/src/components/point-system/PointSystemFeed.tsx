@@ -142,7 +142,7 @@ export default function PointSystemFeed() {
                                 editDate: temporaryHubResult.editDate
                             };
 
-                            const updatedComments = item.comments ? [...item.comments, newComment] : [newComment];
+                            const updatedComments = item.comments ? [newComment, ...item.comments] : [newComment];
                             return { ...item, comments: updatedComments };
                         }
                         case HubEventType.EditCommentEventListener: {
