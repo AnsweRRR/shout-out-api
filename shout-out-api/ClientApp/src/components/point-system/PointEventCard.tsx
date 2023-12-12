@@ -7,6 +7,8 @@ import useLocales from "src/locales/useLocales";
 import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync, deleteCommentAsync } from "src/api/feedClient";
 import { CloseIcon } from "src/theme/overrides/CustomIcons";
 import { useAuthContext } from "src/auth/useAuthContext";
+import { useSelector } from "src/redux/store";
+import { AppState } from "src/redux/rootReducerTypes";
 import { CustomAvatar } from "../custom-avatar";
 import Iconify from "../iconify/Iconify";
 import GiphyGIFSearchBox from "../giphyGIF/GiphyGIFSearchBox";
@@ -25,6 +27,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     const { user } = useAuthContext();
     const { enqueueSnackbar } = useSnackbar();
     const { translate } = useLocales();
+    const connection = useSelector((state: AppState) => state.signalRHubState.hubConnection);
     const commentRef = useRef<HTMLTextAreaElement | null>(null);
 
     const initialCommentState = {
@@ -47,7 +50,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
     const handleLikeDislikeClicked = async () => {
         if (event.isLikedByCurrentUser) {
-            const result = await dislikeAsync(event.id, user?.accessToken);
+            const result = await dislikeAsync(event.id, user?.accessToken, connection?.connectionId!);
             if (result.status === 200) {
                 const updatedData = feedItems.map((item) => {
                     if (item.id === event.id) {
@@ -59,7 +62,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                 setFeedItems(updatedData);
             }
         } else {
-            const result = await likeAsync(event.id, user?.accessToken);
+            const result = await likeAsync(event.id, user?.accessToken, connection?.connectionId!);
             if (result.status === 200) {
                 const updatedData = feedItems.map((item) => {
                     if (item.id === event.id) {
@@ -74,7 +77,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     };
     const handleSendComment = async () => {
         if (commentToSend.text || commentToSend.giphyGif) {
-            const result = await addCommentAsync(commentToSend ,user?.accessToken);
+            const result = await addCommentAsync(commentToSend ,user?.accessToken, connection?.connectionId!);
             const { data } = result;
             if (result.status === 200) {
                 setCommentToSend(initialCommentState);
@@ -85,7 +88,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
 
     const handleEditComment = async (commentId: number) => {
         if (commentInEditorMode?.text || commentInEditorMode?.giphyGif) {
-            const result = await editCommentAsync(commentId, commentInEditorMode, user?.accessToken);
+            const result = await editCommentAsync(commentId, commentInEditorMode, user?.accessToken, connection?.connectionId!);
             const { data } = result;
             if (result.status === 200) {
                 const indexToEdit = comments.findIndex(c => c.id === commentId);
@@ -107,7 +110,7 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
     }
 
     const handleDeleteComment = async (commentId: number) => {
-        const result = await deleteCommentAsync(commentId, user?.accessToken);
+        const result = await deleteCommentAsync(commentId, user?.accessToken, connection?.connectionId!);
         if (result.status === 200) {
             enqueueSnackbar(`${translate('ApiCallResults.DeletedSuccessfully')}`, { variant: 'success' });
             setComments((prevState) => prevState.filter(r => r.id !== commentId));
@@ -163,6 +166,14 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [commentInEditorMode?.id]);
+
+    useEffect(() => {
+        setComments(event.comments ? event.comments : []);
+    }, [event.comments]);
+
+    useEffect(() => {
+        console.log(comments);
+    }, [comments]);
 
     return (
         <Card sx={{ p: 3, marginBottom: 3 }}>

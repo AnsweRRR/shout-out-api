@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using shout_out_api.Dto.PointSystem;
+using shout_out_api.Hubs;
 using shout_out_api.Interfaces;
 using System.Security.Claims;
 
@@ -11,9 +13,11 @@ namespace shout_out_api.Controllers
     public class PointSystemController: ControllerBase
     {
         private readonly IPointSystemService _pointSystemService;
-        public PointSystemController(IPointSystemService pointSystemService)
+        IHubContext<SignalRHub> _signalRHubContext;
+        public PointSystemController(IPointSystemService pointSystemService, IHubContext<SignalRHub> signalRHubContext)
         {
             _pointSystemService = pointSystemService;
+            _signalRHubContext = signalRHubContext;
         }
 
         [HttpGet("history")]
@@ -34,7 +38,7 @@ namespace shout_out_api.Controllers
 
         [HttpPost("givepoints")]
         [Authorize]
-        public async Task<IActionResult> Give(GivePointsDto model)
+        public async Task<IActionResult> Give(GivePointsDto model, [FromQuery] string connectionId)
         {
             string? senderUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -45,12 +49,14 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.GivePoints(int.Parse(senderUserId), model);
 
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("GivePointsEvent", result);
+
             return Ok(result);
         }
 
         [HttpPatch("like")]
         [Authorize]
-        public async Task<IActionResult> Like([FromQuery] int id)
+        public async Task<IActionResult> Like([FromQuery] int id, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -59,14 +65,16 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.Like(int.Parse(userId), id);
+            var result = await _pointSystemService.Like(int.Parse(userId), id);
+
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("LikePostEvent", result);
 
             return Ok();
         }
 
         [HttpPatch("dislike")]
         [Authorize]
-        public async Task<IActionResult> Dislike([FromQuery] int id)
+        public async Task<IActionResult> Dislike([FromQuery] int id, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -75,14 +83,16 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.Dislike(int.Parse(userId), id);
+            var result = await _pointSystemService.Dislike(int.Parse(userId), id);
+
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("DislikePostEvent", result);
 
             return Ok();
         }
 
         [HttpPost("addcomment")]
         [Authorize]
-        public async Task<IActionResult> AddComment([FromBody] CommentDto model)
+        public async Task<IActionResult> AddComment([FromBody] CommentDto model, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -93,12 +103,14 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.AddComment(int.Parse(userId), model);
 
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("AddCommentEvent", result);
+
             return Ok(result);
         }
 
         [HttpPatch("editcomment")]
         [Authorize]
-        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model)
+        public async Task<IActionResult> EditComment([FromQuery] int id, [FromBody] CommentDto model, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -109,12 +121,14 @@ namespace shout_out_api.Controllers
 
             var result = await _pointSystemService.EditComment(int.Parse(userId), id, model);
 
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("EditCommentEvent", result);
+
             return Ok(result);
         }
 
         [HttpDelete("deletecomment")]
         [Authorize]
-        public async Task<IActionResult> DeleteComment([FromQuery] int id)
+        public async Task<IActionResult> DeleteComment([FromQuery] int id, [FromQuery] string connectionId)
         {
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -123,7 +137,9 @@ namespace shout_out_api.Controllers
                 return BadRequest();
             }
 
-            await _pointSystemService.DeleteComment(int.Parse(userId), id);
+            var result = await _pointSystemService.DeleteComment(int.Parse(userId), id);
+
+            await _signalRHubContext.Clients.AllExcept(connectionId).SendAsync("DeleteCommentEvent", result);
 
             return Ok();
         }

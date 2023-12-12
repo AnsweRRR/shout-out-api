@@ -25,6 +25,7 @@ export default function PointSystemFeed(props: Props) {
     const { user, updatePointToGive } = useAuthContext();
     const { translate } = useLocales();
     const { enqueueSnackbar } = useSnackbar();
+    const connection = useSelector((state: AppState) => state.signalRHubState.hubConnection);
     useStyle('MentionsInput', MentionsInputStyles);
     const MAX_POINTS_TO_GIVE = 100;
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -48,7 +49,7 @@ export default function PointSystemFeed(props: Props) {
                 giphyGifUrl: selectedGiphyUrl
             }
             
-            const result = await givePointsAsync(payload, user?.accessToken);
+            const result = await givePointsAsync(payload, user?.accessToken, connection?.connectionId!);
             if (result.status === 200) {
                 enqueueSnackbar(`${translate('ApiCallResults.SentSuccessfully')}`, { variant: 'success' });
                 setTaggedUsers([]);

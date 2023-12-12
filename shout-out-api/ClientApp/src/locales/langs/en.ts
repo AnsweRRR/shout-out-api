@@ -97,7 +97,8 @@ const en = {
     Comment: "Comment",
     Comments: "Comments",
     Edited: "Edited",
-    MoreComments: "More comments"
+    MoreComments: "More comments",
+    NewPosts: "New posts"
   },
   RewardCard: {
     Cost: "Cost",

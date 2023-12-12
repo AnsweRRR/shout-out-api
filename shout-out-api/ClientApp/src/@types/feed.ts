@@ -19,6 +19,15 @@ export enum EventType {
     SystemEvent = 1
 }
 
+export enum HubEventType {
+    GivePointsEventListener = 1,
+    LikePostEventListener = 2,
+    DislikePostEventListener = 3,
+    AddCommentEventListener = 4,
+    EditCommentEventListener = 5,
+    DeleteCommentEventListener = 6,
+}
+
 export type CommentDto = {
     id?: number,
     pointHistoryId?: number,
@@ -33,6 +42,32 @@ export type CommentDto = {
 
 export type Like = {
     id: number,
+    likedById: number,
+    likedByName: string
+}
+
+export type TemporaryHubResultState = {
+    refreshByHub?: boolean,
+    pointHistoryId?: number,
+    // like
+    likedById?: number,
+    likedByName?: string,
+
+    // comment
+    id?: number,
+    senderId?: number,
+    senderName?: string,
+    senderAvatar?: string | null,
+    text?: string,
+    giphyGif?: string,
+    createDate?: Date,
+    editDate?: Date,
+    
+    hubEventType: HubEventType
+}
+
+export type LikeDislikeResultDto = {
+    pointHistoryId: number,
     likedById: number,
     likedByName: string
 }
