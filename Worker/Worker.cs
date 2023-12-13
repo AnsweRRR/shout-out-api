@@ -24,7 +24,7 @@ namespace Worker
                 //Timer timer = new Timer(DoScheduledDailyTask!, null, timeUntilMidnight, TimeSpan.FromDays(1));
 
 
-                //TODO: Remove after development and testing is done and ge tback to "timeUntilMidnight"...
+                //TODO: Remove after development and testing is done and get back to "timeUntilMidnight"...
                 var targetTime = now.AddSeconds(3);
                 TimeSpan timeUntilTargetTime = now > targetTime ? targetTime.AddDays(1) - now : targetTime - now;
                 Timer timer = new Timer(DoScheduledDailyTask, null, timeUntilTargetTime, TimeSpan.FromDays(1));

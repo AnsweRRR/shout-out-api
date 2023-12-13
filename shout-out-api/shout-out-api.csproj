@@ -9,7 +9,12 @@
     <RootNamespace>shout_out_api</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<!--To avoid publishing ClientApp-->
+		<Content Update="ClientApp\**" CopyToPublishDirectory="Never" />
+	</ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="GiphyApiWrapper" Version="1.1.1" />
     <PackageReference Include="MailKit" Version="4.1.0" />
