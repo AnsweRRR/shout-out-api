@@ -80,12 +80,14 @@ builder.Services.AddCors(options => options.AddPolicy(name: "ShoutOut-Origins",
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
-}
+app.UseSwagger();
+app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
+//}
 
 app.UseCors("ShoutOut-Origins");
 
