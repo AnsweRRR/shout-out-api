@@ -42,6 +42,7 @@ namespace shout_out_api.DataAccess
                         FirstName = "admin",
                         LastName = "user",
                         VerifiedAt = new DateTime(1999, 09, 23, 12, 12, 12, 485, DateTimeKind.Utc),
+                        IsActive = true,
                         UserName = "Admin User",
                         Role = Role.Admin,
                         PointsToGive = 100,
