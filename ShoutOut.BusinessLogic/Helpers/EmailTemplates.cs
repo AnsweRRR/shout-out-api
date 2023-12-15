@@ -1,4 +1,6 @@
-﻿namespace ShoutOut.Helpers
+﻿using Microsoft.AspNetCore.Hosting;
+
+namespace ShoutOut.Helpers
 {
     public class EmailTemplates
     {

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoutOut.API", "ShoutOut.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoutOut.Worker", "ShoutOut.Worker\ShoutOut.Worker.csproj", "{86AF1DFE-54FF-4262-9E5A-E75D2B90FDCD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoutOut.DataAccess", "ShoutOut.DataAccess\ShoutOut.DataAccess.csproj", "{8B629107-CC96-4BA2-89B2-D382DC6CD677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoutOut.BusinessLogic", "ShoutOut.BusinessLogic\ShoutOut.BusinessLogic.csproj", "{839E57D0-F4A7-4AD5-A20B-8086070E4B30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{86AF1DFE-54FF-4262-9E5A-E75D2B90FDCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86AF1DFE-54FF-4262-9E5A-E75D2B90FDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86AF1DFE-54FF-4262-9E5A-E75D2B90FDCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B629107-CC96-4BA2-89B2-D382DC6CD677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B629107-CC96-4BA2-89B2-D382DC6CD677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B629107-CC96-4BA2-89B2-D382DC6CD677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B629107-CC96-4BA2-89B2-D382DC6CD677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{839E57D0-F4A7-4AD5-A20B-8086070E4B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{839E57D0-F4A7-4AD5-A20B-8086070E4B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{839E57D0-F4A7-4AD5-A20B-8086070E4B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{839E57D0-F4A7-4AD5-A20B-8086070E4B30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

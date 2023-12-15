@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using ShoutOut.Helpers;
 using ShoutOut.Interfaces;
 using ShoutOut.Model;

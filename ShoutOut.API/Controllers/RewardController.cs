@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ShoutOut.Dto.Reward;
 using ShoutOut.Interfaces;
-using ShoutOut.Services;
 using System.Security.Claims;
 
 namespace ShoutOut.Controllers

@@ -1,4 +1,5 @@
-﻿using ShoutOut.Model;
+﻿using Microsoft.AspNetCore.Http;
+using ShoutOut.Model;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace ShoutOut.Interfaces

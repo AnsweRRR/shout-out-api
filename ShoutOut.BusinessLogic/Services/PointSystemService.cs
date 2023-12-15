@@ -2,6 +2,7 @@
 using GiphyApiWrapper.Models;
 using GiphyApiWrapper.Models.Parameters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ShoutOut.DataAccess;
 using ShoutOut.Dto.Notification;
 using ShoutOut.Dto.PointSystem;

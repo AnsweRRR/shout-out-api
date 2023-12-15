@@ -1,4 +1,5 @@
-﻿using ShoutOut.Dto.Social;
+﻿using Microsoft.Extensions.Configuration;
+using ShoutOut.Dto.Social;
 
 namespace ShoutOut.Helpers
 {

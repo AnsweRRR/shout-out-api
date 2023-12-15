@@ -5,6 +5,7 @@ using MimeKit.Text;
 using ShoutOut.Helpers;
 using ShoutOut.Dto.Email;
 using ShoutOut.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace ShoutOut.Services
 {

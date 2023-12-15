@@ -51,7 +51,7 @@ namespace ShoutOut.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _userService.CreateUser(model, Url, Request.Scheme);
+            await _userService.CreateUser(model);
 
             return Ok();
         }

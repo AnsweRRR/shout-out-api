@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ShoutOut.Dto.User;
+﻿using ShoutOut.Dto.User;
 
 namespace ShoutOut.Interfaces
 {
     public interface IUserService
     {
         Task<LoginResultDto> Login(LoginRequestDto model);
-        Task CreateUser(InviteRequestDto model, IUrlHelper urlHelper, string requestScheme);
+        Task CreateUser(InviteRequestDto model);
         Task VerifyInviteToken(string verificationToken);
         Task<LoginResultDto> Register(RegisterRequestDto model);
         Task EditUser(int userId, EditUserRequestDto model, bool editByAdmin);

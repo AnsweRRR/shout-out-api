@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ShoutOut.DataAccess;
 using ShoutOut.Dto.Email;
@@ -73,7 +73,7 @@ namespace ShoutOut.Services
             }
         }
 
-        public async Task CreateUser(InviteRequestDto model, IUrlHelper urlHelper, string requestScheme)
+        public async Task CreateUser(InviteRequestDto model)
         {
             try
             {

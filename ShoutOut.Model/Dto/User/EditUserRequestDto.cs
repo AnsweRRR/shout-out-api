@@ -1,4 +1,5 @@
-﻿using ShoutOut.Enums;
+﻿using Microsoft.AspNetCore.Http;
+using ShoutOut.Enums;
 
 namespace ShoutOut.Dto.User
 {
