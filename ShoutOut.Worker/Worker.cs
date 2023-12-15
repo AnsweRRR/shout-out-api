@@ -35,7 +35,7 @@ namespace Worker
             _logger.LogInformation("Service stopped!");
         }
 
-        private async void DoScheduledDailyTask(object state)
+        private async void DoScheduledDailyTask(object? state)
         {
             try
             {

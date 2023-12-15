@@ -71,7 +71,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddCors(options => options.AddPolicy(name: "ShoutOut-Origins",
     policy =>
     {
-        policy.WithOrigins(new[] { "http://localhost:3000", "http://localhost:3001" })
+        policy.WithOrigins(new[] { "http://localhost:3000", "https://yellow-ocean-0601c1203.4.azurestaticapps.net" })
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
