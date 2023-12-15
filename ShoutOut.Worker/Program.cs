@@ -21,8 +21,8 @@ namespace Worker
             {
                 if (hostContext.HostingEnvironment.IsDevelopment())
                 {
-                    // This way it's going to read the connectionstring from the shout-out-api's appsettings.json
-                    var webApiConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "shout-out-api");
+                    // This way it's going to read the connectionstring from the api project's appsettings.json
+                    var webApiConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "ShoutOut.API");
 
                     var webApiConfig = new ConfigurationBuilder()
                         .SetBasePath(webApiConfigPath)
