@@ -1,0 +1,13 @@
+{
+    "navigationFallback": {
+        "rewrite": "index.html",
+        "exclude": ["*.{svg,png,jpg,gif}","*.{css,scss}","*.js"]
+    },
+    "routes": [
+        {
+            "route": "/tesztoldroute",
+            "redirect": "/feed",
+            "statusCode": 301
+        }
+    ]
+}
