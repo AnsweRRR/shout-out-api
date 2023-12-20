@@ -466,7 +466,7 @@ namespace ShoutOut.Services
                     int birthDayPointAmount = 50;
                     int joinToCompanyPointAmount = 50;
 
-                    List<User> users = await _db.Users.Where(u => u.VerifiedAt.HasValue && (u.Birthday.HasValue || u.StartAtCompany.HasValue)).ToListAsync();
+                    List<User> users = await _db.Users.Where(u => u.IsActive && u.VerifiedAt.HasValue && (u.Birthday.HasValue || u.StartAtCompany.HasValue)).ToListAsync();
 
                     bool isWorkerAlreadyRanToday = await _db.PointHistory_ReceiverUsers
                         .Where(x =>
