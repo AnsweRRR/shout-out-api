@@ -71,7 +71,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddCors(options => options.AddPolicy(name: "ShoutOut-Origins",
     policy =>
     {
-        policy.WithOrigins(new[] { "http://localhost:3000", "https://witty-grass-0eb4c1f03.4.azurestaticapps.net" })
+        string[] allowedOrigins = builder.Configuration.GetSection("GloballyAllowedCorsOrigins").Get<string[]>()!;
+
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -82,12 +84,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
-
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
-//}
 
 app.UseCors("ShoutOut-Origins");
 
