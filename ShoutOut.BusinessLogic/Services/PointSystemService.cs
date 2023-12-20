@@ -468,92 +468,101 @@ namespace ShoutOut.Services
 
                     List<User> users = await _db.Users.Where(u => u.VerifiedAt.HasValue && (u.Birthday.HasValue || u.StartAtCompany.HasValue)).ToListAsync();
 
-                    foreach (var user in users)
+                    bool isWorkerAlreadyRanToday = await _db.PointHistory_ReceiverUsers
+                        .Where(x =>
+                            x.PointHistory.EventDate.Date == now.Date &&
+                            (x.PointHistory.EventType == PointEventType.BirthdayEvent || x.PointHistory.EventType == PointEventType.JoinToCompanyEvent))
+                        .AnyAsync();
+
+                    if (!isWorkerAlreadyRanToday)
                     {
-                        if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date)
+                        foreach (var user in users)
                         {
-                            PointHistory pointEvent = new PointHistory()
+                            if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date && user.IsActive && user.VerifiedAt != null)
                             {
-                                Amount = birthDayPointAmount,
-                                Description = "Happy birthday!",
-                                SenderId = null,
-                                EventDate = now,
-                                EventType = PointEventType.BirthdayEvent,
-                                GiphyGifUrl = "https://media2.giphy.com/media/qnWjDNWHm9Wy1zLwG8/giphy.gif"
-                            };
+                                PointHistory pointEvent = new PointHistory()
+                                {
+                                    Amount = birthDayPointAmount,
+                                    Description = "Happy birthday!",
+                                    SenderId = null,
+                                    EventDate = now,
+                                    EventType = PointEventType.BirthdayEvent,
+                                    GiphyGifUrl = "https://media2.giphy.com/media/qnWjDNWHm9Wy1zLwG8/giphy.gif"
+                                };
 
-                            _db.PointHistories.Add(pointEvent);
-                            _db.SaveChanges();
+                                _db.PointHistories.Add(pointEvent);
+                                _db.SaveChanges();
 
-                            var receiverUser = new PointHistory_ReceiverUser()
+                                var receiverUser = new PointHistory_ReceiverUser()
+                                {
+                                    User = user,
+                                    PointHistory = pointEvent
+                                };
+
+                                _db.PointHistory_ReceiverUsers.Add(receiverUser);
+                                _db.SaveChanges();
+
+                                var notificationToCreate = new Notification()
+                                {
+                                    DateTime = now,
+                                    PointAmount = joinToCompanyPointAmount,
+                                    EventType = (int)NotificationEventType.GetPointsByBirthday,
+                                    ReceiverUser = user
+                                };
+
+                                user.PointToHave += birthDayPointAmount;
+
+                                _db.Notifications.Add(notificationToCreate);
+                                _db.SaveChanges();
+                            }
+
+                            if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date && user.IsActive && user.VerifiedAt != null)
                             {
-                                User = user,
-                                PointHistory = pointEvent
-                            };
+                                PointHistory pointEvent = new PointHistory()
+                                {
+                                    Amount = joinToCompanyPointAmount,
+                                    Description = "Happy work anniversary!",
+                                    SenderId = null,
+                                    EventDate = now,
+                                    EventType = PointEventType.JoinToCompanyEvent,
+                                    GiphyGifUrl = "https://media3.giphy.com/media/lNA3pbJxd2nmuMcOvH/giphy.gif"
+                                };
 
-                            _db.PointHistory_ReceiverUsers.Add(receiverUser);
-                            _db.SaveChanges();
+                                _db.PointHistories.Add(pointEvent);
+                                _db.SaveChanges();
 
-                            var notificationToCreate = new Notification()
+                                var receiverUser = new PointHistory_ReceiverUser()
+                                {
+                                    User = user,
+                                    PointHistory = pointEvent
+                                };
+
+                                _db.PointHistory_ReceiverUsers.Add(receiverUser);
+                                _db.SaveChanges();
+
+                                var notificationToCreate = new Notification()
+                                {
+                                    DateTime = now,
+                                    PointAmount = joinToCompanyPointAmount,
+                                    EventType = (int)NotificationEventType.GetPointsByJoinDate,
+                                    ReceiverUser = user
+                                };
+
+                                user.PointToHave += joinToCompanyPointAmount;
+
+                                _db.Notifications.Add(notificationToCreate);
+                                _db.SaveChanges();
+                            }
+
+                            if (now.Day == 1) //new month
                             {
-                                DateTime = now,
-                                PointAmount = joinToCompanyPointAmount,
-                                EventType = (int)NotificationEventType.GetPointsByBirthday,
-                                ReceiverUser = user
-                            };
-
-                            user.PointToHave += birthDayPointAmount;
-
-                            _db.Notifications.Add(notificationToCreate);
-                            _db.SaveChanges();
+                                user.PointsToGive = 100;
+                            }
                         }
 
-                        if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date)
-                        {
-                            PointHistory pointEvent = new PointHistory()
-                            {
-                                Amount = joinToCompanyPointAmount,
-                                Description = "Happy work anniversary!",
-                                SenderId = null,
-                                EventDate = now,
-                                EventType = PointEventType.JoinToCompanyEvent,
-                                GiphyGifUrl = "https://media3.giphy.com/media/lNA3pbJxd2nmuMcOvH/giphy.gif"
-                            };
-
-                            _db.PointHistories.Add(pointEvent);
-                            _db.SaveChanges();
-
-                            var receiverUser = new PointHistory_ReceiverUser()
-                            {
-                                User = user,
-                                PointHistory = pointEvent
-                            };
-
-                            _db.PointHistory_ReceiverUsers.Add(receiverUser);
-                            _db.SaveChanges();
-
-                            var notificationToCreate = new Notification()
-                            {
-                                DateTime = now,
-                                PointAmount = joinToCompanyPointAmount,
-                                EventType = (int)NotificationEventType.GetPointsByJoinDate,
-                                ReceiverUser = user
-                            };
-
-                            user.PointToHave += joinToCompanyPointAmount;
-
-                            _db.Notifications.Add(notificationToCreate);
-                            _db.SaveChanges();
-                        }
-
-                        if (now.Day == 1) //new month
-                        {
-                            user.PointsToGive = 100;
-                        }
+                        _db.Users.UpdateRange(users);
+                        _db.SaveChanges();
                     }
-
-                    _db.Users.UpdateRange(users);
-                    _db.SaveChanges();
 
                     transaction.Commit();
                 }
