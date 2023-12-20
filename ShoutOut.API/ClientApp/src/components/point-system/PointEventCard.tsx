@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useState, useRef, useEffect } from "react";
 import { Box, Card, Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography, TextField, List, ListItemText, ListItemButton, Button, Popover, Paper } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import { CommentDto, FeedItem, ReceiverUser } from "src/@types/feed";
+import { CommentDto, EventType, FeedItem, ReceiverUser } from "src/@types/feed";
 import { fHungarianDateTime } from "src/utils/formatTime";
 import useLocales from "src/locales/useLocales";
 import { addCommentAsync, editCommentAsync, dislikeAsync, likeAsync, deleteCommentAsync } from "src/api/feedClient";
@@ -179,8 +179,8 @@ export default function PointSystemFeed({ event, feedItems, setFeedItems }: Prop
                         <Stack direction="row" alignItems="center" spacing={2}>
                         <Tooltip title={event.senderId !== null ? event.senderName : 'ShoutOut'}>
                             <CustomAvatar
-                                src={event.senderAvatar!}
-                                alt={event.senderName!}
+                                src={event.eventType === EventType.UserEvent ? event.senderAvatar! : '/logo/logo_full.svg'}
+                                alt={event.eventType === EventType.UserEvent ? event.senderName! : 'ShoutOut'}
                                 name={event.senderName!}
                                 sx={{ width: 48, height: 48 }}
                             />
