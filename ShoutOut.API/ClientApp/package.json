@@ -71,7 +71,6 @@
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "^5.0.0",
-    "react-slick": "^0.29.0",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "simplebar-react": "^3.2.1",
