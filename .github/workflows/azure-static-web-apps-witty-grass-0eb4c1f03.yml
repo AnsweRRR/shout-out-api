@@ -19,6 +19,9 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Override Environment Variables
+        run: |
+          echo "REACT_APP_HOST_API_KEY=${{ secrets.SHOUTOUT_API_URL }}" >> .env
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
