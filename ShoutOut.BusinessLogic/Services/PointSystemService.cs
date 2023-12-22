@@ -32,136 +32,76 @@ namespace ShoutOut.Services
         {
             try
             {
-                List<FeedItem> feedItems = await _db.PointHistories
-                    .GroupBy(feedItem => feedItem.Id)
-                    .Select(group => new FeedItem()
-                    {
-                        Id = group.Key,
-                        Amount = group.First().Amount,
-                        SenderId = group.First().SenderId,
-                        SenderName = !string.IsNullOrEmpty(group.First().SenderUser.UserName)
-                            ? group.First().SenderUser.UserName
-                            : group.First().SenderUser.FirstName + " " + group.First().SenderUser.LastName,
-                        SenderAvatar = group.First().SenderUser.Avatar != null
-                            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().SenderUser.Avatar)}" : null,
-                        EventDate = group.First().EventDate,
-                        Description = group.First().Description,
-                        EventType = group.First().EventType,
-                        GiphyGif = !string.IsNullOrEmpty(group.First().GiphyGifUrl)
-                            ? group.First().GiphyGifUrl
-                            : null,
-                        ReceiverUsers = _db.PointHistory_ReceiverUsers
-                            .Where(phru => phru.PointHistoryId == group.Key)
-                            .Select(phru => new ReceiverUsers()
-                            {
-                                UserId = phru.UserId,
-                                UserName = !string.IsNullOrEmpty(phru.User.UserName)
-                                ? phru.User.UserName
-                                : phru.User.FirstName + " " + phru.User.LastName,
-                                UserAvatar = phru.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(phru.User.Avatar)}" : null,
-                            })
-                            .ToList(),
-                        Comments = _db.Comments
-                            .Where(c => c.PointHistoryId == group.Key)
-                            .Select(fi => new CommentDto()
-                            {
-                                Id = fi.Id,
-                                Text = fi.Text,
-                                GiphyGif = fi.GiphyGifUrl,
-                                PointHistoryId = fi.PointHistoryId,
-                                CreateDate = fi.CreateDate,
-                                EditDate = fi.EditDate,
-                                SenderId = fi.UserId,
-                                SenderAvatar = fi.User.Avatar != null
-                                                    ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.User.Avatar)}"
-                                                    : null,
-                                SenderName = !string.IsNullOrEmpty(fi.User.UserName)
-                                                    ? fi.User.UserName
-                                                    : fi.User.FirstName + " " + fi.User.LastName
-                            })
-                            .OrderByDescending(c => c.CreateDate)
-                            .ToList(),
-                        Likes = _db.Likes
-                            .Where(l => l.PointHistoryId == group.Key && l.UserId != userId)
-                            .Select(fi => new LikeDto()
-                            {
-                                Id = fi.Id,
-                                LikedById = fi.UserId,
-                                LikedByName = !string.IsNullOrEmpty(fi.User.UserName)
-                                    ? fi.User.UserName
-                                    : fi.User.FirstName + " " + fi.User.LastName
-                            })
-                            .ToList(),
-                        IsLikedByCurrentUser = _db.Likes.Any(l => l.PointHistoryId == group.Key && l.UserId == userId)
-                    })
-                    .OrderByDescending(ph => ph.EventDate)
+                List<FeedItem> feedItems = await
+                    (from feedItem in _db.PointHistories
+                     join receiverUser in _db.PointHistory_ReceiverUsers on feedItem.Id
+                     equals receiverUser.PointHistoryId into receiverUsersGroup
+                     from receiverUser in receiverUsersGroup.DefaultIfEmpty()
+                     join like in _db.Likes on feedItem.Id
+                     equals like.PointHistoryId into likesGroup
+                     from like in likesGroup.DefaultIfEmpty()
+                     join comment in _db.Comments on feedItem.Id
+                     equals comment.PointHistoryId into commentsGroup
+                     from comment in commentsGroup.DefaultIfEmpty()
+                     group new { receiverUser, like, comment, feedItem } by feedItem.Id into groupedData
+                     orderby groupedData.First().feedItem.EventDate descending
+                     select new FeedItem()
+                     {
+                         Id = groupedData.Key,
+                         Amount = groupedData.First().feedItem.Amount,
+                         EventDate = groupedData.First().feedItem.EventDate,
+                         Description = groupedData.First().feedItem.Description,
+                         EventType = groupedData.First().feedItem.EventType,
+                         GiphyGif = !string.IsNullOrEmpty(groupedData.First().feedItem.GiphyGifUrl)
+                             ? groupedData.First().feedItem.GiphyGifUrl
+                             : null,
+                         SenderId = groupedData.First().feedItem.SenderId,
+                         SenderName = !string.IsNullOrEmpty(groupedData.First().feedItem.SenderUser.UserName)
+                             ? groupedData.First().feedItem.SenderUser.UserName
+                             : groupedData.First().feedItem.SenderUser.FirstName + " " + groupedData.First().feedItem.SenderUser.LastName,
+                         SenderAvatar = groupedData.First().feedItem.SenderUser.Avatar != null
+                             ? $"data:image/jpg;base64,{Convert.ToBase64String(groupedData.First().feedItem.SenderUser.Avatar)}" : null,
+
+                         IsLikedByCurrentUser = groupedData.Any(x => x.like != null && x.feedItem.Id == groupedData.Key && x.like.UserId == userId),
+
+                         ReceiverUsers = groupedData.Where(x => x.receiverUser != null).Select(x => new ReceiverUsers()
+                         {
+                             UserId = x.receiverUser.UserId,
+                             UserName = !string.IsNullOrEmpty(x.receiverUser.User.UserName)
+                                         ? x.receiverUser.User.UserName
+                                         : x.receiverUser.User.FirstName + " " + x.receiverUser.User.LastName,
+                             UserAvatar = x.receiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(x.receiverUser.User.Avatar)}" : null,
+                         }).ToList(),
+
+                         Likes = groupedData.Where(x => x.like != null).Select(x => new LikeDto()
+                         {
+                             Id = x.like.Id,
+                             LikedById = x.like.UserId,
+                             LikedByName = !string.IsNullOrEmpty(x.like.User.UserName)
+                                 ? x.like.User.UserName
+                                 : x.like.User.FirstName + " " + x.like.User.LastName
+                         }).ToList(),
+
+                         Comments = groupedData.Where(x => x.comment != null).Select(x => new CommentDto()
+                         {
+                             Id = x.comment.Id,
+                             Text = x.comment.Text,
+                             GiphyGif = x.comment.GiphyGifUrl,
+                             PointHistoryId = x.comment.PointHistoryId,
+                             CreateDate = x.comment.CreateDate,
+                             EditDate = x.comment.EditDate,
+                             SenderId = x.comment.UserId,
+                             SenderName = !string.IsNullOrEmpty(x.comment.User.UserName)
+                                 ? x.comment.User.UserName
+                                 : x.comment.User.FirstName + " " + x.comment.User.LastName,
+                             SenderAvatar = x.comment.User.Avatar != null
+                                 ? $"data:image/jpg;base64,{Convert.ToBase64String(x.comment.User.Avatar)}"
+                                 : null,
+                         }).OrderByDescending(x => x.CreateDate).ToList(),
+                     })
                     .Skip(offset)
                     .Take(take)
                     .ToListAsync(cancellationToken);
-
-                #region old query
-                //List<FeedItem> feedItems = await _db.PointHistories
-                //    .Join(_db.PointHistory_ReceiverUsers, ph => ph.Id, phru => phru.PointHistoryId, (ph, phru) => new { PointHistory = ph, ReceiverUser = phru })
-                //    .GroupJoin(_db.Likes, phrul => phrul.PointHistory.Id, like => like.PointHistoryId, (phrul, likes) => new { phrul, Likes = likes })
-                //    .SelectMany(result => result.Likes.DefaultIfEmpty(), (result, like) => new { result.phrul, Like = like })
-                //    .GroupJoin(_db.Comments, phrul => phrul.phrul.PointHistory.Id, comment => comment.PointHistoryId, (phrul, comments) => new { phrul, Comments = comments })
-                //    .SelectMany(result => result.Comments.DefaultIfEmpty(), (result, comment) => new { result.phrul, Comment = comment })
-                //    .GroupBy(fi => fi.phrul.phrul.PointHistory.Id)
-                //    .Select(group => new FeedItem()
-                //    {
-                //        Id = group.Key,
-                //        Amount = group.First().phrul.phrul.PointHistory.Amount,
-                //        SenderId = group.First().phrul.phrul.PointHistory.SenderId,
-                //        SenderName = !string.IsNullOrEmpty(group.First().phrul.phrul.PointHistory.SenderUser.UserName)
-                //            ? group.First().phrul.phrul.PointHistory.SenderUser.UserName
-                //            : group.First().phrul.phrul.PointHistory.SenderUser.FirstName + " " + group.First().phrul.phrul.PointHistory.SenderUser.LastName,
-                //        SenderAvatar = group.First().phrul.phrul.PointHistory.SenderUser.Avatar != null
-                //            ? $"data:image/jpg;base64,{Convert.ToBase64String(group.First().phrul.phrul.PointHistory.SenderUser.Avatar)}" : null,
-                //        EventDate = group.First().phrul.phrul.PointHistory.EventDate,
-                //        Description = group.First().phrul.phrul.PointHistory.Description,
-                //        EventType = group.First().phrul.phrul.PointHistory.EventType,
-                //        GiphyGif = !string.IsNullOrEmpty(group.First().phrul.phrul.PointHistory.GiphyGifUrl)
-                //            ? group.First().phrul.phrul.PointHistory.GiphyGifUrl
-                //            : null,
-                //        ReceiverUsers = group.Where(fi => fi.phrul.phrul.ReceiverUser != null).Select(fi => new ReceiverUsers()
-                //        {
-                //            UserId = fi.phrul.phrul.ReceiverUser.Id,
-                //            UserName = !string.IsNullOrEmpty(fi.phrul.phrul.ReceiverUser.User.UserName)
-                //                ? fi.phrul.phrul.ReceiverUser.User.UserName
-                //                : fi.phrul.phrul.ReceiverUser.User.FirstName + " " + fi.phrul.phrul.ReceiverUser.User.LastName,
-                //            UserAvatar = fi.phrul.phrul.ReceiverUser.User.Avatar != null ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.phrul.phrul.ReceiverUser.User.Avatar)}" : null,
-                //        }).ToList(),
-                //        Likes = group.Where(fi => fi.phrul.Like != null).Select(fi => new LikeDto()
-                //        {
-                //            Id = fi.phrul.Like!.Id,
-                //            LikedById = fi.phrul.Like.UserId,
-                //            LikedByName = !string.IsNullOrEmpty(fi.phrul.Like.User.UserName)
-                //                ? fi.phrul.Like.User.UserName
-                //                : fi.phrul.Like.User.FirstName + " " + fi.phrul.Like.User.LastName
-                //        }).ToList(),
-                //        IsLikedByCurrentUser = group.Where(n => n.phrul.Like != null).Any(n => n.phrul.Like!.User.Id == userId),
-                //        Comments = group.Where(fi => fi.Comment != null).Select(fi => new CommentDto()
-                //        {
-                //            Id = fi.Comment!.Id,
-                //            Text = fi.Comment.Text,
-                //            GiphyGif = fi.Comment.GiphyGifUrl,
-                //            PointHistoryId = fi.Comment.PointHistoryId,
-                //            CreateDate = fi.Comment.CreateDate,
-                //            EditDate = fi.Comment.EditDate,
-                //            SenderId = fi.Comment.UserId,
-                //            SenderAvatar = fi.Comment.User.Avatar != null
-                //                                ? $"data:image/jpg;base64,{Convert.ToBase64String(fi.Comment.User.Avatar)}"
-                //                                : null,
-                //            SenderName = !string.IsNullOrEmpty(fi.Comment.User.UserName)
-                //                                ? fi.Comment.User.UserName
-                //                                : fi.Comment.User.FirstName + " " + fi.Comment.User.LastName
-                //        }).OrderByDescending(c => c.CreateDate).ToList()
-                //    })
-                //    .OrderByDescending(fi => fi.EventDate)
-                //    .Skip(offset)
-                //    .Take(take)
-                //    .ToListAsync();
-                #endregion
 
                 return feedItems;
             }
