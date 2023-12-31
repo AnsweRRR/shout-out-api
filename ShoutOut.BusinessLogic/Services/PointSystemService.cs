@@ -229,6 +229,8 @@ namespace ShoutOut.Services
 
                     foreach (User user in users)
                     {
+                        user.PointToHave += model.Amount;
+
                         PointHistory_ReceiverUser receiverUsers = new PointHistory_ReceiverUser()
                         {
                             User = user,
