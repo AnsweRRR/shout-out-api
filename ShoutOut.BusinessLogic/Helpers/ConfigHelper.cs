@@ -38,12 +38,6 @@ namespace ShoutOut.Helpers
             {
                 IConfigurationSection cfgSection = _configuration.GetSection("SMTPConfiguration");
 
-                bool isSenderTheUserName = false;
-                if (bool.TryParse(cfgSection["SenderIsTheUserName"], out bool tmp))
-                {
-                    isSenderTheUserName = tmp;
-                }
-
                 bool decryptPassword = false;
                 if (bool.TryParse(cfgSection["DecryptPassword"], out bool tmp2))
                 {
@@ -55,7 +49,6 @@ namespace ShoutOut.Helpers
                     Host = cfgSection["Host"],
                     Port = int.Parse(cfgSection["Port"]),
                     Sender = cfgSection["Sender"],
-                    SenderIsTheUserName = isSenderTheUserName,
                     UserName = cfgSection["UserName"],
                     Password = cfgSection["Password"],
                     DecryptPassword = decryptPassword,
@@ -168,7 +161,6 @@ namespace ShoutOut.Helpers
         public string Host { get; set; }
         public int Port { get; set; }
         public string Sender { get; set; }
-        public bool SenderIsTheUserName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public bool DecryptPassword { get; set; }
