@@ -33,8 +33,10 @@ namespace ShoutOut.Services
                     email.Bcc.Add(MailboxAddress.Parse(userEmail));
                 }
 
+                SecureSocketOptions secureSocketOptions = _configHelper.SMTP.TargetName.StartsWith("STARTTLS") ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect;
+
                 using var smtp = new SmtpClient();
-                smtp.Connect(_configHelper.SMTP.Host, _configHelper.SMTP.Port, SecureSocketOptions.StartTls);
+                smtp.Connect(_configHelper.SMTP.Host, _configHelper.SMTP.Port, secureSocketOptions);
                 smtp.Authenticate(_configHelper.SMTP.UserName, _configHelper.SMTP.Password);
                 smtp.Send(email);
                 smtp.Disconnect(true);
@@ -55,8 +57,10 @@ namespace ShoutOut.Services
                 email.Subject = model.Subject;
                 email.Body = new TextPart(TextFormat.Html) { Text = model.Body };
 
+                SecureSocketOptions secureSocketOptions = _configHelper.SMTP.TargetName.StartsWith("STARTTLS") ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect;
+
                 using var smtp = new SmtpClient();
-                smtp.Connect(_configHelper.SMTP.Host, _configHelper.SMTP.Port, SecureSocketOptions.StartTls);
+                smtp.Connect(_configHelper.SMTP.Host, _configHelper.SMTP.Port, secureSocketOptions);
                 smtp.Authenticate(_configHelper.SMTP.UserName, _configHelper.SMTP.Password);
                 smtp.Send(email);
                 smtp.Disconnect(true);
