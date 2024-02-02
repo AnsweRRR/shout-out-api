@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using MimeKit;
+using MimeKit.Utils;
 
 namespace ShoutOut.Helpers
 {
@@ -18,9 +20,11 @@ namespace ShoutOut.Helpers
             return "Invited to ShoutOut";
         }
 
-        public string NEW_USER_CONFIRM_EMAIL_BODY(string confirmLink)
+        public MimeEntity NEW_USER_CONFIRM_EMAIL_BODY(string confirmLink)
         {
-            var emailImages = GetEmailImagePath();
+            var builder = new BodyBuilder();
+
+            var emailImages = GetEmailImagePath(builder);
             var headerImageSrc = emailImages.First(x => x.Key == HEADER_LOGO_PNG).Value;
             var footerImageSrc = emailImages.First(x => x.Key == FOOTER_LOGO_PNG).Value;
 
@@ -31,7 +35,9 @@ namespace ShoutOut.Helpers
             htmlContent = htmlContent.Replace("{{_replace::headerLogo}}", headerImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::footerLogo}}", footerImageSrc);
 
-            return htmlContent;
+            builder.HtmlBody = htmlContent;
+
+            return builder.ToMessageBody();
         }
 
         public string PASSWORD_RESET_TOKEN_SUBJECT()
@@ -39,9 +45,11 @@ namespace ShoutOut.Helpers
             return "Forgot password";
         }
 
-        public string PASSWORD_RESET_TOKEN_BODY(string passwordResetToken)
+        public MimeEntity PASSWORD_RESET_TOKEN_BODY(string passwordResetToken)
         {
-            var emailImages = GetEmailImagePath();
+            var builder = new BodyBuilder();
+
+            var emailImages = GetEmailImagePath(builder);
             var headerImageSrc = emailImages.First(x => x.Key == HEADER_LOGO_PNG).Value;
             var footerImageSrc = emailImages.First(x => x.Key == FOOTER_LOGO_PNG).Value;
 
@@ -52,7 +60,9 @@ namespace ShoutOut.Helpers
             htmlContent = htmlContent.Replace("{{_replace::headerLogo}}", headerImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::footerLogo}}", footerImageSrc);
 
-            return htmlContent;
+            builder.HtmlBody = htmlContent;
+
+            return builder.ToMessageBody();
         }
 
         public string NEW_ITEM_CLAIM_EVENT_SUBJECT()
@@ -60,9 +70,11 @@ namespace ShoutOut.Helpers
             return "Item claimed in ShoutOut";
         }
 
-        public string NEW_ITEM_CLAIM_EVENT_BODY(string userName, string itemName, string itemImageSrc)
+        public MimeEntity NEW_ITEM_CLAIM_EVENT_BODY(string userName, string itemName, string itemImageSrc)
         {
-            var emailImages = GetEmailImagePath();
+            var builder = new BodyBuilder();
+
+            var emailImages = GetEmailImagePath(builder);
             var headerImageSrc = emailImages.First(x => x.Key == HEADER_LOGO_PNG).Value;
             var footerImageSrc = emailImages.First(x => x.Key == FOOTER_LOGO_PNG).Value;
 
@@ -75,7 +87,9 @@ namespace ShoutOut.Helpers
             htmlContent = htmlContent.Replace("{{_replace::headerLogo}}", headerImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::footerLogo}}", footerImageSrc);
 
-            return htmlContent;
+            builder.HtmlBody = htmlContent;
+
+            return builder.ToMessageBody();
         }
 
         public string NEW_ITEM_CREATED_SUBJECT()
@@ -83,9 +97,11 @@ namespace ShoutOut.Helpers
             return "New item is available in ShoutOut";
         }
 
-        public string NEW_ITEM_CREATED_BODY(string itemName, string itemImageSrc)
+        public MimeEntity NEW_ITEM_CREATED_BODY(string itemName, string itemImageSrc)
         {
-            var emailImages = GetEmailImagePath();
+            var builder = new BodyBuilder();
+
+            var emailImages = GetEmailImagePath(builder);
             var headerImageSrc = emailImages.First(x => x.Key == HEADER_LOGO_PNG).Value;
             var footerImageSrc = emailImages.First(x => x.Key == FOOTER_LOGO_PNG).Value;
 
@@ -97,26 +113,26 @@ namespace ShoutOut.Helpers
             htmlContent = htmlContent.Replace("{{_replace::headerLogo}}", headerImageSrc);
             htmlContent = htmlContent.Replace("{{_replace::footerLogo}}", footerImageSrc);
 
-            return htmlContent;
+            builder.HtmlBody = htmlContent;
+
+            return builder.ToMessageBody();
         }
 
-        protected Dictionary<string, string> GetEmailImagePath()
+        protected Dictionary<string, string> GetEmailImagePath(BodyBuilder builder)
         {
             Dictionary<string, string> haederFooterImages = new Dictionary<string, string>();
 
             var headerImagePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", HEADER_LOGO_PNG);
-            byte[] headerImageBytes = File.ReadAllBytes(headerImagePath);
-            string headerBase64String = Convert.ToBase64String(headerImageBytes);
-            string headerImageSrc = $"data:image/png;base64,{headerBase64String}";
+            var headerImage = builder.LinkedResources.Add(headerImagePath);
+            headerImage.ContentId = MimeUtils.GenerateMessageId();
 
-            haederFooterImages.Add(HEADER_LOGO_PNG, headerImageSrc);
+            haederFooterImages.Add(HEADER_LOGO_PNG, $"cid:{headerImage.ContentId}");
 
             var footerImagePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", FOOTER_LOGO_PNG);
-            byte[] footerImageBytes = File.ReadAllBytes(footerImagePath);
-            string footerBase64String = Convert.ToBase64String(footerImageBytes);
-            string footerImageSrc = $"data:image/png;base64,{footerBase64String}";
+            var footerImage = builder.LinkedResources.Add(footerImagePath);
+            footerImage.ContentId = MimeUtils.GenerateMessageId();
 
-            haederFooterImages.Add(FOOTER_LOGO_PNG, footerImageSrc);
+            haederFooterImages.Add(FOOTER_LOGO_PNG, $"cid:{footerImage.ContentId}");
 
             return haederFooterImages;
         }

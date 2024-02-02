@@ -1,7 +1,6 @@
 ﻿using MailKit.Security;
 using MailKit.Net.Smtp;
 using MimeKit;
-using MimeKit.Text;
 using ShoutOut.Helpers;
 using ShoutOut.Dto.Email;
 using ShoutOut.Interfaces;
@@ -26,7 +25,7 @@ namespace ShoutOut.Services
                 var email = new MimeMessage();
                 email.From.Add(MailboxAddress.Parse(_configHelper.SMTP.Sender));
                 email.Subject = model.Subject;
-                email.Body = new TextPart(TextFormat.Html) { Text = model.Body };
+                email.Body = model.Body;
 
                 foreach (var userEmail in userEmails)
                 {
@@ -55,7 +54,7 @@ namespace ShoutOut.Services
                 email.From.Add(MailboxAddress.Parse(_configHelper.SMTP.Sender));
                 email.To.Add(MailboxAddress.Parse(model.ToEmailAddress));
                 email.Subject = model.Subject;
-                email.Body = new TextPart(TextFormat.Html) { Text = model.Body };
+                email.Body = model.Body;
 
                 SecureSocketOptions secureSocketOptions = _configHelper.SMTP.TargetName.StartsWith("STARTTLS") ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect;
 
