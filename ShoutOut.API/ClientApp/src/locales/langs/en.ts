@@ -106,7 +106,7 @@ const en = {
     Delete: "Delete",
     AreYouSureWantToClaim: "Are you sure want to claim",
     AreYouSureWantToDelete: "Are you sure want to delete",
-    
+    CreateNewReward: "Create new reward",
     Item: "item"
   },
   ApiCallResults: {

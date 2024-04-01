@@ -106,6 +106,7 @@ const hu = {
     Delete: "Törlés",
     AreYouSureWantToClaim: "Biztos ki szeretnéd váltani",
     AreYouSureWantToDelete: "Biztos ki szeretnéd törölni",
+    CreateNewReward: "Vegyél fel új jutalmakat!",
     Item: "tételt"
   },
   ApiCallResults: {

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Card, Divider, IconButton } from '@mui/material';
+import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
 import { Reward } from 'src/@types/reward';
 import { createRewardAsync } from 'src/api/rewardClient';
 import { useAuthContext } from 'src/auth/useAuthContext';
@@ -83,6 +83,8 @@ export default function CreateRewardCard({ setRewards, cover }: Props) {
                         <AddIcon />
                     </IconButton>
                 </Box>
+
+                <Typography>{`${translate('RewardCard.CreateNewReward')}`}</Typography>
             </Card>
 
             <CreateRewardCardDialog
