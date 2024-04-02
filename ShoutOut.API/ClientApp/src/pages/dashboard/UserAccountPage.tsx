@@ -20,12 +20,12 @@ export default function UserAccountPage() {
       icon: <Iconify icon="ic:round-account-box" />,
       component: <AccountGeneral />,
     },
-    {
-      value: 'notifications',
-      label: `${translate('SideMenu.Notifications')}`,
-      icon: <Iconify icon="eva:bell-fill" />,
-      component: <AccountNotifications />,
-    },
+    // {
+    //   value: 'notifications',
+    //   label: `${translate('SideMenu.Notifications')}`,
+    //   icon: <Iconify icon="eva:bell-fill" />,
+    //   component: <AccountNotifications />,
+    // },
     {
       value: 'change_password',
       label: `${translate('SideMenu.ChangePassword')}`,
