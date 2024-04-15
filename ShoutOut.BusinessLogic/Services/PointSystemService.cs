@@ -465,6 +465,8 @@ namespace ShoutOut.Services
                 try
                 {
                     DateTime now = DateTime.Now;
+                    int currentDateMonth = now.Month;
+                    int currentDateDay = now.Day;
                     int birthDayPointAmount = 50;
                     int joinToCompanyPointAmount = 50;
 
@@ -480,7 +482,10 @@ namespace ShoutOut.Services
                     {
                         foreach (var user in users)
                         {
-                            if (user.Birthday.HasValue && user.Birthday.Value.Date == now.Date && user.IsActive && user.VerifiedAt != null)
+                            int? birthdayMonth = user.Birthday.HasValue ? user.Birthday.Value.Month : null;
+                            int? birthdayDay = user.Birthday.HasValue ? user.Birthday.Value.Day : null;
+
+                            if (birthdayMonth.HasValue && birthdayDay.HasValue && birthdayMonth == currentDateMonth && birthdayDay == currentDateDay && user.IsActive && user.VerifiedAt != null)
                             {
                                 PointHistory pointEvent = new PointHistory()
                                 {
@@ -518,7 +523,10 @@ namespace ShoutOut.Services
                                 _db.SaveChanges();
                             }
 
-                            if (user.StartAtCompany.HasValue && user.StartAtCompany.Value.Date == now.Date && user.IsActive && user.VerifiedAt != null)
+                            int? startAtCompanyMonth = user.StartAtCompany.HasValue ? user.StartAtCompany.Value.Month : null;
+                            int? startAtCompanyDay = user.StartAtCompany.HasValue ? user.StartAtCompany.Value.Day : null;
+
+                            if (startAtCompanyMonth.HasValue && startAtCompanyDay.HasValue && startAtCompanyMonth == currentDateMonth && startAtCompanyDay == currentDateDay && user.IsActive && user.VerifiedAt != null)
                             {
                                 PointHistory pointEvent = new PointHistory()
                                 {
