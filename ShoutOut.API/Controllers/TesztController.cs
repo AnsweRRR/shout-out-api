@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MimeKit.Utils;
 using MimeKit;
-using System.Security.Claims;
-using MimeKit.Text;
 using ShoutOut.Helpers;
 using MailKit.Security;
 using MailKit.Net.Smtp;
