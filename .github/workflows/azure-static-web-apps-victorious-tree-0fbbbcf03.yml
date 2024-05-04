@@ -19,9 +19,15 @@ jobs:
         with:
           submodules: true
           lfs: false
+        name: Override REACT_APP_HOST_API_KEY
+        run: |
+          sed -i "s~^REACT_APP_HOST_API_KEY=.*$~REACT_APP_HOST_API_KEY=${{ secrets.SHOUTOUT_API_URL }}~" ShoutOut.API/ClientApp/.env
+        shell: bash
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
+        env: 
+          CI: false
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_TREE_0FBBBCF03 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
@@ -41,6 +47,8 @@ jobs:
       - name: Close Pull Request
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
+        env: 
+          CI: false
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_TREE_0FBBBCF03 }}
           action: "close"
