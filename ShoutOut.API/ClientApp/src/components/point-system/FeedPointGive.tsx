@@ -51,7 +51,7 @@ export default function PointSystemFeed(props: Props) {
             
             const result = await givePointsAsync(payload, user?.accessToken, connection?.connectionId!);
             if (result.status === 200) {
-                enqueueSnackbar(`${translate('ApiCallResults.SentSuccessfully')}`, { variant: 'success' });
+                // enqueueSnackbar(`${translate('ApiCallResults.SentSuccessfully')}`, { variant: 'success' });
                 setTaggedUsers([]);
                 setInputData('');
                 setSelectedGiphyUrl(null);

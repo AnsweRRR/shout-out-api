@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { useAuthContext } from "src/auth/useAuthContext";
 import { getPointsHistoryAsync } from "src/api/feedClient";
@@ -177,7 +177,7 @@ export default function PointSystemFeed() {
         const controller = new AbortController();
         getPointHistory(controller);
 
-        return () => controller.abort();
+        // return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [offset]);
 
@@ -201,6 +201,12 @@ export default function PointSystemFeed() {
         }
     };
 
+    const loadMore = useCallback((page : number) => {
+        if (!isLoading && !isLastPage) {
+            setOffset(prevOffset => prevOffset + eventPerPage);
+        }
+    }, [isLoading, isLastPage]);
+
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={2} />
@@ -216,10 +222,7 @@ export default function PointSystemFeed() {
                 >
                     <InfiniteScroll
                         pageStart={0}
-                        loadMore={(page: number) => {
-                            console.log('page', page);
-                            setOffset(page * eventPerPage);
-                        }}
+                        loadMore={loadMore}
                         hasMore={!isLoading && !isLastPage}
                         initialLoad={false}
                         threshold={50}
